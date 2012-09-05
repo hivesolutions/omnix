@@ -131,6 +131,48 @@ def handler_exception(error):
     return str(error)
 
 def _get_data(url, values = None, authenticate = True, token = False):
+    # starts the variable holding the number of
+    # retrieves to be used
+    retries = 5
+
+    while True:
+        try:
+            return __get_data(url, values, authenticate, token)
+        except urllib2.HTTPError, error:
+            data = error.read()
+            data_s = json.loads(data)
+            exception = data_s.get("exception", {})
+            exception_name = exception.get("exception_name", None)
+            if not exception_name == "ControllerValidationReasonFailed": raise
+            _reset_session_id()
+
+        # decrements the number of retries and checks if the
+        # number of retries has reached the limit
+        retries -= 1
+        if retries == 0: raise RuntimeError("data retrieval not possible")
+
+def _post_data(url, values = None, authenticate = True, token = False):
+    # starts the variable holding the number of
+    # retrieves to be used
+    retries = 5
+
+    while True:
+        try:
+            return __post_data(url, values, authenticate, token)
+        except urllib2.HTTPError, error:
+            data = error.read()
+            data_s = json.loads(data)
+            exception = data_s.get("exception", {})
+            exception_name = exception.get("exception_name", None)
+            if not exception_name == "ControllerValidationReasonFailed": raise
+            _reset_session_id()
+
+        # decrements the number of retries and checks if the
+        # number of retries has reached the limit
+        retries -= 1
+        if retries == 0: raise RuntimeError("data retrieval not possible")
+
+def __get_data(url, values = None, authenticate = True, token = False):
     values = values or {}
     if authenticate: values["session_id"] = flask.session["omnix.session_id"]
     if token: values["access_token"] = flask.session["omnix.access_token"]
@@ -141,7 +183,7 @@ def _get_data(url, values = None, authenticate = True, token = False):
     contents_s = json.loads(contents)
     return contents_s
 
-def _post_data(url, values = None, authenticate = True, token = False):
+def __post_data(url, values = None, authenticate = True, token = False):
     values = values or {}
     if authenticate: values["session_id"] = flask.session["omnix.session_id"]
     if token: values["access_token"] = flask.session["omnix.access_token"]
@@ -176,6 +218,11 @@ def _ensure_session_id():
     contents_s = _get_data(url, authenticate = False, token = True)
     session_id = contents_s.get("_session_id", None)
     flask.session["omnix.session_id"] = session_id
+
+def _reset_session_id():
+    del flask.session["omnix.session_id"]
+    flask.session.modified = True
+    _ensure_session_id()
 
 def run():
     # sets the debug control in the application

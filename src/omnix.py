@@ -65,6 +65,7 @@ for the construction of the base url instances """
 
 SCOPE = (
     "foundation.supplier_companys.list",
+    "foundation.supplier_companys.show",
     "customers.customer_persons.list",
     "customers.customer_persons.show"
 )

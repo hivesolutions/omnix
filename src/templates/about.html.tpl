@@ -13,4 +13,13 @@
         and the<br/>
         current repository is hosted at <a href="https://github.com/hivesolutions/omnix">github</a>.
     </div>
+    <div class="separator-horizontal"></div>
+    <table>
+        <tbody>
+            <tr>
+                <td class="right label" width="50%">session id</td>
+                <td class="left value" width="50%">{{ session_id }}</td>
+            </tr>
+        </tbody>
+    </table>
 {% endblock %}

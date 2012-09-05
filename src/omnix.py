@@ -63,6 +63,14 @@ REDIRECT_URL = "http://srio.hive:5000/oauth"
 """ The redirect base url to be used as the base value
 for the construction of the base url instances """
 
+SCOPE = (
+    "foundation.supplier_companys.list",
+    "customers.customer_persons.list",
+    "customers.customer_persons.show"
+)
+""" The list of permission to be used to create the
+scope string for the oauth value """
+
 app = flask.Flask(__name__)
 app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(31)
 
@@ -76,9 +84,23 @@ def index():
 
 @app.route("/about", methods = ("GET",))
 def about():
+    access_token = flask.session.get("omnix.access_token", None)
+    session_id = flask.session.get("omnix.session_id", None)
+
     return flask.render_template(
         "about.html.tpl",
-        link = "about"
+        link = "about",
+        access_token = access_token,
+        session_id = session_id
+    )
+
+@app.route("/reset", methods = ("GET",))
+def reset():
+    _reset_session()
+
+    return flask.render_template(
+        "index.html.tpl",
+        link = "home"
     )
 
 @app.route("/oauth", methods = ("GET",))
@@ -109,14 +131,60 @@ def list_customers():
     url = _ensure_token()
     if url: return flask.redirect(url)
 
-    url = BASE_URL + "omni/customer_persons.json"
-    contents_s = _get_data(url)
-
     return flask.render_template(
         "customers_list.html.tpl",
-        link = "customers",
-        customers = contents_s
+        link = "customers"
     )
+
+@app.route("/customers.json", methods = ("GET",))
+def list_customers_json():
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    filter_string = flask.request.args.get("filter_string", None)
+    start_record = flask.request.args.get("start_record", 0)
+    number_records = flask.request.args.get("number_records", 0)
+
+    values = {
+        "filter_string" : filter_string,
+        "start_record" : start_record,
+        "number_records" : number_records
+    }
+
+    url = BASE_URL + "omni/customer_persons.json"
+    contents_s = _get_data(url, values)
+
+    return json.dumps(contents_s)
+
+@app.route("/suppliers", methods = ("GET",))
+def list_suppliers():
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    return flask.render_template(
+        "suppliers_list.html.tpl",
+        link = "suppliers"
+    )
+
+@app.route("/suppliers.json", methods = ("GET",))
+def list_suppliers_json():
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    filter_string = flask.request.args.get("filter_string", None)
+    start_record = flask.request.args.get("start_record", 0)
+    number_records = flask.request.args.get("number_records", 0)
+
+    values = {
+        "filter_string" : filter_string,
+        "start_record" : start_record,
+        "number_records" : number_records
+    }
+
+    url = BASE_URL + "omni/supplier_companys.json"
+    contents_s = _get_data(url, values)
+
+    return json.dumps(contents_s)
 
 @app.errorhandler(404)
 def handler_404(error):
@@ -203,7 +271,7 @@ def _ensure_token():
         "client_id" : CLIENT_ID,
         "redirect_uri" : REDIRECT_URL,
         "response_type" : "code",
-        "scope" : "customers.customer_persons.list"
+        "scope" : " ".join(SCOPE)
     }
 
     data = urllib.urlencode(values)
@@ -218,6 +286,11 @@ def _ensure_session_id():
     contents_s = _get_data(url, authenticate = False, token = True)
     session_id = contents_s.get("_session_id", None)
     flask.session["omnix.session_id"] = session_id
+
+def _reset_session():
+    del flask.session["omnix.access_token"]
+    del flask.session["omnix.session_id"]
+    flask.session.modified = True
 
 def _reset_session_id():
     del flask.session["omnix.session_id"]

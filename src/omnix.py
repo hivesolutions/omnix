@@ -156,6 +156,20 @@ def list_customers_json():
 
     return json.dumps(contents_s)
 
+@app.route("/customers/<id>", methods = ("GET",))
+def show_customers(id):
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    url = BASE_URL + "omni/customer_persons/%s.json" % id
+    contents_s = _get_data(url)
+
+    return flask.render_template(
+        "customers_show.html.tpl",
+        link = "customers",
+        customer = contents_s
+    )
+
 @app.route("/suppliers", methods = ("GET",))
 def list_suppliers():
     url = _ensure_token()
@@ -288,8 +302,8 @@ def _ensure_session_id():
     flask.session["omnix.session_id"] = session_id
 
 def _reset_session():
-    del flask.session["omnix.access_token"]
-    del flask.session["omnix.session_id"]
+    if "omnix.access_token" in flask.session: del flask.session["omnix.access_token"]
+    if "omnix.session_id" in flask.session: del flask.session["omnix.session_id"]
     flask.session.modified = True
 
 def _reset_session_id():

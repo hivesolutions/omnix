@@ -6,7 +6,7 @@
         <input type="text" class="text-field section-input filter-input" data-original_value="Search Customers" />
         <div class="data-source" data-url="{{ url_for('list_customers_json') }}" data-type="json" data-timeout="0"></div>
         <li class="template clear">
-            <div class="name"><a href="#">%[name]</a></div>
+            <div class="name"><a href="/customers/%[object_id]">%[name]</a></div>
             <div class="description">%[primary_contact_information.email]</div>
         </li>
         <div class="filter-no-results quote">

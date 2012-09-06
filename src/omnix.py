@@ -201,6 +201,20 @@ def list_suppliers_json():
 
     return json.dumps(contents_s)
 
+@app.route("/suppliers/<id>", methods = ("GET",))
+def show_suppliers(id):
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    url = BASE_URL + "omni/supplier_companys/%s.json" % id
+    contents_s = _get_data(url)
+
+    return flask.render_template(
+        "suppliers_show.html.tpl",
+        link = "suppliers",
+        supplier = contents_s
+    )
+
 @app.errorhandler(404)
 def handler_404(error):
     return str(error)

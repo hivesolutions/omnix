@@ -6,6 +6,10 @@
     <div class="separator-horizontal"></div>
     <table>
         <tbody>
+			<tr>
+                <td class="right label" width="50%">email</td>
+                <td class="left value" width="50%">{{ customer.primary_contact_information.email }}</td>
+            </tr>
             <tr>
                 <td class="right label" width="50%">birthday</td>
                 <td class="left value" width="50%">{{ customer.birthday }}</td>

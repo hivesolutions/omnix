@@ -2,8 +2,7 @@
 {% block title %}Customers{% endblock %}
 {% block name %}Customers{% endblock %}
 {% block content %}
-    <ul class="filter entities-list" data-infinite="true">
-        <input type="text" class="text-field section-input filter-input" data-original_value="Search Customers" />
+    <ul class="filter" data-infinite="true" data-original_value="Search Customers">
         <div class="data-source" data-url="{{ url_for('list_customers_json') }}" data-type="json" data-timeout="0"></div>
         <li class="template clear">
             <div class="name"><a href="/customers/%[object_id]">%[name]</a></div>

@@ -2,8 +2,7 @@
 {% block title %}Suppliers{% endblock %}
 {% block name %}Suppliers{% endblock %}
 {% block content %}
-    <ul class="filter entities-list" data-infinite="true">
-        <input type="text" class="text-field section-input filter-input" data-original_value="Search Suppliers" />
+    <ul class="filter" data-infinite="true" data-original_value="Search Suppliers">
         <div class="data-source" data-url="{{ url_for('list_suppliers_json') }}" data-type="json" data-timeout="0"></div>
         <li class="template clear">
             <div class="name"><a href="/suppliers/%[object_id]">%[name]</a></div>

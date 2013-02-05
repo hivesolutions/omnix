@@ -55,11 +55,11 @@ CLIENT_SECRET = "face3b1b85574ef68097d680bf6d33ce"
 """ The secret key value to be used to access the
 omni api as the client """
 
-BASE_URL = "http://srio.hive:8080/dynamic/rest/mvc/"
+BASE_URL = "http://stage.hive:8080/dynamic/rest/mvc/"
 """ The base url to be used to compose the various
 complete url values for the various operations """
 
-REDIRECT_URL = "http://srio.hive:5000/oauth"
+REDIRECT_URL = "http://localhost:5000/oauth"
 """ The redirect base url to be used as the base value
 for the construction of the base url instances """
 
@@ -107,6 +107,10 @@ def reset():
 @app.route("/oauth", methods = ("GET",))
 def oauth():
     code = flask.request.args.get("code", None)
+
+    error = flask.request.args.get("error", None)
+    error_description = flask.request.args.get("error_description", None)
+    if error: raise RuntimeError("%s - %s" % (error, error_description)) 
 
     url = BASE_URL + "omni/oauth/access_token"
     values = {

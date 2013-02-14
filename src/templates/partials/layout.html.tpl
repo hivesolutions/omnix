@@ -36,6 +36,18 @@
                     <a href="{{ url_for('list_stores') }}">stores</a>
                 {% endif %}
                 //
+                {% if link == "employees" %}
+                    <a href="{{ url_for('list_employees') }}" class="active">employees</a>
+                {% else %}
+                    <a href="{{ url_for('list_employees') }}">employees</a>
+                {% endif %}
+                //
+                {% if link == "top" %}
+                    <a href="{{ url_for('top') }}" class="active">top</a>
+                {% else %}
+                    <a href="{{ url_for('top') }}">top</a>
+                {% endif %}
+                //
                 {% if link == "about" %}
                     <a href="{{ url_for('about') }}" class="active">about</a>
                 {% else %}

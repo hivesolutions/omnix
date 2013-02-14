@@ -5,7 +5,7 @@
     <ul>
         <li>
             <div class="name">
-                <a href="#">Sales Report</a>
+                <a href="{{ url_for('sales_reports') }}">Sales Report</a>
             </div>
             <div class="description">Reports of sales per month</div>
         </li>

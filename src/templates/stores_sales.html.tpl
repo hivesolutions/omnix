@@ -25,13 +25,13 @@
             </tr>
         </thead>
         <tbody>
-        	{% for day in days %}
-	            <tr>
-	                <td class="left">{{ day.date.strftime('%b %d, %Y') }}</td>
-	                <td class="right">{{ day.number_sales }}</td>
-	                <td class="right">{{ '%0.2f' % day.amount_price_vat }} €</td>
-	            </tr>
+            {% for day in days %}
+                <tr>
+                    <td class="left">{{ day.date.strftime('%b %d, %Y') }}</td>
+                    <td class="right">{{ day.number_sales }}</td>
+                    <td class="right">{{ '%0.2f' % day.amount_price_vat }} €</td>
+                </tr>
             {% endfor %}
         </tbody>
-    </table>    
+    </table>
 {% endblock %}

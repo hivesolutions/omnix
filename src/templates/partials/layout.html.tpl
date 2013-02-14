@@ -36,23 +36,40 @@
                     <a href="{{ url_for('list_stores') }}">stores</a>
                 {% endif %}
                 //
-                {% if link == "employees" %}
-                    <a href="{{ url_for('list_employees') }}" class="active">employees</a>
-                {% else %}
-                    <a href="{{ url_for('list_employees') }}">employees</a>
-                {% endif %}
-                //
-                {% if link == "top" %}
-                    <a href="{{ url_for('top') }}" class="active">top</a>
-                {% else %}
-                    <a href="{{ url_for('top') }}">top</a>
-                {% endif %}
-                //
                 {% if link == "about" %}
                     <a href="{{ url_for('about') }}" class="active">about</a>
                 {% else %}
                     <a href="{{ url_for('about') }}">about</a>
                 {% endif %}
+                //
+                <div class="links-extra">
+                    <ul>
+                        <li>
+                            {% if link == "employees" %}
+                                <a href="{{ url_for('list_employees') }}" class="active">employees</a>
+                            {% else %}
+                                <a href="{{ url_for('list_employees') }}">employees</a>
+                            {% endif %}
+                        </li>
+                        <li>
+                            {% if link == "reports" %}
+                                <a href="{{ url_for('reports') }}" class="active">reports</a>
+                            {% else %}
+                                <a href="{{ url_for('reports') }}">reports</a>
+                            {% endif %}
+                        </li>
+                        <li>
+                            {% if link == "top" %}
+                                <a href="{{ url_for('top') }}" class="active">top sellers</a>
+                            {% else %}
+                                <a href="{{ url_for('top') }}">top sellers</a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+                <a class="link link-more">
+                    <span>more</span>
+                </a>
             </div>
         {% endblock %}
     </div>

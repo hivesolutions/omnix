@@ -2,7 +2,7 @@
 {% block title %}Top Sellers{% endblock %}
 {% block name %}Top Sellers{% endblock %}
 {% block content %}
-    <div class="quote">Janeiro 2013</div>
+    <div class="quote">January 2013</div>
     <div class="separator-horizontal"></div>
     <table class="table-resume three">
         <tbody>

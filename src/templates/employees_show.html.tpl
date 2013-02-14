@@ -1,6 +1,6 @@
-{% extends "partials/layout.html.tpl" %}
+{% extends "partials/layout_employee.html.tpl" %}
 {% block title %}Employees{% endblock %}
-{% block name %}Employees :: {{ employee.object_id }}{% endblock %}
+{% block name %}{{ employee.short_name }}{% endblock %}
 {% block content %}
     <div class="quote">{{ employee.representation }}</div>
     <div class="separator-horizontal"></div>

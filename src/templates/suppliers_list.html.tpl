@@ -5,7 +5,7 @@
     <ul class="filter" data-infinite="true" data-original_value="Search Suppliers">
         <div class="data-source" data-url="{{ url_for('list_suppliers_json') }}" data-type="json" data-timeout="0"></div>
         <li class="template clear">
-            <div class="name"><a href="{{ url_for('show_suppliers', id = '') }}%[object_id]">%[name]</a></div>
+            <div class="name"><a href="{{ url_for('show_suppliers', id = '') }}%[object_id]">%[representation]</a></div>
             <div class="description">%[primary_contact_information.email]</div>
         </li>
         <div class="filter-no-results quote">

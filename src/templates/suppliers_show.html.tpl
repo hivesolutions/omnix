@@ -1,6 +1,6 @@
 {% extends "partials/layout.html.tpl" %}
 {% block title %}Suppliers{% endblock %}
-{% block name %}Suppliers :: {{ supplier.object_id }}{% endblock %}
+{% block name %}{{ supplier.representation }}{% endblock %}
 {% block content %}
     <div class="quote">{{ supplier.name }}</div>
     <div class="separator-horizontal"></div>

@@ -1,6 +1,6 @@
 {% extends "partials/layout_store.html.tpl" %}
 {% block title %}Stores{% endblock %}
-{% block name %}Stores :: {{ store.object_id }}{% endblock %}
+{% block name %}{{ store.name }}{% endblock %}
 {% block content %}
     <div class="quote">{{ store.name }}</div>
     <div class="separator-horizontal"></div>

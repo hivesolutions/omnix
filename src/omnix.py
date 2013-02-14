@@ -37,12 +37,17 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-import os
 import json
 import flask
 import urllib
 import urllib2
 import datetime
+
+import quorum
+
+MONGO_DATABASE = "omnixx"
+""" The default database to be used for the connection with
+the mongo database """
 
 SECRET_KEY = "zhsga32ki5kvv7ymq8nolbleg248fzn1"
 """ The "secret" key to be at the internal encryption
@@ -74,6 +79,11 @@ scope string for the oauth value """
 
 app = flask.Flask(__name__)
 app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(31)
+quorum.load(
+    app,
+    mongo_database = MONGO_DATABASE,
+    name = "omnix.debug"
+)
 
 @app.route("/", methods = ("GET",))
 @app.route("/index", methods = ("GET",))
@@ -335,9 +345,9 @@ def run():
     # then checks the current environment variable
     # for the target port for execution (external)
     # and then start running it (continuous loop)
-    debug = os.environ.get("DEBUG", False) and True or False
-    reloader = os.environ.get("RELOADER", False) and True or False
-    port = int(os.environ.get("PORT", 5000))
+    debug = quorum.conf("DEBUG", False) and True or False
+    reloader = quorum.conf("RELOADER", False) and True or False
+    port = int(quorum.conf("PORT", 5000))
     app.debug = debug
     app.secret_key = SECRET_KEY
     app.run(

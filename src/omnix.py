@@ -71,6 +71,8 @@ for the construction of the base url instances """
 SCOPE = (
     "foundation.store.list",
     "foundation.store.show",
+    "foundation.employee.list",
+    "foundation.employee.show",
     "foundation.supplier_company.list",
     "foundation.supplier_company.show",
     "customers.customer_person.list",
@@ -104,6 +106,18 @@ def about():
     return flask.render_template(
         "about.html.tpl",
         link = "about",
+        access_token = access_token,
+        session_id = session_id
+    )
+
+@app.route("/top", methods = ("GET",))
+def top():
+    access_token = flask.session.get("omnix.access_token", None)
+    session_id = flask.session.get("omnix.session_id", None)
+
+    return flask.render_template(
+        "top.html.tpl",
+        link = "top",
         access_token = access_token,
         session_id = session_id
     )
@@ -327,6 +341,51 @@ def sales_stores(id):
         stats = stats_s,
         current = current_s,
         days = days_s
+    )
+
+@app.route("/employees", methods = ("GET",))
+def list_employees():
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    return flask.render_template(
+        "employees_list.html.tpl",
+        link = "employees"
+    )
+
+@app.route("/employees.json", methods = ("GET",))
+def list_employees_json():
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    filter_string = flask.request.args.get("filter_string", None)
+    start_record = flask.request.args.get("start_record", 0)
+    number_records = flask.request.args.get("number_records", 0)
+
+    values = {
+        "filter_string" : filter_string,
+        "start_record" : start_record,
+        "number_records" : number_records
+    }
+
+    url = BASE_URL + "omni/employees.json"
+    contents_s = _get_data(url, values)
+
+    return json.dumps(contents_s)
+
+@app.route("/employees/<id>", methods = ("GET",))
+def show_employees(id):
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    url = BASE_URL + "omni/employees/%s.json" % id
+    contents_s = _get_data(url)
+
+    return flask.render_template(
+        "employees_show.html.tpl",
+        link = "employees",
+        sub_link = "info",
+        employee = contents_s
     )
 
 @app.errorhandler(404)

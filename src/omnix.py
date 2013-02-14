@@ -45,7 +45,7 @@ import datetime
 
 import quorum
 
-MONGO_DATABASE = "omnixx"
+MONGO_DATABASE = "omnix"
 """ The default database to be used for the connection with
 the mongo database """
 
@@ -53,10 +53,10 @@ SECRET_KEY = "zhsga32ki5kvv7ymq8nolbleg248fzn1"
 """ The "secret" key to be at the internal encryption
 processes handled by flask (eg: sessions) """
 
-CLIENT_ID = "5aa0b5dc3ff74df19d47bd935aac79d7"
+CLIENT_ID = "0e8be9a3f87a4c6485878559b9abe282"
 """ The id of the omni client to be used """
 
-CLIENT_SECRET = "face3b1b85574ef68097d680bf6d33ce"
+CLIENT_SECRET = "e484777ec81448d581c9293a0343cf55"
 """ The secret key value to be used to access the
 omni api as the client """
 
@@ -64,15 +64,15 @@ BASE_URL = "http://stage.hive:8080/dynamic/rest/mvc/"
 """ The base url to be used to compose the various
 complete url values for the various operations """
 
-REDIRECT_URL = "http://localhost:5000/oauth"
+REDIRECT_URL = "http://localhost:8080/oauth"
 """ The redirect base url to be used as the base value
 for the construction of the base url instances """
 
 SCOPE = (
-    "foundation.supplier_companys.list",
-    "foundation.supplier_companys.show",
-    "customers.customer_persons.list",
-    "customers.customer_persons.show"
+    "foundation.supplier_company.list",
+    "foundation.supplier_company.show",
+    "customers.customer_person.list",
+    "customers.customer_person.show"
 )
 """ The list of permission to be used to create the
 scope string for the oauth value """
@@ -210,7 +210,7 @@ def list_suppliers_json():
         "number_records" : number_records
     }
 
-    url = BASE_URL + "omni/supplier_companys.json"
+    url = BASE_URL + "omni/supplier_companies.json"
     contents_s = _get_data(url, values)
 
     return json.dumps(contents_s)
@@ -220,7 +220,7 @@ def show_suppliers(id):
     url = _ensure_token()
     if url: return flask.redirect(url)
 
-    url = BASE_URL + "omni/supplier_companys/%s.json" % id
+    url = BASE_URL + "omni/supplier_companies/%s.json" % id
     contents_s = _get_data(url)
 
     return flask.render_template(

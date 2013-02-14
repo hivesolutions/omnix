@@ -110,18 +110,6 @@ def about():
         session_id = session_id
     )
 
-@app.route("/top", methods = ("GET",))
-def top():
-    access_token = flask.session.get("omnix.access_token", None)
-    session_id = flask.session.get("omnix.session_id", None)
-
-    return flask.render_template(
-        "top.html.tpl",
-        link = "top",
-        access_token = access_token,
-        session_id = session_id
-    )
-
 @app.route("/reset", methods = ("GET",))
 def reset():
     _reset_session()
@@ -156,6 +144,25 @@ def oauth():
 
     return flask.redirect(
         flask.url_for("index")
+    )
+
+@app.route("/top", methods = ("GET",))
+def top():
+    access_token = flask.session.get("omnix.access_token", None)
+    session_id = flask.session.get("omnix.session_id", None)
+
+    return flask.render_template(
+        "top.html.tpl",
+        link = "top",
+        access_token = access_token,
+        session_id = session_id
+    )
+
+@app.route("/reports", methods = ("GET",))
+def reports():
+    return flask.render_template(
+        "reports.html.tpl",
+        link = "reports"
     )
 
 @app.route("/customers", methods = ("GET",))

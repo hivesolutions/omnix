@@ -30,6 +30,12 @@
                     <a href="{{ url_for('list_suppliers') }}">suppliers</a>
                 {% endif %}
                 //
+                {% if link == "stores" %}
+                    <a href="{{ url_for('list_stores') }}" class="active">stores</a>
+                {% else %}
+                    <a href="{{ url_for('list_stores') }}">stores</a>
+                {% endif %}
+                //
                 {% if link == "about" %}
                     <a href="{{ url_for('about') }}" class="active">about</a>
                 {% else %}

@@ -5,16 +5,18 @@
     <div class="quote">{{ store.name }}</div>
     <div class="separator-horizontal"></div>
     <table class="table-resume">
-        <tr>
-            <td>
-                <span class="label">Today's Sales</span><br />
-                <span class="value down">{{ current.number_sales }}</span>
-            </td>
-            <td>
-                <span class="label">Today's Amount</span><br />
-                <span class="value up">{{ '%0.2f' % current.amount_price_vat }} €</span>
-            </td>
-        </tr>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="label">Today's Sales</span><br />
+                    <span class="value down">{{ current.number_sales }}</span>
+                </td>
+                <td>
+                    <span class="label">Today's Amount</span><br />
+                    <span class="value up">{{ '%0.2f' % current.amount_price_vat }} €</span>
+                </td>
+            </tr>
+        </tbody>
     </table>
     <table border="0" class="table-list" cellpadding="0" cellspacing="0">
         <thead>

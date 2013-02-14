@@ -48,3 +48,44 @@
 .filter-more.loading {
     visibility: hidden;
 }
+
+.table-list thead tr th {
+    border-bottom: 1px dashed #cccccc;
+    padding: 8px 20px;
+}
+
+.table-list tbody tr td {
+    border-bottom: 1px dashed #cccccc;
+    padding-bottom: 16px;
+    padding-top: 16px;
+}
+
+.table-list tfoot tr td {
+    padding-top: 30px;
+}
+
+.table-resume {
+    margin: 30px 0px 30px 0px;
+}
+
+.table-resume td {
+    width: 50%;
+}
+
+.table-resume .value {
+    font-size: 24px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.up {
+    background: transparent url(../images/up.png) no-repeat right center;
+}
+
+.down {
+    background: transparent url(../images/down.png) no-repeat right center;
+}
+
+.equal {
+    background: transparent url(../images/equal.png) no-repeat right center;
+}

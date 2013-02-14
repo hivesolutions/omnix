@@ -165,6 +165,13 @@ def reports():
         link = "reports"
     )
 
+@app.route("/reports/sales", methods = ("GET",))
+def sales_reports():
+    return flask.render_template(
+        "reports_sales.html.tpl",
+        link = "reports"
+    )
+
 @app.route("/customers", methods = ("GET",))
 def list_customers():
     url = _ensure_token()

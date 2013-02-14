@@ -388,6 +388,21 @@ def show_employees(id):
         employee = contents_s
     )
 
+@app.route("/employees/<id>/sales", methods = ("GET",))
+def sales_employees(id):
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    url = BASE_URL + "omni/employees/%s.json" % id
+    contents_s = _get_data(url)
+
+    return flask.render_template(
+        "employees_sales.html.tpl",
+        link = "employees",
+        sub_link = "sales",
+        employee = contents_s
+    )
+
 @app.errorhandler(404)
 def handler_404(error):
     return str(error)

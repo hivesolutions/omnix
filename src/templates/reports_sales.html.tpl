@@ -1,39 +1,58 @@
-{% extends "partials/layout.html.tpl" %}
-{% block title %}Stores{% endblock %}
-{% block name %}{{ store.name }}{% endblock %}
+{% extends "partials/layout_report.html.tpl" %}
+{% block title %}Sales Report{% endblock %}
+{% block name %}Sales Report{% endblock %}
+{% block description %}Actualizado a 09/01/2013 19:34{% endblock %}
 {% block content %}
-    <div class="quote">{{ current.date.strftime('%b %d, %Y') }}</div>
-    <div class="separator-horizontal"></div>
-    <table class="table-resume">
-        <tbody>
-            <tr>
-                <td>
-                    <span class="label">Today's Sales</span><br />
-                    <span class="value down">{{ current.number_sales }}</span>
-                </td>
-                <td>
-                    <span class="label">Today's Amount</span><br />
-                    <span class="value up">{{ '%0.2f' % current.amount_price_vat }} €</span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table border="0" class="table-list" cellpadding="0" cellspacing="0">
+    <table class="table-full table-report">
         <thead>
             <tr>
-                <th class="left label" width="50%">Previous Days</th>
-                <th class="right label" width="25%">Sales</th>
-                <th class="right label" width="25%">Total</th>
+                <th class="center label" data-width="60">Rank</th>
+                <th class="left label" data-width="200">Seller</th>
+                <th class="left label" style="width:10000px;">Store</th>
+                <th class="right label" data-width="180">Sales</th>
+                <th class="right label" data-width="180">Commision</th>
             </tr>
         </thead>
         <tbody>
-            {% for day in days %}
-                <tr>
-                    <td class="left">{{ day.date.strftime('%b %d, %Y') }}</td>
-                    <td class="right">{{ day.number_sales }}</td>
-                    <td class="right">{{ '%0.2f' % day.amount_price_vat }} €</td>
-                </tr>
-            {% endfor %}
+            <tr>
+                <td class="center">4º</td>
+                <td class="left"><a href="#">Alberto F.</a></td>
+                <td class="left">Sede</td>
+                <td class="right"><a href="#">120.00 €</a></td>
+                <td class="right">12.00 €</td>
+            </tr>
+            <tr>
+                <td class="center">4º</td>
+                <td class="left"><a href="#">Alberto F.</a></td>
+                <td class="left">Sede</td>
+                <td class="right"><a href="#">120.00 €</a></td>
+                <td class="right">12.00 €</td>
+            </tr>
+            <tr>
+                <td class="center">4º</td>
+                <td class="left"><a href="#">Alberto F.</a></td>
+                <td class="left">Sede</td>
+                <td class="right"><a href="#">120.00 €</a></td>
+                <td class="right">12.00 €</td>
+            </tr>
+            <tr>
+                <td class="center">4º</td>
+                <td class="left"><a href="#">Alberto F.</a></td>
+                <td class="left">Sede</td>
+                <td class="right"><a href="#">120.00 €</a></td>
+                <td class="right">12.00 €</td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table-full">
+        <tbody>
+            <tr>
+                <td>
+                    <div class="links">
+                        <a href="#">previous</a> // <a href="#">next</a>
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
 {% endblock %}

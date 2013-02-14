@@ -22,7 +22,7 @@
             </tr>
         </tbody>
     </table>
-    <table border="0" class="table-list" cellpadding="0" cellspacing="0">
+    <table class="table-list">
         <thead>
             <tr>
                 <th class="left label" width="20%">Day</th>

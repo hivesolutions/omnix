@@ -69,10 +69,13 @@ REDIRECT_URL = "http://localhost:8080/oauth"
 for the construction of the base url instances """
 
 SCOPE = (
+    "foundation.store.list",
+    "foundation.store.show",
     "foundation.supplier_company.list",
     "foundation.supplier_company.show",
     "customers.customer_person.list",
-    "customers.customer_person.show"
+    "customers.customer_person.show",
+    "analytics.sale_snapshot.list"
 )
 """ The list of permission to be used to create the
 scope string for the oauth value """
@@ -120,7 +123,7 @@ def oauth():
 
     error = flask.request.args.get("error", None)
     error_description = flask.request.args.get("error_description", None)
-    if error: raise RuntimeError("%s - %s" % (error, error_description)) 
+    if error: raise RuntimeError("%s - %s" % (error, error_description))
 
     url = BASE_URL + "omni/oauth/access_token"
     values = {
@@ -229,6 +232,103 @@ def show_suppliers(id):
         supplier = contents_s
     )
 
+@app.route("/stores", methods = ("GET",))
+def list_stores():
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    return flask.render_template(
+        "stores_list.html.tpl",
+        link = "stores"
+    )
+
+@app.route("/stores.json", methods = ("GET",))
+def list_stores_json():
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    filter_string = flask.request.args.get("filter_string", None)
+    start_record = flask.request.args.get("start_record", 0)
+    number_records = flask.request.args.get("number_records", 0)
+
+    values = {
+        "filter_string" : filter_string,
+        "start_record" : start_record,
+        "number_records" : number_records
+    }
+
+    url = BASE_URL + "omni/stores.json"
+    contents_s = _get_data(url, values)
+
+    return json.dumps(contents_s)
+
+@app.route("/stores/<id>", methods = ("GET",))
+def show_stores(id):
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    url = BASE_URL + "omni/stores/%s.json" % id
+    contents_s = _get_data(url)
+
+    return flask.render_template(
+        "stores_show.html.tpl",
+        link = "stores",
+        sub_link = "info",
+        store = contents_s
+    )
+
+@app.route("/stores/<id>/sales", methods = ("GET",))
+def sales_stores(id):
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    now = datetime.datetime.utcnow()
+    current_day = datetime.datetime(now.year, now.month, now.day)
+
+    id_s = str(id)
+
+    url = BASE_URL + "omni/stores/%s.json" % id
+    contents_s = _get_data(url)
+    store_s = contents_s
+
+    url = BASE_URL + "omni/sale_snapshots/stats.json"
+    values = {
+        "unit" : "day",
+        "store_id" : id_s
+    }
+    contents_s = _get_data(url, values = values)
+    stats_s = contents_s[id_s]
+    current_s = {
+        "amount_price_vat" : stats_s["amount_price_vat"][-1],
+        "number_sales" : stats_s["number_sales"][-1],
+        "date" : current_day
+    }
+
+    days_s = []
+
+    count = len(stats_s["amount_price_vat"]) - 1
+    count_r = range(count)
+    count_r.reverse()
+    _current_day = current_day
+    for index in count_r:
+        _current_day -= datetime.timedelta(1)
+        day =  {
+            "amount_price_vat" : stats_s["amount_price_vat"][index],
+            "number_sales" : stats_s["number_sales"][index],
+            "date" : _current_day
+        }
+        days_s.append(day)
+
+    return flask.render_template(
+        "stores_sales.html.tpl",
+        link = "stores",
+        sub_link = "sales",
+        store = store_s,
+        stats = stats_s,
+        current = current_s,
+        days = days_s
+    )
+
 @app.errorhandler(404)
 def handler_404(error):
     return str(error)
@@ -254,8 +354,12 @@ def _get_data(url, values = None, authenticate = True, token = False):
             data_s = json.loads(data)
             exception = data_s.get("exception", {})
             exception_name = exception.get("exception_name", None)
-            if not exception_name == "ControllerValidationReasonFailed": raise
-            _reset_session_id()
+            message = exception.get("message", None)
+            if exception_name == "ControllerValidationReasonFailed":
+                _reset_session_id()
+            elif exception_name:
+                raise RuntimeError("%s - %s" % (exception_name, message))
+            else: raise
 
         # decrements the number of retries and checks if the
         # number of retries has reached the limit
@@ -275,8 +379,12 @@ def _post_data(url, values = None, authenticate = True, token = False):
             data_s = json.loads(data)
             exception = data_s.get("exception", {})
             exception_name = exception.get("exception_name", None)
-            if not exception_name == "ControllerValidationReasonFailed": raise
-            _reset_session_id()
+            message = exception.get("message", None)
+            if exception_name == "ControllerValidationReasonFailed":
+                _reset_session_id()
+            elif exception_name:
+                raise RuntimeError("%s - %s" % (exception_name, message))
+            else: raise
 
         # decrements the number of retries and checks if the
         # number of retries has reached the limit
@@ -336,7 +444,10 @@ def _reset_session():
     flask.session.modified = True
 
 def _reset_session_id():
-    del flask.session["omnix.session_id"]
+    if "omnix.session_id" in flask.session:
+        del flask.session["omnix.session_id"]
+    if "omnix.access_token" in flask.session:
+        del flask.session["omnix.access_token"]
     flask.session.modified = True
     _ensure_session_id()
 

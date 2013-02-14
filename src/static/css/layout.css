@@ -49,15 +49,36 @@
     visibility: hidden;
 }
 
+.table-report {
+    font-size: 16px;
+}
+
+.table-report td {
+    font-size: 16px;
+}
+
+.table-report thead tr th {
+    border-bottom: 1px solid #e6e6e6;
+    padding: 8px 14px 8px 14px;
+}
+
+.table-report tbody tr td {
+    border-bottom: 1px solid #e6e6e6;
+    padding: 10px 14px 10px 14px;
+}
+
+.table-report tbody tr:hover {
+    background-color: #f6f6f6;
+}
+
 .table-list thead tr th {
-    border-bottom: 1px dashed #cccccc;
-    padding: 8px 20px;
+    border-bottom: 1px solid #e6e6e6;
+    padding: 10px 20px 10px 20px;
 }
 
 .table-list tbody tr td {
-    border-bottom: 1px dashed #cccccc;
-    padding-bottom: 16px;
-    padding-top: 16px;
+    border-bottom: 1px solid #e6e6e6;
+    padding: 16px 20px 16px 20px;
 }
 
 .table-list tfoot tr td {

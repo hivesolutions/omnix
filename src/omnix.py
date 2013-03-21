@@ -45,6 +45,10 @@ import datetime
 
 import quorum
 
+TIMEOUT = 10
+""" The timeout in seconds to be used for the blocking
+operations in the http connection """
+
 MONGO_DATABASE = "omnix"
 """ The default database to be used for the connection with
 the mongo database """
@@ -53,20 +57,28 @@ SECRET_KEY = "zhsga32ki5kvv7ymq8nolbleg248fzn1"
 """ The "secret" key to be at the internal encryption
 processes handled by flask (eg: sessions) """
 
-CLIENT_ID = "0e8be9a3f87a4c6485878559b9abe282"
+CLIENT_ID = "cabf02130bbe4886984ebfcfad9ec9e5"
 """ The id of the omni client to be used """
 
-CLIENT_SECRET = "e484777ec81448d581c9293a0343cf55"
+CLIENT_SECRET = "4c37a7dff4c3411ba1646093d2109d87"
 """ The secret key value to be used to access the
 omni api as the client """
 
-BASE_URL = "http://stage.hive:8080/dynamic/rest/mvc/"
+BASE_URL = "https://erp.startomni.com/"
 """ The base url to be used to compose the various
 complete url values for the various operations """
 
-REDIRECT_URL = "http://localhost:8080/oauth"
+REDIRECT_URL = "http://localhost:8181/oauth"
 """ The redirect base url to be used as the base value
 for the construction of the base url instances """
+
+AT_SUBMIT_TYPES = (
+    "MoneySaleSlip",
+    "Invoice",
+    "CreditNote",
+    "DebitNote"
+)
+""" The set of valid types for submission to at """
 
 SCOPE = (
     "foundation.store.list",
@@ -77,17 +89,20 @@ SCOPE = (
     "foundation.supplier_company.show",
     "customers.customer_person.list",
     "customers.customer_person.show",
+    "documents.signed_document.list",
+    "documents.signed_document.submit_at",
     "analytics.sale_snapshot.list"
 )
 """ The list of permission to be used to create the
 scope string for the oauth value """
 
 app = flask.Flask(__name__)
-app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(31)
 quorum.load(
     app,
+    secret_key = SECRET_KEY,
     mongo_database = MONGO_DATABASE,
-    name = "omnix.debug"
+    name = "omnix.debug",
+    PERMANENT_SESSION_LIFETIME = datetime.timedelta(31)
 )
 
 @app.route("/", methods = ("GET",))
@@ -113,6 +128,59 @@ def about():
 @app.route("/reset", methods = ("GET",))
 def reset():
     _reset_session()
+
+    return flask.render_template(
+        "index.html.tpl",
+        link = "home"
+    )
+
+@app.route("/flush_at", methods = ("GET",))
+def flush_at():
+    url = _ensure_token()
+    if url: return flask.redirect(url)
+
+    values = {
+        "filter_string" : "",
+        "start_record" : 0,
+        "number_records" : 6000,
+        "sort" : "issue_date:ascending",
+        "filters[]" : [
+            "issue_date:greater:1356998400",
+            "submitted_at:equals:2",
+            "document_type:equals:3"
+        ]
+    }
+    url = BASE_URL + "omni/signed_documents.json"
+    contents_s = _get_data(url, values)
+
+    valid_documents = [value for value in contents_s if value["_class"] in AT_SUBMIT_TYPES]
+
+    total = len(valid_documents)
+    index = 0
+    for document in valid_documents:
+        index += 1
+
+        type = document["_class"]
+        object_id = document["object_id"]
+        representation = document["representation"]
+        issue_date = document["issue_date"]
+        issue_date_d = datetime.datetime.utcfromtimestamp(issue_date)
+        issue_date_s = issue_date_d.strftime("%d %b %Y %H:%M:%S")
+
+        import time
+        t = time.time()
+
+        print "[%s] Submitting %s - %s (%s) [%d/%d]" % (str(t), type, representation, issue_date_s, index, total)
+        try:
+            values = {
+                "document_id" : object_id
+            }
+            url = BASE_URL + "omni/signed_documents/submit_at.json"
+            contents_s = _get_data(url, values)
+        except Exception, exception:
+            print "Exception while submitting document - %s" % unicode(exception)
+        else:
+            print "Document submitted with success"
 
     return flask.render_template(
         "index.html.tpl",
@@ -483,20 +551,20 @@ def __get_data(url, values = None, authenticate = True, token = False):
     values = values or {}
     if authenticate: values["session_id"] = flask.session["omnix.session_id"]
     if token: values["access_token"] = flask.session["omnix.access_token"]
-    data = urllib.urlencode(values)
+    data = urllib.urlencode(values, doseq = True)
     url = url + "?" + data
-    response = urllib2.urlopen(url)
+    response = urllib2.urlopen(url, timeout = TIMEOUT)
     contents = response.read()
-    contents_s = json.loads(contents)
+    contents_s = json.loads(contents) if contents else None
     return contents_s
 
 def __post_data(url, values = None, authenticate = True, token = False):
     values = values or {}
     if authenticate: values["session_id"] = flask.session["omnix.session_id"]
     if token: values["access_token"] = flask.session["omnix.access_token"]
-    data = urllib.urlencode(values)
+    data = urllib.urlencode(values, doseq = True)
     request = urllib2.Request(url, data)
-    response = urllib2.urlopen(request)
+    response = urllib2.urlopen(request, timeout = TIMEOUT)
     contents = response.read()
     contents_s = json.loads(contents)
     return contents_s
@@ -505,7 +573,7 @@ def _ensure_token():
     access_token = flask.session.get("omnix.access_token", None)
     if access_token: _ensure_session_id(); return None
 
-    url = BASE_URL + "omni_web_adm/oauth/authorize"
+    url = BASE_URL + "adm/oauth/authorize"
     values = {
         "client_id" : CLIENT_ID,
         "redirect_uri" : REDIRECT_URL,
@@ -539,23 +607,5 @@ def _reset_session_id():
     flask.session.modified = True
     _ensure_session_id()
 
-def run():
-    # sets the debug control in the application
-    # then checks the current environment variable
-    # for the target port for execution (external)
-    # and then start running it (continuous loop)
-    debug = quorum.conf("DEBUG", False) and True or False
-    reloader = quorum.conf("RELOADER", False) and True or False
-    port = int(quorum.conf("PORT", 5000))
-    app.debug = debug
-    app.secret_key = SECRET_KEY
-    app.run(
-        use_debugger = debug,
-        debug = debug,
-        use_reloader = reloader,
-        host = "0.0.0.0",
-        port = port
-    )
-
 if __name__ == "__main__":
-    run()
+    quorum.run()

@@ -608,4 +608,4 @@ def _reset_session_id():
     _ensure_session_id()
 
 if __name__ == "__main__":
-    quorum.run()
+    quorum.run(server = "waitress")

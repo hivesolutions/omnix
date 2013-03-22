@@ -38,7 +38,6 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import json
-import time
 import flask
 import urllib
 import urllib2
@@ -179,10 +178,8 @@ def flush_at():
 
         # retrieves the current time and uses it to print debug information
         # about the current document submission to at
-        current = time.time()
-        app.logger.info(
-            "[%s] Submitting %s - %s (%s) [%d/%d]" % (
-                str(current),
+        quorum.info(
+            "Submitting %s - %s (%s) [%d/%d]" % (
                 type,
                 representation,
                 issue_date_s,
@@ -199,9 +196,9 @@ def flush_at():
                 "document_id" : object_id
             })
         except BaseException, exception:
-            app.logger.error("Exception while submitting document - %s" % unicode(exception))
+            quorum.error("Exception while submitting document - %s" % unicode(exception))
         else:
-            app.logger.info("Document submitted with success")
+            quorum.info("Document submitted with success")
 
         # increments the index counter, because one more document
         # as been processed (submitted or failed)

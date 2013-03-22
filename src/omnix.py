@@ -186,7 +186,7 @@ def flush_at():
             # creates the complete url value for the submission
             # operation and run the submission for the current document
             url = BASE_URL + "omni/signed_documents/submit_at.json"
-            contents_s = get_json(url, document_id = object_id)
+            get_json(url, document_id = object_id)
         except BaseException, exception:
             quorum.error("Exception while submitting document - %s" % unicode(exception))
         else:
@@ -580,4 +580,8 @@ def _reset_session_id():
     _ensure_session_id()
 
 if __name__ == "__main__":
+    import util
+    util.run_slave(2)
+    util.run_supervisor()
+
     quorum.run(server = "waitress")

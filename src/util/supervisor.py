@@ -1,0 +1,129 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Hive Omnix System
+# Copyright (C) 2008-2012 Hive Solutions Lda.
+#
+# This file is part of Hive Omnix System.
+#
+# Hive Omnix System is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Hive Omnix System is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Hive Omnix System. If not, see <http://www.gnu.org/licenses/>.
+
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
+__version__ = "1.0.0"
+""" The version of the module """
+
+__revision__ = "$LastChangedRevision$"
+""" The revision number of the module """
+
+__date__ = "$LastChangedDate$"
+""" The last change date of the module """
+
+__copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
+""" The copyright for the module """
+
+__license__ = "GNU General Public License (GPL), Version 3"
+""" The license for the module """
+
+import time
+import json
+import threading
+
+import quorum
+
+import omnix
+
+LOOP_TIMEOUT = 120
+
+class Supervisor(threading.Thread):
+
+    session_id = None
+    connection = None
+    channel = None
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.daemon = True
+
+    def stop(self):
+        pass
+
+    def auth(self):
+        url = omnix.BASE_URL + "omni/login.json"
+        contents_s = omnix.post_json(
+            url,
+            authenticate = False,
+            username = "joamag",
+            password = "ek41Xuyw"
+        )
+        self.session_id = contents_s["session_id"]
+
+    def connect(self, queue = "default"):
+        self.connection = quorum.get_rabbit()
+        self.channel = self.connection.channel()
+        self.channel.queue_declare(queue = queue, durable = True)
+
+    def disconnect(self):
+        self.connection.close()
+
+    def execute(self):
+        # creates a values map structure to retrieve the complete
+        # set of inbound documents that have not yet been submitted
+        # to at for the flush operation
+        kwargs = {
+            "session_id" : self.session_id,
+            "filter_string" : "",
+            "start_record" : 0,
+            "number_records" : 1000,
+            "sort" : "issue_date:ascending",
+            "filters[]" : [
+                "issue_date:greater:1356998400",
+                "submitted_at:equals:2",
+                "document_type:equals:3"
+            ]
+        }
+        url = omnix.BASE_URL + "omni/signed_documents.json"
+        contents_s = quorum.get_json(url, **kwargs)
+        valid_documents = [value for value in contents_s\
+            if value["_class"] in omnix.AT_SUBMIT_TYPES]
+
+        for document in valid_documents:
+            self.channel.basic_publish(
+                exchange = "",
+                routing_key = "omnix",
+                body = json.dumps(document),
+                properties = quorum.properties_rabbit(
+                    delivery_mode = 2,
+                    timestamp = time.time()
+                )
+            )
+
+        quorum.info("Queued %d documents for submission" % len(valid_documents))
+
+    def loop(self):
+        while True:
+            self.execute()
+            time.sleep(LOOP_TIMEOUT)
+
+    def run(self):
+        self.auth()
+        self.connect(queue = "omnix")
+        try: self.loop()
+        finally: self.disconnect()
+
+def run(count = 1):
+    for _index in range(count):
+        supervisor = Supervisor()
+        supervisor.start()

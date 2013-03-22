@@ -282,7 +282,10 @@ def list_customers_json():
         number_records = number_records
     )
 
-    return json.dumps(contents_s)
+    return flask.Response(
+        json.dumps(contents_s),
+        mimetype = "application/json"
+    )
 
 @app.route("/customers/<id>", methods = ("GET",))
 def show_customers(id):
@@ -325,7 +328,10 @@ def list_suppliers_json():
         number_records = number_records
     )
 
-    return json.dumps(contents_s)
+    return flask.Response(
+        json.dumps(contents_s),
+        mimetype = "application/json"
+    )
 
 @app.route("/suppliers/<id>", methods = ("GET",))
 def show_suppliers(id):
@@ -368,7 +374,10 @@ def list_stores_json():
         number_records = number_records
     )
 
-    return json.dumps(contents_s)
+    return flask.Response(
+        json.dumps(contents_s),
+        mimetype = "application/json"
+    )
 
 @app.route("/stores/<id>", methods = ("GET",))
 def show_stores(id):
@@ -461,7 +470,10 @@ def list_employees_json():
     url = BASE_URL + "omni/employees.json"
     contents_s = get_json(url, values)
 
-    return json.dumps(contents_s)
+    return flask.Response(
+        json.dumps(contents_s),
+        mimetype = "application/json"
+    )
 
 @app.route("/employees/<id>", methods = ("GET",))
 def show_employees(id):

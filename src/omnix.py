@@ -38,6 +38,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import json
+import time
 import flask
 import urllib
 import urllib2
@@ -139,10 +140,13 @@ def flush_at():
     url = _ensure_token()
     if url: return flask.redirect(url)
 
+    # creates a values map structure to retrieve the complete
+    # set of inbound documents that have not yet been submitted
+    # to at for the flush operation
     values = {
         "filter_string" : "",
         "start_record" : 0,
-        "number_records" : 6000,
+        "number_records" : 1000,
         "sort" : "issue_date:ascending",
         "filters[]" : [
             "issue_date:greater:1356998400",
@@ -153,13 +157,19 @@ def flush_at():
     url = BASE_URL + "omni/signed_documents.json"
     contents_s = _get_data(url, values)
 
-    valid_documents = [value for value in contents_s if value["_class"] in AT_SUBMIT_TYPES]
+    # filters the result set retrieved so that only the valid at
+    # "submittable" documents are present in the sequence
+    valid_documents = [value for value in contents_s\
+        if value["_class"] in AT_SUBMIT_TYPES]
 
+    # "calculates" the total set of valid documents present in the
+    # valid documents and starts the index counter
     total = len(valid_documents)
-    index = 0
-    for document in valid_documents:
-        index += 1
+    index = 1
 
+    # iterates over the complete set of valid documents to be sent
+    # (submitted) to at and processes the submission
+    for document in valid_documents:
         type = document["_class"]
         object_id = document["object_id"]
         representation = document["representation"]
@@ -167,20 +177,35 @@ def flush_at():
         issue_date_d = datetime.datetime.utcfromtimestamp(issue_date)
         issue_date_s = issue_date_d.strftime("%d %b %Y %H:%M:%S")
 
-        import time
-        t = time.time()
+        # retrieves the current time and uses it to print debug information
+        # about the current document submission to at
+        current = time.time()
+        app.logger.info(
+            "[%s] Submitting %s - %s (%s) [%d/%d]" % (
+                str(current),
+                type,
+                representation,
+                issue_date_s,
+                index,
+                total
+            )
+        )
 
-        print "[%s] Submitting %s - %s (%s) [%d/%d]" % (str(t), type, representation, issue_date_s, index, total)
         try:
-            values = {
-                "document_id" : object_id
-            }
+            # creates the complete url value for the submission
+            # operation and run the submission for the current document
             url = BASE_URL + "omni/signed_documents/submit_at.json"
-            contents_s = _get_data(url, values)
-        except Exception, exception:
-            print "Exception while submitting document - %s" % unicode(exception)
+            contents_s = _get_data(url, {
+                "document_id" : object_id
+            })
+        except BaseException, exception:
+            app.logger.error("Exception while submitting document - %s" % unicode(exception))
         else:
-            print "Document submitted with success"
+            app.logger.info("Document submitted with success")
+
+        # increments the index counter, because one more document
+        # as been processed (submitted or failed)
+        index += 1
 
     return flask.render_template(
         "index.html.tpl",
@@ -608,4 +633,4 @@ def _reset_session_id():
     _ensure_session_id()
 
 if __name__ == "__main__":
-    quorum.run()
+    quorum.run(server = "waitress")

@@ -114,7 +114,9 @@ class Supervisor(threading.Thread):
 
     def loop(self):
         while True:
-            self.execute()
+            try: self.execute()
+            except BaseException, exception:
+                quorum.error("Exception while executing - %s" % unicode(exception))
             time.sleep(LOOP_TIMEOUT)
 
     def run(self):

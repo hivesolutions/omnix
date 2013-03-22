@@ -91,12 +91,11 @@ SCOPE = (
 """ The list of permission to be used to create the
 scope string for the oauth value """
 
-app = flask.Flask(__name__)
-quorum.load(
-    app,
+app = quorum.load(
+    name = __name__,
     secret_key = SECRET_KEY,
     mongo_database = MONGO_DATABASE,
-    name = "omnix.debug",
+    logger = "omnix.debug",
     PERMANENT_SESSION_LIFETIME = datetime.timedelta(31)
 )
 

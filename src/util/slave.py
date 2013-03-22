@@ -47,6 +47,9 @@ import quorum
 import omnix
 
 MESSAGE_TIMEOUT = 10
+""" The amount of seconds before a message is
+considered out dated and is discarded from the
+queue even without processing """
 
 class Slave(threading.Thread):
 

@@ -40,14 +40,9 @@ __license__ = "GNU General Public License (GPL), Version 3"
 import json
 import flask
 import urllib
-import urllib2
 import datetime
 
 import quorum
-
-TIMEOUT = 10
-""" The timeout in seconds to be used for the blocking
-operations in the http connection """
 
 MONGO_DATABASE = "omnix"
 """ The default database to be used for the connection with
@@ -142,7 +137,7 @@ def flush_at():
     # creates a values map structure to retrieve the complete
     # set of inbound documents that have not yet been submitted
     # to at for the flush operation
-    values = {
+    kwargs = {
         "filter_string" : "",
         "start_record" : 0,
         "number_records" : 1000,
@@ -154,7 +149,7 @@ def flush_at():
         ]
     }
     url = BASE_URL + "omni/signed_documents.json"
-    contents_s = _get_data(url, values)
+    contents_s = get_json(url, **kwargs)
 
     # filters the result set retrieved so that only the valid at
     # "submittable" documents are present in the sequence
@@ -192,9 +187,7 @@ def flush_at():
             # creates the complete url value for the submission
             # operation and run the submission for the current document
             url = BASE_URL + "omni/signed_documents/submit_at.json"
-            contents_s = _get_data(url, {
-                "document_id" : object_id
-            })
+            contents_s = get_json(url, document_id = object_id)
         except BaseException, exception:
             quorum.error("Exception while submitting document - %s" % unicode(exception))
         else:
@@ -218,15 +211,16 @@ def oauth():
     if error: raise RuntimeError("%s - %s" % (error, error_description))
 
     url = BASE_URL + "omni/oauth/access_token"
-    values = {
-        "client_id" : CLIENT_ID,
-        "client_secret" : CLIENT_SECRET,
-        "grant_type" : "authorization_code",
-        "redirect_uri" : REDIRECT_URL,
-        "code" : code
-    }
-
-    contents_s = _post_data(url, values, authenticate = False, token = False)
+    contents_s = post_json(
+        url,
+        authenticate = False,
+        token = False,
+        client_id = CLIENT_ID,
+        client_secret = CLIENT_SECRET,
+        grant_type = "authorization_code",
+        redirect_uri = REDIRECT_URL,
+        code = code
+    )
     access_token = contents_s["access_token"]
     flask.session["omnix.access_token"] = access_token
 
@@ -281,14 +275,13 @@ def list_customers_json():
     start_record = flask.request.args.get("start_record", 0)
     number_records = flask.request.args.get("number_records", 0)
 
-    values = {
-        "filter_string" : filter_string,
-        "start_record" : start_record,
-        "number_records" : number_records
-    }
-
     url = BASE_URL + "omni/customer_persons.json"
-    contents_s = _get_data(url, values)
+    contents_s = get_json(
+        url,
+        filter_string = filter_string,
+        start_record = start_record,
+        number_records = number_records
+    )
 
     return json.dumps(contents_s)
 
@@ -298,7 +291,7 @@ def show_customers(id):
     if url: return flask.redirect(url)
 
     url = BASE_URL + "omni/customer_persons/%s.json" % id
-    contents_s = _get_data(url)
+    contents_s = get_json(url)
 
     return flask.render_template(
         "customers_show.html.tpl",
@@ -325,14 +318,13 @@ def list_suppliers_json():
     start_record = flask.request.args.get("start_record", 0)
     number_records = flask.request.args.get("number_records", 0)
 
-    values = {
-        "filter_string" : filter_string,
-        "start_record" : start_record,
-        "number_records" : number_records
-    }
-
     url = BASE_URL + "omni/supplier_companies.json"
-    contents_s = _get_data(url, values)
+    contents_s = get_json(
+        url,
+        filter_string = filter_string,
+        start_record = start_record,
+        number_records = number_records
+    )
 
     return json.dumps(contents_s)
 
@@ -342,7 +334,7 @@ def show_suppliers(id):
     if url: return flask.redirect(url)
 
     url = BASE_URL + "omni/supplier_companies/%s.json" % id
-    contents_s = _get_data(url)
+    contents_s = get_json(url)
 
     return flask.render_template(
         "suppliers_show.html.tpl",
@@ -369,14 +361,13 @@ def list_stores_json():
     start_record = flask.request.args.get("start_record", 0)
     number_records = flask.request.args.get("number_records", 0)
 
-    values = {
-        "filter_string" : filter_string,
-        "start_record" : start_record,
-        "number_records" : number_records
-    }
-
     url = BASE_URL + "omni/stores.json"
-    contents_s = _get_data(url, values)
+    contents_s = get_json(
+        url,
+        filter_string = filter_string,
+        start_record = start_record,
+        number_records = number_records
+    )
 
     return json.dumps(contents_s)
 
@@ -386,7 +377,7 @@ def show_stores(id):
     if url: return flask.redirect(url)
 
     url = BASE_URL + "omni/stores/%s.json" % id
-    contents_s = _get_data(url)
+    contents_s = get_json(url)
 
     return flask.render_template(
         "stores_show.html.tpl",
@@ -406,15 +397,11 @@ def sales_stores(id):
     id_s = str(id)
 
     url = BASE_URL + "omni/stores/%s.json" % id
-    contents_s = _get_data(url)
+    contents_s = get_json(url)
     store_s = contents_s
 
     url = BASE_URL + "omni/sale_snapshots/stats.json"
-    values = {
-        "unit" : "day",
-        "store_id" : id_s
-    }
-    contents_s = _get_data(url, values = values)
+    contents_s = get_json(url, unit = "day", store_id = id_s)
     stats_s = contents_s[id_s]
     current_s = {
         "amount_price_vat" : stats_s["amount_price_vat"][-1],
@@ -473,7 +460,7 @@ def list_employees_json():
     }
 
     url = BASE_URL + "omni/employees.json"
-    contents_s = _get_data(url, values)
+    contents_s = get_json(url, values)
 
     return json.dumps(contents_s)
 
@@ -483,7 +470,7 @@ def show_employees(id):
     if url: return flask.redirect(url)
 
     url = BASE_URL + "omni/employees/%s.json" % id
-    contents_s = _get_data(url)
+    contents_s = get_json(url)
 
     return flask.render_template(
         "employees_show.html.tpl",
@@ -498,7 +485,7 @@ def sales_employees(id):
     if url: return flask.redirect(url)
 
     url = BASE_URL + "omni/employees/%s.json" % id
-    contents_s = _get_data(url)
+    contents_s = get_json(url)
 
     return flask.render_template(
         "employees_sales.html.tpl",
@@ -519,77 +506,29 @@ def handler_413(error):
 def handler_exception(error):
     return str(error)
 
-def _get_data(url, values = None, authenticate = True, token = False):
-    # starts the variable holding the number of
-    # retrieves to be used
-    retries = 5
+def get_json(url, authenticate = True, token = False, **kwargs):
+    if authenticate: kwargs["session_id"] = flask.session["omnix.session_id"]
+    if token: kwargs["access_token"] = flask.session["omnix.access_token"]
+    try: data = quorum.get_json(url, **kwargs)
+    except quorum.JsonError, error: handle_error(error)
+    return data
 
-    while True:
-        try:
-            return __get_data(url, values, authenticate, token)
-        except urllib2.HTTPError, error:
-            data = error.read()
-            data_s = json.loads(data)
-            exception = data_s.get("exception", {})
-            exception_name = exception.get("exception_name", None)
-            message = exception.get("message", None)
-            if exception_name == "ControllerValidationReasonFailed":
-                _reset_session_id()
-            elif exception_name:
-                raise RuntimeError("%s - %s" % (exception_name, message))
-            else: raise
+def post_json(url, authenticate = True, token = False, **kwargs):
+    if authenticate: kwargs["session_id"] = flask.session["omnix.session_id"]
+    if token: kwargs["access_token"] = flask.session["omnix.access_token"]
+    try: data = quorum.post_json(url, **kwargs)
+    except quorum.JsonError, error: handle_error(error)
+    return data
 
-        # decrements the number of retries and checks if the
-        # number of retries has reached the limit
-        retries -= 1
-        if retries == 0: raise RuntimeError("data retrieval not possible")
-
-def _post_data(url, values = None, authenticate = True, token = False):
-    # starts the variable holding the number of
-    # retrieves to be used
-    retries = 5
-
-    while True:
-        try:
-            return __post_data(url, values, authenticate, token)
-        except urllib2.HTTPError, error:
-            data = error.read()
-            data_s = json.loads(data)
-            exception = data_s.get("exception", {})
-            exception_name = exception.get("exception_name", None)
-            message = exception.get("message", None)
-            if exception_name == "ControllerValidationReasonFailed":
-                _reset_session_id()
-            elif exception_name:
-                raise RuntimeError("%s - %s" % (exception_name, message))
-            else: raise
-
-        # decrements the number of retries and checks if the
-        # number of retries has reached the limit
-        retries -= 1
-        if retries == 0: raise RuntimeError("data retrieval not possible")
-
-def __get_data(url, values = None, authenticate = True, token = False):
-    values = values or {}
-    if authenticate: values["session_id"] = flask.session["omnix.session_id"]
-    if token: values["access_token"] = flask.session["omnix.access_token"]
-    data = urllib.urlencode(values, doseq = True)
-    url = url + "?" + data
-    response = urllib2.urlopen(url, timeout = TIMEOUT)
-    contents = response.read()
-    contents_s = json.loads(contents) if contents else None
-    return contents_s
-
-def __post_data(url, values = None, authenticate = True, token = False):
-    values = values or {}
-    if authenticate: values["session_id"] = flask.session["omnix.session_id"]
-    if token: values["access_token"] = flask.session["omnix.access_token"]
-    data = urllib.urlencode(values, doseq = True)
-    request = urllib2.Request(url, data)
-    response = urllib2.urlopen(request, timeout = TIMEOUT)
-    contents = response.read()
-    contents_s = json.loads(contents)
-    return contents_s
+def handle_error(error):
+    data = error.get_data()
+    exception = data.get("exception", {})
+    exception_name = exception.get("exception_name", None)
+    message = exception.get("message", None)
+    if exception_name == "ControllerValidationReasonFailed":
+        _reset_session_id()
+    elif exception_name:
+        raise RuntimeError("%s - %s" % (exception_name, message))
 
 def _ensure_token():
     access_token = flask.session.get("omnix.access_token", None)
@@ -612,7 +551,7 @@ def _ensure_session_id():
     if session_id: return None
 
     url = BASE_URL + "omni/oauth/start_session"
-    contents_s = _get_data(url, authenticate = False, token = True)
+    contents_s = get_json(url, authenticate = False, token = True)
     session_id = contents_s.get("_session_id", None)
     flask.session["omnix.session_id"] = session_id
 

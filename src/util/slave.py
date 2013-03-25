@@ -46,7 +46,7 @@ import quorum
 
 import omnix
 
-MESSAGE_TIMEOUT = 120
+MESSAGE_TIMEOUT = 240
 """ The amount of seconds before a message is
 considered out dated and is discarded from the
 queue even without processing """

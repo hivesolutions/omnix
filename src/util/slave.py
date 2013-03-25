@@ -127,7 +127,7 @@ class Slave(threading.Thread):
                 document_id = object_id
             )
         except BaseException, exception:
-            channel.basic_ack(delivery_tag = method.delivery_tag)
+            channel.basic_nack(delivery_tag = method.delivery_tag)
             quorum.error("Exception while submitting document - %s" % unicode(exception))
         else:
             channel.basic_ack(delivery_tag = method.delivery_tag)

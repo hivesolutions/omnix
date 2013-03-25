@@ -86,7 +86,7 @@ class Supervisor(threading.Thread):
             "session_id" : self.session_id,
             "filter_string" : "",
             "start_record" : 0,
-            "number_records" : 1000,
+            "number_records" : 100,
             "sort" : "issue_date:ascending",
             "filters[]" : [
                 "issue_date:greater:1356998400",

@@ -46,7 +46,7 @@ import quorum
 
 import omnix
 
-MESSAGE_TIMEOUT = 240
+MESSAGE_TIMEOUT = 120
 """ The amount of seconds before a message is
 considered out dated and is discarded from the
 queue even without processing """
@@ -132,11 +132,23 @@ class Slave(threading.Thread):
                 document_id = object_id
             )
         except BaseException, exception:
-            channel.basic_nack(delivery_tag = method.delivery_tag)
             quorum.error("Exception while submitting document - %s" % unicode(exception))
+            retries = properties.priority or 0
+            retries -= 1
+            properties.priority = retries
+            if retries >= 0:
+                self.channel.basic_publish(
+                    exchange = "",
+                    routing_key = "omnix",
+                    body = body,
+                    properties = properties
+                )
+                quorum.error("Re-queueing for latter consumption (%d retries pending)" % retries)
+            else: quorum.error("No more retries left, the document will be discarded")
         else:
-            channel.basic_ack(delivery_tag = method.delivery_tag)
             quorum.info("Document submitted with success")
+
+        channel.basic_ack(delivery_tag = method.delivery_tag)
 
     def run(self):
         self.auth()

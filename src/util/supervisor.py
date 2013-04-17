@@ -46,6 +46,17 @@ import quorum
 import omnix
 
 LOOP_TIMEOUT = 120
+""" The time to be used in between queueing new
+messages from the omni service """
+
+MESSAGE_TIMEOUT = 120
+""" The amount of seconds before a message is
+considered out dated and is discarded from the
+queue even without processing """
+
+MESSAGE_RETRIES = 3
+""" The number of retries to be used for the message
+before it's considered discarded """
 
 class Supervisor(threading.Thread):
 
@@ -61,12 +72,17 @@ class Supervisor(threading.Thread):
         pass
 
     def auth(self):
+        username = quorum.conf("OMNIX_USERNAME")
+        password = quorum.conf("OMNIX_PASSWORD")
+        if username == None or password == None:
+            raise RuntimeError("Missing authentication information")
+
         url = omnix.BASE_URL + "omni/login.json"
         contents_s = omnix.post_json(
             url,
             authenticate = False,
-            username = "joamag",
-            password = "ek41Xuyw"
+            username = username,
+            password = password
         )
         self.session_id = contents_s["session_id"]
 
@@ -106,6 +122,8 @@ class Supervisor(threading.Thread):
                 body = json.dumps(document),
                 properties = quorum.properties_rabbit(
                     delivery_mode = 2,
+                    priority = MESSAGE_RETRIES,
+                    expiration = str(MESSAGE_TIMEOUT * 1000),
                     timestamp = time.time()
                 )
             )

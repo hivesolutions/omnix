@@ -65,12 +65,17 @@ class Slave(threading.Thread):
         pass
 
     def auth(self):
+        username = quorum.conf("OMNIX_USERNAME")
+        password = quorum.conf("OMNIX_PASSWORD")
+        if username == None or password == None:
+            raise RuntimeError("Missing authentication information")
+
         url = omnix.BASE_URL + "omni/login.json"
         contents_s = omnix.post_json(
             url,
             authenticate = False,
-            username = quorum.conf("OMNIX_USERNAME"),
-            password = quorum.conf("OMNIX_PASSWORD")
+            username = username,
+            password = password
         )
         self.session_id = contents_s["session_id"]
 

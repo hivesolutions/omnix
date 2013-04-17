@@ -69,8 +69,8 @@ class Slave(threading.Thread):
         contents_s = omnix.post_json(
             url,
             authenticate = False,
-            username = "joamag",
-            password = "ek41Xuyw"
+            username = quorum.conf("OMNIX_USERNAME"),
+            password = quorum.conf("OMNIX_PASSWORD")
         )
         self.session_id = contents_s["session_id"]
 

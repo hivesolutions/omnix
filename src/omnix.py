@@ -581,7 +581,7 @@ def _reset_session_id():
 
 if __name__ == "__main__":
     import util
-    util.run_slave(2)
+    util.run_slave(1)
     util.run_supervisor()
 
     quorum.run(server = "waitress")

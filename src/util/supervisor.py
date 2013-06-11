@@ -43,7 +43,8 @@ import threading
 
 import quorum
 
-import omnix
+import config
+import logic
 
 LOOP_TIMEOUT = 120
 """ The time to be used in between queueing new
@@ -77,8 +78,8 @@ class Supervisor(threading.Thread):
         if username == None or password == None:
             raise RuntimeError("Missing authentication information")
 
-        url = omnix.BASE_URL + "omni/login.json"
-        contents_s = omnix.post_json(
+        url = config.BASE_URL + "omni/login.json"
+        contents_s = logic.post_json(
             url,
             authenticate = False,
             username = username,
@@ -110,10 +111,10 @@ class Supervisor(threading.Thread):
                 "document_type:equals:3"
             ]
         }
-        url = omnix.BASE_URL + "omni/signed_documents.json"
+        url = config.BASE_URL + "omni/signed_documents.json"
         contents_s = quorum.get_json(url, **kwargs)
         valid_documents = [value for value in contents_s\
-            if value["_class"] in omnix.AT_SUBMIT_TYPES]
+            if value["_class"] in config.AT_SUBMIT_TYPES]
 
         for document in valid_documents:
             self.channel.basic_publish(

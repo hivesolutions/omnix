@@ -37,32 +37,41 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-import flask #@UnusedImport
-import datetime
+BASE_URL = "https://erp.startomni.com/"
+""" The base url to be used to compose the various
+complete url values for the various operations """
 
-import quorum
+REDIRECT_URL = "http://localhost:8181/oauth"
+""" The redirect base url to be used as the base value
+for the construction of the base url instances """
 
-MONGO_DATABASE = "omnix"
-""" The default database to be used for the connection with
-the mongo database """
+CLIENT_ID = "cabf02130bbe4886984ebfcfad9ec9e5"
+""" The id of the omni client to be used """
 
-SECRET_KEY = "zhsga32ki5kvv7ymq8nolbleg248fzn1"
-""" The "secret" key to be at the internal encryption
-processes handled by flask (eg: sessions) """
+CLIENT_SECRET = "4c37a7dff4c3411ba1646093d2109d87"
+""" The secret key value to be used to access the
+omni api as the client """
 
-app = quorum.load(
-    name = __name__,
-    secret_key = SECRET_KEY,
-    mongo_database = MONGO_DATABASE,
-    logger = "omnix.debug",
-    PERMANENT_SESSION_LIFETIME = datetime.timedelta(31)
+SCOPE = (
+    "foundation.store.list",
+    "foundation.store.show",
+    "foundation.employee.list",
+    "foundation.employee.show",
+    "foundation.supplier_company.list",
+    "foundation.supplier_company.show",
+    "customers.customer_person.list",
+    "customers.customer_person.show",
+    "documents.signed_document.list",
+    "documents.signed_document.submit_at",
+    "analytics.sale_snapshot.list"
 )
+""" The list of permission to be used to create the
+scope string for the oauth value """
 
-from views import * #@UnusedWildImport
-
-if __name__ == "__main__":
-    import util
-    util.run_slave(1)
-    util.run_supervisor()
-
-    quorum.run(server = "waitress")
+AT_SUBMIT_TYPES = (
+    "MoneySaleSlip",
+    "Invoice",
+    "CreditNote",
+    "DebitNote"
+)
+""" The set of valid types for submission to at """

@@ -37,32 +37,50 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-import flask #@UnusedImport
-import datetime
+import util
 
-import quorum
+from omnix import app
+from omnix import flask
 
-MONGO_DATABASE = "omnix"
-""" The default database to be used for the connection with
-the mongo database """
+@app.route("/customers", methods = ("GET",))
+def list_customers():
+    url = util.ensure_token()
+    if url: return flask.redirect(url)
 
-SECRET_KEY = "zhsga32ki5kvv7ymq8nolbleg248fzn1"
-""" The "secret" key to be at the internal encryption
-processes handled by flask (eg: sessions) """
+    return flask.render_template(
+        "customers_list.html.tpl",
+        link = "customers"
+    )
 
-app = quorum.load(
-    name = __name__,
-    secret_key = SECRET_KEY,
-    mongo_database = MONGO_DATABASE,
-    logger = "omnix.debug",
-    PERMANENT_SESSION_LIFETIME = datetime.timedelta(31)
-)
+@app.route("/customers.json", methods = ("GET",), json = True)
+def list_customers_json():
+    url = util.ensure_token()
+    if url: return flask.redirect(url)
 
-from views import * #@UnusedWildImport
+    filter_string = flask.request.args.get("filter_string", None)
+    start_record = flask.request.args.get("start_record", 0)
+    number_records = flask.request.args.get("number_records", 0)
 
-if __name__ == "__main__":
-    import util
-    util.run_slave(1)
-    util.run_supervisor()
+    url = util.BASE_URL + "omni/customer_persons.json"
+    contents_s = util.get_json(
+        url,
+        filter_string = filter_string,
+        start_record = start_record,
+        number_records = number_records
+    )
 
-    quorum.run(server = "waitress")
+    return contents_s
+
+@app.route("/customers/<id>", methods = ("GET",))
+def show_customers(id):
+    url = util.ensure_token()
+    if url: return flask.redirect(url)
+
+    url = util.BASE_URL + "omni/customer_persons/%s.json" % id
+    contents_s = util.get_json(url)
+
+    return flask.render_template(
+        "customers_show.html.tpl",
+        link = "customers",
+        customer = contents_s
+    )

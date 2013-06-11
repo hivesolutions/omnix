@@ -44,7 +44,8 @@ import threading
 
 import quorum
 
-import omnix
+import config
+import logic
 
 MESSAGE_TIMEOUT = 120
 """ The amount of seconds before a message is
@@ -70,8 +71,8 @@ class Slave(threading.Thread):
         if username == None or password == None:
             raise RuntimeError("Missing authentication information")
 
-        url = omnix.BASE_URL + "omni/login.json"
-        contents_s = omnix.post_json(
+        url = config.BASE_URL + "omni/login.json"
+        contents_s = logic.post_json(
             url,
             authenticate = False,
             username = username,
@@ -125,7 +126,7 @@ class Slave(threading.Thread):
         try:
             # creates the complete url value for the submission
             # operation and run the submission for the current document
-            url = omnix.BASE_URL + "omni/signed_documents/submit_at.json"
+            url = config.BASE_URL + "omni/signed_documents/submit_at.json"
             quorum.get_json(
                 url,
                 session_id = self.session_id,

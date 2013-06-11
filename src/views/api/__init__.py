@@ -19,9 +19,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Hive Omnix System. If not, see <http://www.gnu.org/licenses/>.
 
-__author__ = "João Magalhães <joamag@hive.pt>"
-""" The author(s) of the module """
-
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -36,33 +33,3 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
-
-import flask #@UnusedImport
-import datetime
-
-import quorum
-
-MONGO_DATABASE = "omnix"
-""" The default database to be used for the connection with
-the mongo database """
-
-SECRET_KEY = "zhsga32ki5kvv7ymq8nolbleg248fzn1"
-""" The "secret" key to be at the internal encryption
-processes handled by flask (eg: sessions) """
-
-app = quorum.load(
-    name = __name__,
-    secret_key = SECRET_KEY,
-    mongo_database = MONGO_DATABASE,
-    logger = "omnix.debug",
-    PERMANENT_SESSION_LIFETIME = datetime.timedelta(31)
-)
-
-from views import * #@UnusedWildImport
-
-if __name__ == "__main__":
-    import util
-    util.run_slave(1)
-    util.run_supervisor()
-
-    quorum.run(server = "waitress")

@@ -61,7 +61,6 @@ app = quorum.load(
 from views import * #@UnusedWildImport
 
 if __name__ == "__main__":
-    import util
     util.run_slave(1)
     util.run_supervisor()
 

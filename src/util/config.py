@@ -37,9 +37,27 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-BASE_URL = "https://erp.startomni.com/"
+DEBUG = True
+""" The flag that controls if the current execution is meant
+to be used for debugging purposes (locally) """
+
+LOCAL_PREFIX = "omni_web_adm/"
+""" The web prefix to be used when trying to access administration
+related resources from a local perspective """
+
+REMOTE_PREFIX = "adm/"
+""" The web prefix to be used when trying to access administration
+related resources from a remote perspective """
+
+LOCAL_URL = "http://localhost:8080/dynamic/rest/mvc/"
 """ The base url to be used to compose the various
-complete url values for the various operations """
+complete url values for the various operations, this is
+the local version of it used mostly for debugging """
+
+REMOTE_URL = "https://erp.startomni.com/"
+""" The base url to be used to compose the various
+complete url values for the various operations, this is
+the remove version used in production environments """
 
 REDIRECT_URL = "http://localhost:8181/oauth"
 """ The redirect base url to be used as the base value
@@ -75,3 +93,6 @@ AT_SUBMIT_TYPES = (
     "DebitNote"
 )
 """ The set of valid types for submission to at """
+
+BASE_URL = LOCAL_URL if DEBUG else REMOTE_URL
+PREFIX = LOCAL_PREFIX if DEBUG else REMOTE_PREFIX

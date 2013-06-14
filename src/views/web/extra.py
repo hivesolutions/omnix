@@ -61,51 +61,6 @@ def prices_extras():
         link = "extras"
     )
 
-def xls_to_map(file_path, keys = (), ignore_header = True):
-    import xlrd
-
-    # creates the list structure that is going to store the
-    # complete set of parsed items according to the provided
-    # keys list specification
-    items = []
-
-    # opens the workbook in the provided file path for reading
-    # of its contents and construction of the final structure
-    workbook = xlrd.open_workbook(file_path)
-
-    # retrieves the list of sheets in the document and retrieves
-    # the first of its sheets, this the one that is going to be
-    # used in the processing of the contents (considered primary)
-    sheets = workbook.sheets()
-    sheet = sheets[0]
-
-    # iterates over the complete set of valid rows in the sheet
-    # to process its contents, the valid rows are the ones that
-    # contain any sort of data
-    for row in range(sheet.nrows):
-        # in case the ignore header flag is set and the current
-        # row index is zero must continue the loop ignoring it
-        if row == 0 and ignore_header: continue
-
-        # creates the map that is going to be used in the construction
-        # of the item elements and then iterates over all the expected
-        # key values to populate it
-        item = {}
-        cell = 0
-        for key in keys:
-            cell_s = sheet.cell(row, cell)
-            value = cell_s.value
-            item[key] = value
-            cell += 1
-
-        # adds the item map that has been constructed to the list of
-        # parsed items for the current spreadsheet
-        items.append(item)
-
-    # returns the final list of map items resulting from the parsing
-    # of the spreadsheet file containing key to value assignments
-    return items
-
 @app.route("/extras/prices", methods = ("POST",))
 def do_prices_extras():
     url = util.ensure_token()
@@ -124,11 +79,18 @@ def do_prices_extras():
     fd, file_path = tempfile.mkstemp()
     prices_file.save(file_path)
 
-    # parses the temporary file containing the spreadsheet according
-    # to the provided set of keys and then closes the temporary file
-    # descriptor and remove the temporary file (avoids leaks)
-    try: items = xls_to_map(file_path, keys = ("company_product_code", "retail_price"))
-    finally: os.close(fd); os.remove(file_path)
+    try:
+        # parses the temporary file containing the spreadsheet according
+        # to the provided set of keys (to create the correct structures)
+        items = quorum.xlsx_to_map(
+            file_path,
+            keys = ("company_product_code", "retail_price")
+        )
+    finally:
+        # closes the temporary file descriptor and removes the temporary
+        # file (avoiding any memory leaks)
+        os.close(fd);
+        os.remove(file_path)
 
     # uses the "resolved" items structure in the put operation to
     # the omni api so that the prices for them get updated

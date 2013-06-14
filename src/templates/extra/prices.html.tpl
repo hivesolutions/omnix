@@ -14,7 +14,7 @@
     </div>
     <form enctype="multipart/form-data" action="{{ url_for('do_prices_extras') }}" method="post" class="form small">
         <div class="input">
-             <a data-name="import_file" class="uploader">Select & Upload the price list file</a>
+             <a data-name="prices_file" class="uploader">Select & Upload the price list file</a>
         </div>
         <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>
         //

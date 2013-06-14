@@ -40,6 +40,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 import flask #@UnusedImport
 import datetime
 
+import models
 import quorum
 
 MONGO_DATABASE = "omnix"
@@ -61,6 +62,7 @@ app = quorum.load(
     secret_key = SECRET_KEY,
     mongo_database = MONGO_DATABASE,
     logger = "omnix.debug",
+    models = models,
     PERMANENT_SESSION_LIFETIME = datetime.timedelta(31)
 )
 

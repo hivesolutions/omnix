@@ -59,6 +59,13 @@
                             {% endif %}
                         </li>
                         <li>
+                            {% if link == "extras" %}
+                                <a href="{{ url_for('list_reports') }}" class="active">extras</a>
+                            {% else %}
+                                <a href="{{ url_for('list_reports') }}">extras</a>
+                            {% endif %}
+                        </li>
+                        <li>
                             {% if link == "top" %}
                                 <a href="{{ url_for('top') }}" class="active">top sellers</a>
                             {% else %}

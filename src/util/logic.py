@@ -58,6 +58,13 @@ def post_json(url, authenticate = True, token = False, **kwargs):
     except quorum.JsonError, error: handle_error(error)
     return data
 
+def put_json(url, authenticate = True, token = False, **kwargs):
+    if authenticate: kwargs["session_id"] = flask.session["omnix.session_id"]
+    if token: kwargs["access_token"] = flask.session["omnix.access_token"]
+    try: data = quorum.put_json(url, **kwargs)
+    except quorum.JsonError, error: handle_error(error)
+    return data
+
 def handle_error(error):
     data = error.get_data()
     exception = data.get("exception", {})
@@ -72,7 +79,7 @@ def ensure_token():
     access_token = flask.session.get("omnix.access_token", None)
     if access_token: ensure_session_id(); return None
 
-    url = config.BASE_URL + "adm/oauth/authorize"
+    url = config.BASE_URL + config.PREFIX + "oauth/authorize"
     values = {
         "client_id" : config.CLIENT_ID,
         "redirect_uri" : config.REDIRECT_URL,

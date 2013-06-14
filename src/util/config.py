@@ -81,7 +81,8 @@ SCOPE = (
     "customers.customer_person.show",
     "documents.signed_document.list",
     "documents.signed_document.submit_at",
-    "analytics.sale_snapshot.list"
+    "analytics.sale_snapshot.list",
+    "inventory.transactional_merchandise.update"
 )
 """ The list of permission to be used to create the
 scope string for the oauth value """

@@ -19,6 +19,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Hive Omnix System. If not, see <http://www.gnu.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,18 +37,23 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-import base
-import customer
-import employee
-import extra
-import report
-import store
-import supplier
+from omnix import app
+from omnix import flask
 
-from base import *
-from customer import *
-from employee import *
-from extra import *
-from report import *
-from store import *
-from supplier import *
+@app.route("/extras", methods = ("GET",))
+def list_extras():
+    return flask.render_template(
+        "extra/list.html.tpl",
+        link = "extras"
+    )
+    
+@app.route("/extras/prices", methods = ("GET",))
+def prices_extras():
+    return flask.render_template(
+        "extra/prices.html.tpl",
+        link = "extras"
+    )
+    
+@app.route("/extras/prices", methods = ("POST",))
+def do_prices_extras():
+    print "fez do !!!!"

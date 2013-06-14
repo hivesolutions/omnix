@@ -94,6 +94,7 @@ AT_SUBMIT_TYPES = (
 """ The set of valid types for submission to at """
 
 REMOTE = quorum.conf("REMOTE", False)
+REDIRECT_URL = quorum.conf("REDIRECT_URL", REDIRECT_URL)
 
 BASE_URL = REMOTE_URL if REMOTE else LOCAL_URL
 PREFIX = REMOTE_PREFIX if REMOTE else LOCAL_PREFIX

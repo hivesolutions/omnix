@@ -37,50 +37,19 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-import util
-
 from omnix import app
 from omnix import flask
 
-@app.route("/suppliers", methods = ("GET",))
-def list_suppliers():
-    url = util.ensure_token()
-    if url: return flask.redirect(url)
-
+@app.route("/reports", methods = ("GET",))
+def list_reports():
     return flask.render_template(
-        "supplier/list.html.tpl",
-        link = "suppliers"
+        "report/list.html.tpl",
+        link = "reports"
     )
 
-@app.route("/suppliers.json", methods = ("GET",), json = True)
-def list_suppliers_json():
-    url = util.ensure_token()
-    if url: return flask.redirect(url)
-
-    filter_string = flask.request.args.get("filter_string", None)
-    start_record = flask.request.args.get("start_record", 0)
-    number_records = flask.request.args.get("number_records", 0)
-
-    url = util.BASE_URL + "omni/supplier_companies.json"
-    contents_s = util.get_json(
-        url,
-        filter_string = filter_string,
-        start_record = start_record,
-        number_records = number_records
-    )
-
-    return contents_s
-
-@app.route("/suppliers/<id>", methods = ("GET",))
-def show_suppliers(id):
-    url = util.ensure_token()
-    if url: return flask.redirect(url)
-
-    url = util.BASE_URL + "omni/supplier_companies/%s.json" % id
-    contents_s = util.get_json(url)
-
+@app.route("/reports/sales", methods = ("GET",))
+def sales_reports():
     return flask.render_template(
-        "supplier/show.html.tpl",
-        link = "suppliers",
-        supplier = contents_s
+        "report/sales.html.tpl",
+        link = "reports"
     )

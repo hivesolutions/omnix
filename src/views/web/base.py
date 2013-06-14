@@ -187,20 +187,6 @@ def top():
         session_id = session_id
     )
 
-@app.route("/reports", methods = ("GET",))
-def reports():
-    return flask.render_template(
-        "reports.html.tpl",
-        link = "reports"
-    )
-
-@app.route("/reports/sales", methods = ("GET",))
-def sales_reports():
-    return flask.render_template(
-        "reports_sales.html.tpl",
-        link = "reports"
-    )
-
 @app.errorhandler(404)
 def handler_404(error):
     return str(error)

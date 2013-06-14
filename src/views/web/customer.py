@@ -48,7 +48,7 @@ def list_customers():
     if url: return flask.redirect(url)
 
     return flask.render_template(
-        "customers_list.html.tpl",
+        "customer/list.html.tpl",
         link = "customers"
     )
 
@@ -80,7 +80,7 @@ def show_customers(id):
     contents_s = util.get_json(url)
 
     return flask.render_template(
-        "customers_show.html.tpl",
+        "customer/show.html.tpl",
         link = "customers",
         customer = contents_s
     )

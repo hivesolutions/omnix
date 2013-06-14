@@ -53,9 +53,9 @@
                         </li>
                         <li>
                             {% if link == "reports" %}
-                                <a href="{{ url_for('reports') }}" class="active">reports</a>
+                                <a href="{{ url_for('list_reports') }}" class="active">reports</a>
                             {% else %}
-                                <a href="{{ url_for('reports') }}">reports</a>
+                                <a href="{{ url_for('list_reports') }}">reports</a>
                             {% endif %}
                         </li>
                         <li>

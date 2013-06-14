@@ -50,7 +50,7 @@ def list_stores():
     if url: return flask.redirect(url)
 
     return flask.render_template(
-        "stores_list.html.tpl",
+        "store/list.html.tpl",
         link = "stores"
     )
 
@@ -82,7 +82,7 @@ def show_stores(id):
     contents_s = util.get_json(url)
 
     return flask.render_template(
-        "stores_show.html.tpl",
+        "store/show.html.tpl",
         link = "stores",
         sub_link = "info",
         store = contents_s
@@ -127,7 +127,7 @@ def sales_stores(id):
         days_s.append(day)
 
     return flask.render_template(
-        "stores_sales.html.tpl",
+        "store/sales.html.tpl",
         link = "stores",
         sub_link = "sales",
         store = store_s,

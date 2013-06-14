@@ -37,11 +37,13 @@ __license__ = "GNU General Public License (GPL), Version 3"
 import base
 import customer
 import employee
+import report
 import store
 import supplier
 
 from base import *
 from customer import *
 from employee import *
+from report import *
 from store import *
 from supplier import *

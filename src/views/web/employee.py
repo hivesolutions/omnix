@@ -48,7 +48,7 @@ def list_employees():
     if url: return flask.redirect(url)
 
     return flask.render_template(
-        "employees_list.html.tpl",
+        "employee/list.html.tpl",
         link = "employees"
     )
 
@@ -81,7 +81,7 @@ def show_employees(id):
     contents_s = util.get_json(url)
 
     return flask.render_template(
-        "employees_show.html.tpl",
+        "employee/show.html.tpl",
         link = "employees",
         sub_link = "info",
         employee = contents_s

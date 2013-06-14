@@ -50,6 +50,11 @@ SECRET_KEY = "zhsga32ki5kvv7ymq8nolbleg248fzn1"
 """ The "secret" key to be at the internal encryption
 processes handled by flask (eg: sessions) """
 
+@quorum.onrun
+def onrun():
+    util.run_slave(1)
+    util.run_supervisor()
+
 app = quorum.load(
     name = __name__,
     secret_key = SECRET_KEY,
@@ -61,7 +66,4 @@ app = quorum.load(
 from views import * #@UnusedWildImport
 
 if __name__ == "__main__":
-    util.run_slave(1)
-    util.run_supervisor()
-
     quorum.run(server = "waitress")

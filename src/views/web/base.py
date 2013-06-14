@@ -194,10 +194,10 @@ def flush_at():
 
 @app.route("/oauth", methods = ("GET",))
 def oauth():
-    code = flask.request.args.get("code", None)
+    code = quorum.get_field("code", None)
 
-    error = flask.request.args.get("error", None)
-    error_description = flask.request.args.get("error_description", None)
+    error = quorum.get_field("error", None)
+    error_description = quorum.get_field("error_description", None)
     if error: raise RuntimeError("%s - %s" % (error, error_description))
 
     url = util.BASE_URL + "omni/oauth/access_token"

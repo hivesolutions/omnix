@@ -41,6 +41,7 @@ import util
 
 from omnix import app
 from omnix import flask
+from omnix import quorum
 
 @app.route("/suppliers", methods = ("GET",))
 def list_suppliers():
@@ -57,9 +58,9 @@ def list_suppliers_json():
     url = util.ensure_token()
     if url: return flask.redirect(url)
 
-    filter_string = flask.request.args.get("filter_string", None)
-    start_record = flask.request.args.get("start_record", 0)
-    number_records = flask.request.args.get("number_records", 0)
+    filter_string = quorum.get_field("filter_string", None)
+    start_record = quorum.get_field("start_record", 0)
+    number_records = quorum.get_field("number_records", 0)
 
     url = util.BASE_URL + "omni/supplier_companies.json"
     contents_s = util.get_json(

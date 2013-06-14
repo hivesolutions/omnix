@@ -37,9 +37,7 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-DEBUG = True
-""" The flag that controls if the current execution is meant
-to be used for debugging purposes (locally) """
+from omnix import quorum
 
 LOCAL_PREFIX = "omni_web_adm/"
 """ The web prefix to be used when trying to access administration
@@ -95,5 +93,7 @@ AT_SUBMIT_TYPES = (
 )
 """ The set of valid types for submission to at """
 
-BASE_URL = LOCAL_URL if DEBUG else REMOTE_URL
-PREFIX = LOCAL_PREFIX if DEBUG else REMOTE_PREFIX
+REMOTE = quorum.conf("REMOTE", False)
+
+BASE_URL = REMOTE_URL if REMOTE else LOCAL_URL
+PREFIX = REMOTE_PREFIX if REMOTE else LOCAL_PREFIX

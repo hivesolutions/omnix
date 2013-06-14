@@ -52,6 +52,7 @@ processes handled by flask (eg: sessions) """
 
 @quorum.onrun
 def onrun():
+    import util
     util.run_slave(1)
     util.run_supervisor()
 

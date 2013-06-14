@@ -46,14 +46,14 @@ def list_extras():
         "extra/list.html.tpl",
         link = "extras"
     )
-    
+
 @app.route("/extras/prices", methods = ("GET",))
 def prices_extras():
     return flask.render_template(
         "extra/prices.html.tpl",
         link = "extras"
     )
-    
+
 @app.route("/extras/prices", methods = ("POST",))
 def do_prices_extras():
     print "fez do !!!!"

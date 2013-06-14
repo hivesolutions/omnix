@@ -40,6 +40,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 import datetime
 
 import util
+import models
 
 from omnix import app
 from omnix import flask
@@ -51,6 +52,50 @@ def index():
     return flask.render_template(
         "index.html.tpl",
         link = "home"
+    )
+
+@app.route("/signin", methods = ("GET",))
+def signin():
+    return flask.render_template(
+        "signin.html.tpl"
+    )
+
+@app.route("/signin", methods = ("POST",))
+def login():
+    # retrieves both the username and the password from
+    # the flask request form, these are the values that
+    # are going to be used in the username validation
+    username = quorum.get_field("username")
+    password = quorum.get_field("password")
+    try: account = models.Account.login(username, password)
+    except quorum.OperationalError, error:
+        return flask.render_template(
+            "signin.html.tpl",
+            username = username,
+            error = error.message
+        )
+
+    # updates the current user (name) in session with
+    # the username that has just be accepted in the login
+    flask.session["username"] = account.username
+    flask.session["tokens"] = account.tokens
+    flask.session["acl"] = quorum.check_login
+
+    # makes the current session permanent this will allow
+    # the session to persist along multiple browser initialization
+    flask.session.permanent = True
+
+    return flask.redirect(
+        flask.url_for("index")
+    )
+
+@app.route("/signout", methods = ("GET", "POST"))
+def logout():
+    if "username" in flask.session: del flask.session["username"]
+    if "tokens" in flask.session: del flask.session["tokens"]
+
+    return flask.redirect(
+        flask.url_for("signin")
     )
 
 @app.route("/about", methods = ("GET",))

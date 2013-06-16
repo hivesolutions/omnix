@@ -38,7 +38,6 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import os
-import json
 import tempfile
 
 import util
@@ -95,11 +94,7 @@ def do_prices_extras():
     # uses the "resolved" items structure in the put operation to
     # the omni api so that the prices for them get updated
     url = util.BASE_URL + "omni/merchandise/prices.json"
-    util.put_json(
-        url,
-        data = json.dumps(items),
-        mime = "application/json"
-    )
+    util.put_json(url, data_j = items)
 
     # redirects the user back to the prices list page with a success
     # message indicating that everything went ok

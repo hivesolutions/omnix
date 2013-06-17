@@ -215,3 +215,15 @@ def top():
         access_token = access_token,
         session_id = session_id
     )
+
+@app.errorhandler(404)
+def handler_404(error):
+    return str(error)
+
+@app.errorhandler(413)
+def handler_413(error):
+    return str(error)
+
+@app.errorhandler(BaseException)
+def handler_exception(error):
+    return str(error)

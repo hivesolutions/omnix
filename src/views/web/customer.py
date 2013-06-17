@@ -44,6 +44,7 @@ from omnix import flask
 from omnix import quorum
 
 @app.route("/customers", methods = ("GET",))
+@quorum.ensure("customers.customer_person.list")
 def list_customers():
     url = util.ensure_token()
     if url: return flask.redirect(url)
@@ -54,6 +55,7 @@ def list_customers():
     )
 
 @app.route("/customers.json", methods = ("GET",), json = True)
+@quorum.ensure("customers.customer_person.list")
 def list_customers_json():
     url = util.ensure_token()
     if url: return flask.redirect(url)
@@ -73,6 +75,7 @@ def list_customers_json():
     return contents_s
 
 @app.route("/customers/<id>", methods = ("GET",))
+@quorum.ensure("customers.customer_person.show")
 def show_customers(id):
     url = util.ensure_token()
     if url: return flask.redirect(url)

@@ -44,6 +44,7 @@ from omnix import flask
 from omnix import quorum
 
 @app.route("/employees", methods = ("GET",))
+@quorum.ensure("foundation.employee.list")
 def list_employees():
     url = util.ensure_token()
     if url: return flask.redirect(url)
@@ -54,6 +55,7 @@ def list_employees():
     )
 
 @app.route("/employees.json", methods = ("GET",), json = True)
+@quorum.ensure("foundation.employee.list")
 def list_employees_json():
     url = util.ensure_token()
     if url: return flask.redirect(url)
@@ -74,6 +76,7 @@ def list_employees_json():
     return contents_s
 
 @app.route("/employees/<id>", methods = ("GET",))
+@quorum.ensure("foundation.employee.show")
 def show_employees(id):
     url = util.ensure_token()
     if url: return flask.redirect(url)

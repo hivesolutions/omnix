@@ -45,12 +45,25 @@ from omnix import app
 from omnix import flask
 from omnix import quorum
 
+@app.context_processor
+def utility_processor():
+    return dict(acl = quorum.check_login)
+
 @app.route("/", methods = ("GET",))
 @app.route("/index", methods = ("GET",))
+@quorum.ensure("foundation.oauth.start_session")
 def index():
     return flask.render_template(
         "index.html.tpl",
         link = "home"
+    )
+
+@app.route("/login", methods = ("GET",))
+def login():
+    url = util.ensure_token()
+    if url: return flask.redirect(url)
+    return flask.redirect(
+        flask.url_for("index")
     )
 
 @app.route("/logout", methods = ("GET",))
@@ -61,6 +74,7 @@ def logout():
     )
 
 @app.route("/about", methods = ("GET",))
+@quorum.ensure("foundation.oauth.start_session")
 def about():
     access_token = flask.session.get("omnix.access_token", None)
     session_id = flask.session.get("omnix.session_id", None)
@@ -201,15 +215,3 @@ def top():
         access_token = access_token,
         session_id = session_id
     )
-
-@app.errorhandler(404)
-def handler_404(error):
-    return str(error)
-
-@app.errorhandler(413)
-def handler_413(error):
-    return str(error)
-
-@app.errorhandler(BaseException)
-def handler_exception(error):
-    return str(error)

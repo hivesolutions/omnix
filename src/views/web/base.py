@@ -58,8 +58,22 @@ def index():
         link = "home"
     )
 
-@app.route("/login", methods = ("GET",))
+@app.route("/signin", methods = ("GET",))
+def signin():
+    return flask.render_template(
+        "signin.html.tpl"
+    )
+
+@app.route("/signin", methods = ("POST",))
 def login():
+    url = util.ensure_token()
+    if url: return flask.redirect(url)
+    return flask.redirect(
+        flask.url_for("index")
+    )
+
+@app.route("/signin_do", methods = ("GET",))
+def do_login():
     url = util.ensure_token()
     if url: return flask.redirect(url)
     return flask.redirect(

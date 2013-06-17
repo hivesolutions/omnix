@@ -95,3 +95,24 @@
 .equal {
     background: transparent url(../images/equal.png) no-repeat right center;
 }
+
+.button.login {
+    background: transparent url(../images/login.png) no-repeat left 0px;
+    display: inline-block;
+    height: 38px;
+    width: 204px;
+}
+
+.button.login:hover {
+    background-position: left -38px;
+    border-bottom: none;
+    padding-bottom: 0px;
+}
+
+.button.login.click {
+    background-position: left -76px;
+}
+
+.button.login.disabled {
+    background-position: left -114px;
+}

@@ -97,11 +97,17 @@ def ensure_session_id():
 
     url = config.BASE_URL + "omni/oauth/start_session"
     contents_s = get_json(url, authenticate = False, token = True)
-    session_id = contents_s.get("_session_id", None)
+    username = contents_s.get("username", None)
+    acl = contents_s.get("acl", None)
+    session_id = contents_s.get("session_id", None)
+    flask.session["omnix.username"] = username
+    flask.session["omnix.acl"] = acl
     flask.session["omnix.session_id"] = session_id
 
 def reset_session():
     if "omnix.access_token" in flask.session: del flask.session["omnix.access_token"]
+    if "omnix.username" in flask.session: del flask.session["omnix.username"]
+    if "omnix.acl" in flask.session: del flask.session["omnix.acl"]
     if "omnix.session_id" in flask.session: del flask.session["omnix.session_id"]
     flask.session.modified = True
 

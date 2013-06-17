@@ -53,10 +53,11 @@ def index():
         link = "home"
     )
 
-@app.route("/signin", methods = ("GET",))
-def signin():
-    return flask.render_template(
-        "signin.html.tpl"
+@app.route("/logout", methods = ("GET",))
+def logout():
+    util.reset_session()
+    return flask.redirect(
+        flask.url_for("index")
     )
 
 @app.route("/about", methods = ("GET",))
@@ -75,9 +76,8 @@ def about():
 def reset():
     util.reset_session()
 
-    return flask.render_template(
-        "index.html.tpl",
-        link = "home"
+    return flask.redirect(
+        flask.url_for("index")
     )
 
 @app.route("/flush_at", methods = ("GET",))

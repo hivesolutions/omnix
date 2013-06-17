@@ -46,6 +46,7 @@ from omnix import flask
 from omnix import quorum
 
 @app.route("/stores", methods = ("GET",))
+@quorum.ensure("foundation.store.list")
 def list_stores():
     url = util.ensure_token()
     if url: return flask.redirect(url)
@@ -56,6 +57,7 @@ def list_stores():
     )
 
 @app.route("/stores.json", methods = ("GET",), json = True)
+@quorum.ensure("foundation.store.list")
 def list_stores_json():
     url = util.ensure_token()
     if url: return flask.redirect(url)
@@ -75,6 +77,7 @@ def list_stores_json():
     return contents_s
 
 @app.route("/stores/<id>", methods = ("GET",))
+@quorum.ensure("foundation.store.show")
 def show_stores(id):
     url = util.ensure_token()
     if url: return flask.redirect(url)

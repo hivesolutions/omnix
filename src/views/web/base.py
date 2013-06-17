@@ -156,7 +156,7 @@ def flush_at():
 @app.route("/oauth", methods = ("GET",))
 def oauth():
     # retrieves the code value provided that is going to be used
-    # to redeam the access token
+    # to redeem the access token
     code = quorum.get_field("code", None)
 
     # tries to retrieve the error field an in case it exists raises

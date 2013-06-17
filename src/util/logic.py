@@ -100,15 +100,20 @@ def ensure_session_id():
     username = contents_s.get("username", None)
     acl = contents_s.get("acl", None)
     session_id = contents_s.get("session_id", None)
+    tokens = get_tokens(acl)
+
     flask.session["omnix.username"] = username
     flask.session["omnix.acl"] = acl
     flask.session["omnix.session_id"] = session_id
+    flask.session["tokens"] = tokens
+    flask.session["acl"] = quorum.check_login
 
 def reset_session():
     if "omnix.access_token" in flask.session: del flask.session["omnix.access_token"]
     if "omnix.username" in flask.session: del flask.session["omnix.username"]
     if "omnix.acl" in flask.session: del flask.session["omnix.acl"]
     if "omnix.session_id" in flask.session: del flask.session["omnix.session_id"]
+    if "tokens" in flask.session: del flask.session["tokens"]
     flask.session.modified = True
 
 def reset_session_id():
@@ -118,3 +123,6 @@ def reset_session_id():
         del flask.session["omnix.access_token"]
     flask.session.modified = True
     ensure_session_id()
+
+def get_tokens(acl):
+    return acl.keys()

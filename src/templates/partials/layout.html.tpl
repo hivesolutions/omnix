@@ -18,22 +18,28 @@
                     <a href="{{ url_for('index') }}">home</a>
                 {% endif %}
                 //
-                {% if link == "customers" %}
-                    <a href="{{ url_for('list_customers') }}" class="active">customers</a>
-                {% else %}
-                    <a href="{{ url_for('list_customers') }}">customers</a>
+                {% if acl("customers.customer_person.list") %}
+                    {% if link == "customers" %}
+                        <a href="{{ url_for('list_customers') }}" class="active">customers</a>
+                    {% else %}
+                        <a href="{{ url_for('list_customers') }}">customers</a>
+                    {% endif %}
                 {% endif %}
                 //
-                {% if link == "suppliers" %}
-                    <a href="{{ url_for('list_suppliers') }}" class="active">suppliers</a>
-                {% else %}
-                    <a href="{{ url_for('list_suppliers') }}">suppliers</a>
+                {% if acl("foundation.supplier_company.list") %}
+                    {% if link == "suppliers" %}
+                        <a href="{{ url_for('list_suppliers') }}" class="active">suppliers</a>
+                    {% else %}
+                        <a href="{{ url_for('list_suppliers') }}">suppliers</a>
+                    {% endif %}
                 {% endif %}
                 //
-                {% if link == "stores" %}
-                    <a href="{{ url_for('list_stores') }}" class="active">stores</a>
-                {% else %}
-                    <a href="{{ url_for('list_stores') }}">stores</a>
+                {% if acl("foundation.store.list") %}
+                    {% if link == "stores" %}
+                        <a href="{{ url_for('list_stores') }}" class="active">stores</a>
+                    {% else %}
+                        <a href="{{ url_for('list_stores') }}">stores</a>
+                    {% endif %}
                 {% endif %}
                 //
                 {% if link == "about" %}
@@ -45,10 +51,12 @@
                 <div class="links-extra">
                     <ul>
                         <li>
-                            {% if link == "employees" %}
-                                <a href="{{ url_for('list_employees') }}" class="active">employees</a>
-                            {% else %}
-                                <a href="{{ url_for('list_employees') }}">employees</a>
+                            {% if acl("foundation.employee.list") %}
+                                {% if link == "employees" %}
+                                    <a href="{{ url_for('list_employees') }}" class="active">employees</a>
+                                {% else %}
+                                    <a href="{{ url_for('list_employees') }}">employees</a>
+                                {% endif %}
                             {% endif %}
                         </li>
                         <li>

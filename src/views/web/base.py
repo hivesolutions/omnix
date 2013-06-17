@@ -155,12 +155,19 @@ def flush_at():
 
 @app.route("/oauth", methods = ("GET",))
 def oauth():
+    # retrieves the code value provided that is going to be used
+    # to redeam the access token
     code = quorum.get_field("code", None)
 
+    # tries to retrieve the error field an in case it exists raises
+    # an error indicating the oauth based problem
     error = quorum.get_field("error", None)
     error_description = quorum.get_field("error_description", None)
     if error: raise RuntimeError("%s - %s" % (error, error_description))
 
+    # creates the access token url for the api usage and sends the
+    # appropriate attributes for the retrieval of the access token,
+    # then stores it in the current session
     url = util.BASE_URL + "omni/oauth/access_token"
     contents_s = util.post_json(
         url,
@@ -175,6 +182,8 @@ def oauth():
     access_token = contents_s["access_token"]
     flask.session["omnix.access_token"] = access_token
 
+    # ensures that a correct session id value exists in session, creating
+    # a new session in case that's required
     util.ensure_session_id()
 
     return flask.redirect(

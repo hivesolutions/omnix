@@ -165,7 +165,7 @@ def flush_at():
         try:
             # creates the complete url value for the submission
             # operation and run the submission for the current document
-            url = util.BASE_URL + "omni/signed_documents/submit_at.json"
+            url = util.BASE_URL + "omni/signed_documents/submit_invoice_at.json"
             util.get_json(url, document_id = object_id)
         except BaseException, exception:
             quorum.error("Exception while submitting document - %s" % unicode(exception))

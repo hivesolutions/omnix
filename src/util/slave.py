@@ -126,7 +126,7 @@ class Slave(threading.Thread):
         try:
             # creates the complete url value for the submission
             # operation and run the submission for the current document
-            url = config.BASE_URL + "omni/signed_documents/submit_at.json"
+            url = config.BASE_URL + "omni/signed_documents/submit_invoice_at.json"
             quorum.get_json(
                 url,
                 session_id = self.session_id,

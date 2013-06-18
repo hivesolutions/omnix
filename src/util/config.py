@@ -78,7 +78,7 @@ SCOPE = (
     "customers.customer_person.list",
     "customers.customer_person.show",
     "documents.signed_document.list",
-    "documents.signed_document.submit_at",
+    "documents.signed_document.submit_invoice_at",
     "analytics.sale_snapshot.list",
     "inventory.transactional_merchandise.update"
 )

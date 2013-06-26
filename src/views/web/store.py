@@ -109,11 +109,11 @@ def sales_stores(id):
     url = util.BASE_URL + "omni/sale_snapshots/stats.json"
     contents_s = util.get_json(url, unit = "day", store_id = id_s)
     stats_s = contents_s[id_s]
-    current_s = {
-        "amount_price_vat" : stats_s["amount_price_vat"][-1],
-        "number_sales" : stats_s["number_sales"][-1],
-        "date" : current_day
-    }
+    current_s = dict(
+        amount_price_vat = stats_s["amount_price_vat"][-1],
+        number_sales = stats_s["number_sales"][-1],
+        date = current_day
+    )
 
     days_s = []
 
@@ -123,11 +123,11 @@ def sales_stores(id):
     _current_day = current_day
     for index in count_r:
         _current_day -= datetime.timedelta(1)
-        day =  {
-            "amount_price_vat" : stats_s["amount_price_vat"][index],
-            "number_sales" : stats_s["number_sales"][index],
-            "date" : _current_day
-        }
+        day = dict(
+            amount_price_vat = stats_s["amount_price_vat"][index],
+            number_sales = stats_s["number_sales"][index],
+            date = _current_day
+        )
         days_s.append(day)
 
     return flask.render_template(

@@ -45,10 +45,6 @@ from omnix import app
 from omnix import flask
 from omnix import quorum
 
-@app.context_processor
-def utility_processor():
-    return dict(acl = quorum.check_login)
-
 @app.route("/", methods = ("GET",))
 @app.route("/index", methods = ("GET",))
 @quorum.ensure("foundation.oauth.start_session")

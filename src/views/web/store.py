@@ -130,6 +130,20 @@ def sales_stores(id):
         )
         days_s.append(day)
 
+    previous_s = days_s[0] if days_s else dict()
+    current_s["amount_delta"] = current_s["amount_price_vat"] -\
+        previous_s.get("amount_price_vat", 0)
+    current_s["number_delta"] = current_s["number_sales"] -\
+        previous_s.get("number_sales", 0)
+
+    if current_s["amount_delta"] == 0: current_s["amount_direction"] = "equal"
+    elif current_s["amount_delta"] > 0: current_s["amount_direction"] = "up"
+    else: current_s["amount_direction"] = "down"
+
+    if current_s["number_delta"] == 0: current_s["number_direction"] = "equal"
+    elif current_s["number_delta"] > 0: current_s["number_direction"] = "up"
+    else: current_s["number_direction"] = "down"
+
     return flask.render_template(
         "store/sales.html.tpl",
         link = "stores",

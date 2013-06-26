@@ -9,11 +9,11 @@
             <tr>
                 <td>
                     <span class="label">Today's Sales</span><br />
-                    <span class="value down">{{ current.number_sales }}</span>
+                    <span class="value {{ current.number_direction }}">{{ current.number_sales }}</span>
                 </td>
                 <td>
                     <span class="label">Today's Amount</span><br />
-                    <span class="value up">{{ '%0.2f' % current.amount_price_vat }} €</span>
+                    <span class="value {{ current.amount_direction }}">{{ '%0.2f' % current.amount_price_vat }} €</span>
                 </td>
             </tr>
         </tbody>

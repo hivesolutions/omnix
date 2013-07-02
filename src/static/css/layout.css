@@ -96,6 +96,18 @@
     background: transparent url(../images/equal.png) no-repeat right center;
 }
 
+.green {
+    color: #39b549;
+}
+
+.red {
+    color: #ec1c23;
+}
+
+.yellow {
+    color: #fdc13c;
+}
+
 .button.login {
     background: transparent url(../images/login.png) no-repeat left 0px;
     box-shadow: 0px 2px 6px #bbbbbb;

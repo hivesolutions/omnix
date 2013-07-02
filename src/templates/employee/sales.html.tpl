@@ -9,15 +9,15 @@
             <tr>
                 <td>
                     <span class="label">Sales Amount</span><br />
-                    <span class="value down">123454.34 €</span>
+                    <span class="value">{{ "%.2f" % sales_total }} €</span>
                 </td>
                 <td>
-                    <span class="label">Sales Weight</span><br />
-                    <span class="value down">2.23 %</span>
+                    <span class="label">Sales Count</span><br />
+                    <span class="value">{{ sales_count }}</span>
                 </td>
                 <td>
                     <span class="label">Commissions</span><br />
-                    <span class="value up">1232.23 €</span>
+                    <span class="value">{{ "%.2f" % (sales_total * 0.02) }} €</span>
                 </td>
             </tr>
         </tbody>
@@ -27,35 +27,19 @@
             <tr>
                 <th class="left label" width="20%">Day</th>
                 <th class="left label" width="30%">Sale</th>
-                <th class="right label" width="25%">Total</th>
+                <th class="right label" width="25%">Value</th>
                 <th class="right label" width="25%">Commission</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td class="left">Jan 29, 2013</td>
-                <td class="left"><a href="#">DVD02323121</a></td>
-                <td class="right">123.23 €</td>
-                <td class="right">12.23 €</td>
-            </tr>
-            <tr>
-                <td class="left">Jan 28, 2013</td>
-                <td class="left"><a href="#">DVD02323121</a></td>
-                <td class="right">123.23 €</td>
-                <td class="right">12.23 €</td>
-            </tr>
-            <tr>
-                <td class="left">Jan 27, 2013</td>
-                <td class="left"><a href="#">DVD02323121</a></td>
-                <td class="right">123.23 €</td>
-                <td class="right">12.23 €</td>
-            </tr>
-            <tr>
-                <td class="left">Jan 26, 2013</td>
-                <td class="left"><a href="#">DVD02323121</a></td>
-                <td class="right">123.23 €</td>
-                <td class="right">12.23 €</td>
-            </tr>
+            {% for sale in sales %}
+                <tr>
+                    <td class="left">Jan 29, 2013</td>
+                    <td class="left"><a href="#">{{ sale.identifier }}</a></td>
+                    <td class="right">{{ "%.2f" % sale.price_vat }} €</td>
+                    <td class="right">{{ "%.2f" % (sale.price_vat * 0.02) }} €</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
     <table>

@@ -96,6 +96,11 @@ class Supervisor(threading.Thread):
         self.connection.close()
 
     def execute(self):
+        # in case the current instance is not configured according to
+        # the remote rules the queuing operation is ignored, and so
+        # the control flow returns immediately
+        if not config.REMOTE: return
+
         # creates a values map structure to retrieve the complete
         # set of inbound documents that have not yet been submitted
         # to at for the flush operation
@@ -116,6 +121,9 @@ class Supervisor(threading.Thread):
         valid_documents = [value for value in contents_s\
             if value["_class"] in config.AT_SUBMIT_TYPES]
 
+        # iterates over all the valid documents that have been found
+        # as not submitted and creates a task for their submission
+        # then adds the task to the rabbit queue to be processed
         for document in valid_documents:
             self.channel.basic_publish(
                 exchange = "",

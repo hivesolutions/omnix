@@ -98,13 +98,19 @@ def sales_employees(id):
     url = util.ensure_token()
     if url: return flask.redirect(url)
 
+    now = datetime.datetime.utcnow()
+    month = quorum.get_field("month", now.month, cast = int)
+    year = quorum.get_field("year", now.year, cast = int)
+
+    has_next = int("%04d%02d" % (year, month)) < int("%04d%02d" % (now.year, now.month))
+
     url = util.BASE_URL + "omni/employees/%s.json" % id
     contents_s = util.get_json(url)
 
-    now = datetime.datetime.utcnow()
+    previous_month, previous_year = (month - 1, year) if not month == 1 else (12, year - 1)
+    next_month, next_year = (month + 1, year) if not month == 12 else (1, year + 1)
 
-    previous_month, previous_year = (now.month - 1, now.year) if not now.month == 1 else (12, now.year - 1)
-    start_month, start_year = (now.month, now.year) if now.day >= 21 else (previous_month, previous_year)
+    start_month, start_year = (month, year) if now.day >= 21 else (previous_month, previous_year)
     end_month, end_year = (start_month + 1, start_year) if not start_month == 12 else (1, start_year + 1)
 
     start = datetime.datetime(year = start_year, month = start_month, day = 21)
@@ -113,11 +119,14 @@ def sales_employees(id):
     start_t = calendar.timegm(start.utctimetuple())
     end_t = calendar.timegm(end.utctimetuple())
 
+    target = datetime.datetime(year = end_year, month = end_month, day = 1)
+    target_s = target.strftime("%B %Y")
+
     kwargs = {
         "filter_string" : "",
         "start_record" : 0,
         "number_records" : -1,
-        "sort" : "date:ascending",
+        "sort" : "date:descending",
         "filters[]" : [
             "date:greater:" + str(start_t),
             "date:lesser:" + str(end_t),
@@ -128,15 +137,46 @@ def sales_employees(id):
     url = util.BASE_URL + "omni/sales.json"
     sales_s = util.get_json(url, **kwargs)
 
+    kwargs = {
+        "filter_string" : "",
+        "start_record" : 0,
+        "number_records" : -1,
+        "sort" : "date:descending",
+        "filters[]" : [
+            "date:greater:" + str(start_t),
+            "date:lesser:" + str(end_t),
+            "primary_return_processor:equals:" + id
+        ]
+    }
+
+    url = util.BASE_URL + "omni/returns.json"
+    returns_s = util.get_json(url, **kwargs)
+
+    operations = returns_s + sales_s
+
+    sorter = lambda x, y: cmp(x["date"], y["date"])
+    operations.sort(sorter, reverse = True)
+
     sales_total = 0
     for sale in sales_s: sales_total += sale["price_vat"]
+    for _return in returns_s: sales_total -= _return["price_vat"]
+
+    for operation in operations:
+        date = operation["date"]
+        date_t = datetime.datetime.utcfromtimestamp(date)
+        operation["date_f"] = date_t.strftime("%b %d, %Y")
 
     return flask.render_template(
         "employee/sales.html.tpl",
         link = "employees",
         sub_link = "sales",
         employee = contents_s,
-        sales = sales_s,
+        operations = operations,
+        commission_rate = 0.02,
+        title = target_s,
         sales_total = sales_total,
-        sales_count = len(sales_s)
+        sales_count = len(sales_s),
+        previous = (previous_month, previous_year),
+        next = (next_month, next_year),
+        has_next = has_next
     )

@@ -2,7 +2,7 @@
 {% block title %}Employees{% endblock %}
 {% block name %}{{ employee.short_name }}{% endblock %}
 {% block content %}
-    <div class="quote">January 2013</div>
+    <div class="quote">{{ title }}</div>
     <div class="separator-horizontal"></div>
     <table class="table-resume three">
         <tbody>
@@ -17,7 +17,7 @@
                 </td>
                 <td>
                     <span class="label">Commissions</span><br />
-                    <span class="value">{{ "%.2f" % (sales_total * 0.02) }} €</span>
+                    <span class="value">{{ "%.2f" % (sales_total * commission_rate) }} €</span>
                 </td>
             </tr>
         </tbody>
@@ -25,19 +25,24 @@
     <table class="table-list">
         <thead>
             <tr>
-                <th class="left label" width="20%">Day</th>
-                <th class="left label" width="30%">Sale</th>
-                <th class="right label" width="25%">Value</th>
-                <th class="right label" width="25%">Commission</th>
+                <th class="left label" width="25%">Date</th>
+                <th class="left label" width="35%">Operation</th>
+                <th class="right label" width="20%">Commission</th>
+                <th class="right label" width="20%">Total Value</th>
             </tr>
         </thead>
         <tbody>
-            {% for sale in sales %}
+            {% for operation in operations %}
                 <tr>
-                    <td class="left">Jan 29, 2013</td>
-                    <td class="left"><a href="#">{{ sale.identifier }}</a></td>
-                    <td class="right">{{ "%.2f" % sale.price_vat }} €</td>
-                    <td class="right">{{ "%.2f" % (sale.price_vat * 0.02) }} €</td>
+                    <td class="left">{{ operation.date_f }}</td>
+                    <td class="left"><a href="#">{{ operation.identifier }}</a></td>
+                    {% if operation._class == 'SaleTransaction' %}
+                        <td class="right">{{ "%.2f" % (operation.price_vat * commission_rate) }} €</td>
+                        <td class="right">{{ "%.2f" % operation.price_vat }} €</td>
+                    {% else %}
+                        <td class="right red">{{ "%.2f" % (operation.price_vat * commission_rate * -1) }} €</td>
+                        <td class="right red">{{ "%.2f" % (operation.price_vat * -1) }} €</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>
@@ -47,7 +52,13 @@
             <tr>
                 <td>
                     <div class="links">
-                        <a href="#">previous</a> // <a href="#">next</a>
+                        <a href="{{ url_for('sales_employees', id = employee.object_id, month = previous[0], year = previous[1]) }}">previous</a>
+                        //
+                        {% if has_next %}
+                            <a href="{{ url_for('sales_employees', id = employee.object_id, month = next[0], year = next[1]) }}">next</a>
+                        {% else %}
+                            <span>next</span>
+                        {% endif %}
                     </div>
                 </td>
             </tr>

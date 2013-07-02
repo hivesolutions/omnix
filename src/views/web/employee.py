@@ -113,8 +113,8 @@ def sales_employees(id):
     start_month, start_year = (month, year) if now.day >= 21 else (previous_month, previous_year)
     end_month, end_year = (start_month + 1, start_year) if not start_month == 12 else (1, start_year + 1)
 
-    start = datetime.datetime(year = start_year, month = start_month, day = 21)
-    end = datetime.datetime(year = end_year, month = end_month, day = 22)
+    start = datetime.datetime(year = start_year, month = start_month, day = util.COMMISSION_DAY)
+    end = datetime.datetime(year = end_year, month = end_month, day = util.COMMISSION_DAY)
 
     start_t = calendar.timegm(start.utctimetuple())
     end_t = calendar.timegm(end.utctimetuple())
@@ -158,8 +158,8 @@ def sales_employees(id):
     operations.sort(sorter, reverse = True)
 
     sales_total = 0
-    for sale in sales_s: sales_total += sale["price_vat"]
-    for _return in returns_s: sales_total -= _return["price_vat"]
+    for sale in sales_s: sales_total += sale["price"]["value"]
+    for _return in returns_s: sales_total -= _return["price"]["value"]
 
     for operation in operations:
         date = operation["date"]
@@ -172,10 +172,11 @@ def sales_employees(id):
         sub_link = "sales",
         employee = contents_s,
         operations = operations,
-        commission_rate = 0.02,
+        commission_rate = util.COMMISSION_RATE,
         title = target_s,
         sales_total = sales_total,
         sales_count = len(sales_s),
+        returns_count = len(returns_s),
         previous = (previous_month, previous_year),
         next = (next_month, next_year),
         has_next = has_next

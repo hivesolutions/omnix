@@ -64,14 +64,13 @@ def list_employees_json():
     start_record = quorum.get_field("start_record", 0)
     number_records = quorum.get_field("number_records", 0)
 
-    values = {
-        "filter_string" : filter_string,
-        "start_record" : start_record,
-        "number_records" : number_records
-    }
-
     url = util.BASE_URL + "omni/employees.json"
-    contents_s = util.get_json(url, values)
+    contents_s = util.get_json(
+        url,
+        filter_string = filter_string,
+        start_record = start_record,
+        number_records = number_records
+    )
 
     return contents_s
 
@@ -100,7 +99,7 @@ def sales_employees(id):
     contents_s = util.get_json(url)
 
     return flask.render_template(
-        "employees_sales.html.tpl",
+        "employee/sales.html.tpl",
         link = "employees",
         sub_link = "sales",
         employee = contents_s

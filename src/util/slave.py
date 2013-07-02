@@ -68,8 +68,8 @@ class Slave(threading.Thread):
     def auth(self):
         if not config.REMOTE: return
 
-        username = quorum.conf("OMNIX_USERNAME")
-        password = quorum.conf("OMNIX_PASSWORD")
+        username = config.USERNAME
+        password = config.PASSWORD
         if username == None or password == None:
             raise RuntimeError("Missing authentication information")
 

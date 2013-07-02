@@ -37,6 +37,9 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
+import calendar
+import datetime
+
 import util
 
 from omnix import app
@@ -98,9 +101,42 @@ def sales_employees(id):
     url = util.BASE_URL + "omni/employees/%s.json" % id
     contents_s = util.get_json(url)
 
+    now = datetime.datetime.utcnow()
+
+    previous_month, previous_year = (now.month - 1, now.year) if not now.month == 1 else (12, now.year - 1)
+    start_month, start_year = (now.month, now.year) if now.day >= 21 else (previous_month, previous_year)
+    end_month, end_year = (start_month + 1, start_year) if not start_month == 12 else (1, start_year + 1)
+
+    start = datetime.datetime(year = start_year, month = start_month, day = 21)
+    end = datetime.datetime(year = end_year, month = end_month, day = 22)
+
+    start_t = calendar.timegm(start.utctimetuple())
+    end_t = calendar.timegm(end.utctimetuple())
+
+    kwargs = {
+        "filter_string" : "",
+        "start_record" : 0,
+        "number_records" : -1,
+        "sort" : "date:ascending",
+        "filters[]" : [
+            "date:greater:" + str(start_t),
+            "date:lesser:" + str(end_t),
+            "primary_seller:equals:" + id
+        ]
+    }
+
+    url = util.BASE_URL + "omni/sales.json"
+    sales_s = util.get_json(url, **kwargs)
+
+    sales_total = 0
+    for sale in sales_s: sales_total += sale["price_vat"]
+
     return flask.render_template(
         "employee/sales.html.tpl",
         link = "employees",
         sub_link = "sales",
-        employee = contents_s
+        employee = contents_s,
+        sales = sales_s,
+        sales_total = sales_total,
+        sales_count = len(sales_s)
     )

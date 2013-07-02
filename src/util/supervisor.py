@@ -90,11 +90,15 @@ class Supervisor(threading.Thread):
         self.session_id = contents_s["session_id"]
 
     def connect(self, queue = "default"):
+        if not config.REMOTE: return
+
         self.connection = quorum.get_rabbit()
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue = queue, durable = True)
 
     def disconnect(self):
+        if not config.REMOTE: return
+
         self.connection.close()
 
     def execute(self):

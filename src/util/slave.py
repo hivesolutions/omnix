@@ -83,6 +83,8 @@ class Slave(threading.Thread):
         self.session_id = contents_s["session_id"]
 
     def connect(self, queue = "default"):
+        if not config.REMOTE: return
+
         self.connection = quorum.get_rabbit()
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue = queue, durable = True)
@@ -91,7 +93,7 @@ class Slave(threading.Thread):
         self.channel.start_consuming()
 
     def disconnect(self):
-        pass
+        if not config.REMOTE: return
 
     def callback(self, channel, method, properties, body):
         document = json.loads(body)

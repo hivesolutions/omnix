@@ -12,8 +12,8 @@
                     <span class="value">{{ "%.2f" % sales_total }} €</span>
                 </td>
                 <td>
-                    <span class="label">Sales Count</span><br />
-                    <span class="value">{{ sales_count }}</span>
+                    <span class="label">Sales & Returns</span><br />
+                    <span class="value">{{ sales_count }} / {{ returns_count }}</span>
                 </td>
                 <td>
                     <span class="label">Commissions</span><br />
@@ -26,9 +26,9 @@
         <thead>
             <tr>
                 <th class="left label" width="25%">Date</th>
-                <th class="left label" width="35%">Operation</th>
-                <th class="right label" width="20%">Commission</th>
-                <th class="right label" width="20%">Total Value</th>
+                <th class="left label" width="30%">Operation</th>
+                <th class="right label" width="15%">Commission</th>
+                <th class="right label" width="30%">Op. Value</th>
             </tr>
         </thead>
         <tbody>
@@ -37,11 +37,11 @@
                     <td class="left">{{ operation.date_f }}</td>
                     <td class="left"><a href="#">{{ operation.identifier }}</a></td>
                     {% if operation._class == 'SaleTransaction' %}
-                        <td class="right">{{ "%.2f" % (operation.price_vat * commission_rate) }} €</td>
-                        <td class="right">{{ "%.2f" % operation.price_vat }} €</td>
+                        <td class="right">{{ "%.2f" % (operation.price.value * commission_rate) }} €</td>
+                        <td class="right">{{ "%.2f" % operation.price.value }} / {{ "%.2f" % operation.price_vat }} €</td>
                     {% else %}
-                        <td class="right red">{{ "%.2f" % (operation.price_vat * commission_rate * -1) }} €</td>
-                        <td class="right red">{{ "%.2f" % (operation.price_vat * -1) }} €</td>
+                        <td class="right red">{{ "%.2f" % (operation.price.value * commission_rate * -1) }} €</td>
+                        <td class="right red">{{ "%.2f" % (operation.price.value * -1) }} / {{ "%.2f" % (operation.price_vat * -1) }} €</td>
                     {% endif %}
                 </tr>
             {% endfor %}

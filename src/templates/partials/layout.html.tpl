@@ -17,24 +17,24 @@
                 {% else %}
                     <a href="{{ url_for('index') }}">home</a>
                 {% endif %}
-                //
                 {% if acl("customers.customer_person.list") %}
+                    //
                     {% if link == "customers" %}
                         <a href="{{ url_for('list_customers') }}" class="active">customers</a>
                     {% else %}
                         <a href="{{ url_for('list_customers') }}">customers</a>
                     {% endif %}
                 {% endif %}
-                //
                 {% if acl("foundation.supplier_company.list") %}
+                    //
                     {% if link == "suppliers" %}
                         <a href="{{ url_for('list_suppliers') }}" class="active">suppliers</a>
                     {% else %}
                         <a href="{{ url_for('list_suppliers') }}">suppliers</a>
                     {% endif %}
                 {% endif %}
-                //
                 {% if acl("foundation.store.list") %}
+                    //
                     {% if link == "stores" %}
                         <a href="{{ url_for('list_stores') }}" class="active">stores</a>
                     {% else %}

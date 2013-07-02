@@ -66,6 +66,8 @@ class Slave(threading.Thread):
         pass
 
     def auth(self):
+        if not config.REMOTE: return
+
         username = quorum.conf("OMNIX_USERNAME")
         password = quorum.conf("OMNIX_PASSWORD")
         if username == None or password == None:

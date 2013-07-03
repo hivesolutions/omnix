@@ -106,6 +106,7 @@ def reset():
     )
 
 @app.route("/flush_at", methods = ("GET",))
+@quorum.ensure("base.admin")
 def flush_at():
     url = util.ensure_token()
     if url: return flask.redirect(url)
@@ -216,6 +217,7 @@ def oauth():
     )
 
 @app.route("/top", methods = ("GET",))
+@quorum.ensure("base.admin")
 def top():
     access_token = flask.session.get("omnix.access_token", None)
     session_id = flask.session.get("omnix.session_id", None)

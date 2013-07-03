@@ -38,6 +38,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import datetime
+import traceback
 
 import util
 
@@ -228,12 +229,34 @@ def top():
 
 @app.errorhandler(404)
 def handler_404(error):
-    return str(error)
+    return flask.Response(
+        flask.render_template(
+            "error.html.tpl",
+            error = "404 - Page not found"
+        ),
+        status = 404
+    )
 
 @app.errorhandler(413)
 def handler_413(error):
-    return str(error)
+    return flask.Response(
+        flask.render_template(
+            "error.html.tpl",
+            error = "412 - Precondition failed"
+        ),
+        status = 413
+    )
 
 @app.errorhandler(BaseException)
 def handler_exception(error):
-    return str(error)
+    formatted = traceback.format_exc()
+    lines = formatted.splitlines()
+
+    return flask.Response(
+        flask.render_template(
+            "error.html.tpl",
+            error = str(error),
+            traceback = lines
+        ),
+        status = 500
+    )

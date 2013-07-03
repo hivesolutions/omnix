@@ -39,8 +39,10 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 from omnix import app
 from omnix import flask
+from omnix import quorum
 
 @app.route("/reports", methods = ("GET",))
+@quorum.ensure("base.admin")
 def list_reports():
     return flask.render_template(
         "report/list.html.tpl",
@@ -48,6 +50,7 @@ def list_reports():
     )
 
 @app.route("/reports/sales", methods = ("GET",))
+@quorum.ensure("base.admin")
 def sales_reports():
     return flask.render_template(
         "report/sales.html.tpl",

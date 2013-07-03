@@ -73,6 +73,7 @@ SCOPE = (
     "foundation.store.show",
     "foundation.employee.list",
     "foundation.employee.show",
+    "foundation.employee.show.self",
     "foundation.supplier_company.list",
     "foundation.supplier_company.show",
     "customers.customer_person.list",

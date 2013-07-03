@@ -47,6 +47,7 @@ from omnix import flask
 from omnix import quorum
 
 @app.route("/extras", methods = ("GET",))
+@quorum.ensure("base.admin")
 def list_extras():
     return flask.render_template(
         "extra/list.html.tpl",
@@ -54,6 +55,7 @@ def list_extras():
     )
 
 @app.route("/extras/prices", methods = ("GET",))
+@quorum.ensure("base.admin")
 def prices_extras():
     return flask.render_template(
         "extra/prices.html.tpl",
@@ -61,6 +63,7 @@ def prices_extras():
     )
 
 @app.route("/extras/prices", methods = ("POST",))
+@quorum.ensure("base.admin")
 def do_prices_extras():
     url = util.ensure_token()
     if url: return flask.redirect(url)

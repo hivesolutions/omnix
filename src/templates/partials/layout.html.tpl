@@ -60,24 +60,30 @@
                             {% endif %}
                         </li>
                         <li>
-                            {% if link == "reports" %}
-                                <a href="{{ url_for('list_reports') }}" class="active">reports</a>
-                            {% else %}
-                                <a href="{{ url_for('list_reports') }}">reports</a>
+                            {% if acl("base.admin") %}
+                                {% if link == "reports" %}
+                                    <a href="{{ url_for('list_reports') }}" class="active">reports</a>
+                                {% else %}
+                                    <a href="{{ url_for('list_reports') }}">reports</a>
+                                {% endif %}
                             {% endif %}
                         </li>
                         <li>
-                            {% if link == "extras" %}
-                                <a href="{{ url_for('list_extras') }}" class="active">extras</a>
-                            {% else %}
-                                <a href="{{ url_for('list_extras') }}">extras</a>
+                            {% if acl("base.admin") %}
+                                {% if link == "extras" %}
+                                    <a href="{{ url_for('list_extras') }}" class="active">extras</a>
+                                {% else %}
+                                    <a href="{{ url_for('list_extras') }}">extras</a>
+                                {% endif %}
                             {% endif %}
                         </li>
                         <li>
-                            {% if link == "top" %}
-                                <a href="{{ url_for('top') }}" class="active">top sellers</a>
-                            {% else %}
-                                <a href="{{ url_for('top') }}">top sellers</a>
+                            {% if acl("base.admin") %}
+                                {% if link == "top" %}
+                                    <a href="{{ url_for('top') }}" class="active">top sellers</a>
+                                {% else %}
+                                    <a href="{{ url_for('top') }}">top sellers</a>
+                                {% endif %}
                             {% endif %}
                         </li>
                     </ul>

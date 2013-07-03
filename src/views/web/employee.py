@@ -232,7 +232,7 @@ def get_sales(id = None):
             "date:lesser:" + str(end_t)
         ]
     }
-    
+
     if id: kwargs["filters[]"].append("primary_return_processor:equals:" + id)
 
     partial_url = "omni/returns.json" if id else "omni/returns/self.json"
@@ -252,7 +252,7 @@ def get_sales(id = None):
         date = operation["date"]
         date_t = datetime.datetime.utcfromtimestamp(date)
         operation["date_f"] = date_t.strftime("%b %d, %Y")
-        
+
     return (
         operations,
         target_s,
@@ -265,4 +265,3 @@ def get_sales(id = None):
         next_year,
         has_next
     )
-    

@@ -47,50 +47,52 @@
                 {% else %}
                     <a href="{{ url_for('about') }}">about</a>
                 {% endif %}
-                //
                 <div class="links-extra">
                     <ul>
-                        <li>
-                            {% if acl("foundation.employee.list") %}
+                        {% if acl("foundation.employee.list") %}
+                            <li>
                                 {% if link == "employees" %}
                                     <a href="{{ url_for('list_employees') }}" class="active">employees</a>
                                 {% else %}
                                     <a href="{{ url_for('list_employees') }}">employees</a>
                                 {% endif %}
-                            {% endif %}
-                        </li>
-                        <li>
-                            {% if acl("base.admin") %}
+                            </li>
+                        {% endif %}
+                        {% if acl("base.admin") %}
+                            <li>
                                 {% if link == "reports" %}
                                     <a href="{{ url_for('list_reports') }}" class="active">reports</a>
                                 {% else %}
                                     <a href="{{ url_for('list_reports') }}">reports</a>
                                 {% endif %}
-                            {% endif %}
-                        </li>
-                        <li>
-                            {% if acl("base.admin") %}
+                            </li>
+                        {% endif %}
+                        {% if acl("base.admin") %}
+                            <li>
                                 {% if link == "extras" %}
                                     <a href="{{ url_for('list_extras') }}" class="active">extras</a>
                                 {% else %}
                                     <a href="{{ url_for('list_extras') }}">extras</a>
                                 {% endif %}
-                            {% endif %}
-                        </li>
-                        <li>
-                            {% if acl("base.admin") %}
+                            </li>
+                        {% endif %}
+                        {% if acl("base.admin") %}
+                            <li>
+
                                 {% if link == "top" %}
                                     <a href="{{ url_for('top') }}" class="active">top sellers</a>
                                 {% else %}
                                     <a href="{{ url_for('top') }}">top sellers</a>
                                 {% endif %}
-                            {% endif %}
-                        </li>
+
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
-                <a class="link link-more">
-                    <span>more</span>
-                </a>
+                <span class="link-more">
+                    //
+                    <a class="link">more</a>
+                </span>
             </div>
         {% endblock %}
     </div>

@@ -52,13 +52,23 @@
             <tr>
                 <td>
                     <div class="links">
-                        <a href="{{ url_for('sales_employees', id = employee.object_id, month = previous[0], year = previous[1]) }}">previous</a>
-                        //
-                        {% if has_next %}
-                            <a href="{{ url_for('sales_employees', id = employee.object_id, month = next[0], year = next[1]) }}">next</a>
-                        {% else %}
-                            <span>next</span>
-                        {% endif %}
+                    	{% if is_self %}
+	                        <a href="{{ url_for('sales_employee', month = previous[0], year = previous[1]) }}">previous</a>
+	                        //
+	                        {% if has_next %}
+	                            <a href="{{ url_for('sales_employee', month = next[0], year = next[1]) }}">next</a>
+	                        {% else %}
+	                            <span>next</span>
+	                        {% endif %}
+	                    {% else %}
+	                    	<a href="{{ url_for('sales_employees', id = employee.object_id, month = previous[0], year = previous[1]) }}">previous</a>
+	                        //
+	                        {% if has_next %}
+	                            <a href="{{ url_for('sales_employees', id = employee.object_id, month = next[0], year = next[1]) }}">next</a>
+	                        {% else %}
+	                            <span>next</span>
+	                        {% endif %}
+	                    {% endif %}
                     </div>
                 </td>
             </tr>

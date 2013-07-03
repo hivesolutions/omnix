@@ -77,6 +77,60 @@ def list_employees_json():
 
     return contents_s
 
+@app.route("/employees/self", methods = ("GET",))
+@quorum.ensure("foundation.employee.show.self")
+def show_employee():
+    url = util.ensure_token()
+    if url: return flask.redirect(url)
+
+    url = util.BASE_URL + "omni/employees/self.json"
+    contents_s = util.get_json(url)
+
+    return flask.render_template(
+        "employee/show.html.tpl",
+        link = "employees",
+        sub_link = "info",
+        is_self = True,
+        employee = contents_s
+    )
+
+@app.route("/employees/self/sales", methods = ("GET",))
+@quorum.ensure(("sales.sale_transaction.list.self", "sales.customer_return.list.self"))
+def sales_employee():
+    url = util.ensure_token()
+    if url: return flask.redirect(url)
+
+    url = util.BASE_URL + "omni/employees/self.json"
+    contents_s = util.get_json(url)
+
+    operations,\
+    target_s,\
+    sales_total,\
+    sales_s,\
+    returns_s,\
+    previous_month,\
+    previous_year,\
+    next_month,\
+    next_year,\
+    has_next = get_sales()
+
+    return flask.render_template(
+        "employee/sales.html.tpl",
+        link = "employees",
+        sub_link = "sales",
+        is_self = True,
+        employee = contents_s,
+        operations = operations,
+        commission_rate = util.COMMISSION_RATE,
+        title = target_s,
+        sales_total = sales_total,
+        sales_count = len(sales_s),
+        returns_count = len(returns_s),
+        previous = (previous_month, previous_year),
+        next = (next_month, next_year),
+        has_next = has_next
+    )
+
 @app.route("/employees/<id>", methods = ("GET",))
 @quorum.ensure("foundation.employee.show")
 def show_employees(id):
@@ -94,18 +148,48 @@ def show_employees(id):
     )
 
 @app.route("/employees/<id>/sales", methods = ("GET",))
+@quorum.ensure(("sales.sale_transaction.list", "sales.customer_return.list"))
 def sales_employees(id):
     url = util.ensure_token()
     if url: return flask.redirect(url)
 
+    url = util.BASE_URL + "omni/employees/%s.json" % id
+    contents_s = util.get_json(url)
+
+    operations,\
+    target_s,\
+    sales_total,\
+    sales_s,\
+    returns_s,\
+    previous_month,\
+    previous_year,\
+    next_month,\
+    next_year,\
+    has_next = get_sales(id = id)
+
+    return flask.render_template(
+        "employee/sales.html.tpl",
+        link = "employees",
+        sub_link = "sales",
+        is_self = False,
+        employee = contents_s,
+        operations = operations,
+        commission_rate = util.COMMISSION_RATE,
+        title = target_s,
+        sales_total = sales_total,
+        sales_count = len(sales_s),
+        returns_count = len(returns_s),
+        previous = (previous_month, previous_year),
+        next = (next_month, next_year),
+        has_next = has_next
+    )
+
+def get_sales(id = None):
     now = datetime.datetime.utcnow()
     month = quorum.get_field("month", now.month, cast = int)
     year = quorum.get_field("year", now.year, cast = int)
 
     has_next = int("%04d%02d" % (year, month)) < int("%04d%02d" % (now.year, now.month))
-
-    url = util.BASE_URL + "omni/employees/%s.json" % id
-    contents_s = util.get_json(url)
 
     previous_month, previous_year = (month - 1, year) if not month == 1 else (12, year - 1)
     next_month, next_year = (month + 1, year) if not month == 12 else (1, year + 1)
@@ -129,12 +213,13 @@ def sales_employees(id):
         "sort" : "date:descending",
         "filters[]" : [
             "date:greater:" + str(start_t),
-            "date:lesser:" + str(end_t),
-            "primary_seller:equals:" + id
+            "date:lesser:" + str(end_t)
         ]
     }
+    if id: kwargs["filters[]"].append("primary_seller:equals:" + id)
 
-    url = util.BASE_URL + "omni/sales.json"
+    partial_url = "omni/sales.json" if id else "omni/sales/self.json"
+    url = util.BASE_URL + partial_url
     sales_s = util.get_json(url, **kwargs)
 
     kwargs = {
@@ -144,12 +229,14 @@ def sales_employees(id):
         "sort" : "date:descending",
         "filters[]" : [
             "date:greater:" + str(start_t),
-            "date:lesser:" + str(end_t),
-            "primary_return_processor:equals:" + id
+            "date:lesser:" + str(end_t)
         ]
     }
+    
+    if id: kwargs["filters[]"].append("primary_return_processor:equals:" + id)
 
-    url = util.BASE_URL + "omni/returns.json"
+    partial_url = "omni/returns.json" if id else "omni/returns/self.json"
+    url = util.BASE_URL + partial_url
     returns_s = util.get_json(url, **kwargs)
 
     operations = returns_s + sales_s
@@ -165,19 +252,17 @@ def sales_employees(id):
         date = operation["date"]
         date_t = datetime.datetime.utcfromtimestamp(date)
         operation["date_f"] = date_t.strftime("%b %d, %Y")
-
-    return flask.render_template(
-        "employee/sales.html.tpl",
-        link = "employees",
-        sub_link = "sales",
-        employee = contents_s,
-        operations = operations,
-        commission_rate = util.COMMISSION_RATE,
-        title = target_s,
-        sales_total = sales_total,
-        sales_count = len(sales_s),
-        returns_count = len(returns_s),
-        previous = (previous_month, previous_year),
-        next = (next_month, next_year),
-        has_next = has_next
+        
+    return (
+        operations,
+        target_s,
+        sales_total,
+        sales_s,
+        returns_s,
+        previous_month,
+        previous_year,
+        next_month,
+        next_year,
+        has_next
     )
+    

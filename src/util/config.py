@@ -52,7 +52,7 @@ LOCAL_URL = "http://localhost:8080/dynamic/rest/mvc/"
 complete url values for the various operations, this is
 the local version of it used mostly for debugging """
 
-REMOTE_URL = "https://erp.startomni.com/"
+REMOTE_URL = "https://ldj.frontdoorhd.com/"
 """ The base url to be used to compose the various
 complete url values for the various operations, this is
 the remove version used in production environments """

@@ -9,11 +9,11 @@
             <tr>
                 <td>
                     <span class="label">Today's Sales</span><br />
-                    <span class="value {{ current.number_direction }}">{{ current.number_sales }}</span>
+                    <span class="value {{ current.number_direction }}">{{ current.net_number_sales }}</span>
                 </td>
                 <td>
                     <span class="label">Today's Amount</span><br />
-                    <span class="value {{ current.amount_direction }}">{{ '%0.2f' % current.amount_price_vat }} €</span>
+                    <span class="value {{ current.amount_direction }}">{{ '%0.2f' % current.net_price_vat }} €</span>
                 </td>
             </tr>
         </tbody>
@@ -30,8 +30,8 @@
             {% for day in days %}
                 <tr>
                     <td class="left">{{ day.date.strftime('%b %d, %Y') }}</td>
-                    <td class="right">{{ day.number_sales }}</td>
-                    <td class="right">{{ '%0.2f' % day.amount_price_vat }} €</td>
+                    <td class="right">{{ day.net_number_sales }}</td>
+                    <td class="right">{{ '%0.2f' % day.net_price_vat }} €</td>
                 </tr>
             {% endfor %}
         </tbody>

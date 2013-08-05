@@ -110,31 +110,31 @@ def sales_stores(id):
     contents_s = util.get_json(url, unit = "day", store_id = id_s)
     stats_s = contents_s[id_s]
     current_s = dict(
-        amount_price_vat = stats_s["amount_price_vat"][-1],
-        number_sales = stats_s["number_sales"][-1],
+        net_price_vat = stats_s["net_price_vat"][-1],
+        net_number_sales = stats_s["net_number_sales"][-1],
         date = current_day
     )
 
     days_s = []
 
-    count = len(stats_s["amount_price_vat"]) - 1
+    count = len(stats_s["net_price_vat"]) - 1
     count_r = range(count)
     count_r.reverse()
     _current_day = current_day
     for index in count_r:
         _current_day -= datetime.timedelta(1)
         day = dict(
-            amount_price_vat = stats_s["amount_price_vat"][index],
-            number_sales = stats_s["number_sales"][index],
+            net_price_vat = stats_s["net_price_vat"][index],
+            net_number_sales = stats_s["net_number_sales"][index],
             date = _current_day
         )
         days_s.append(day)
 
     previous_s = days_s[0] if days_s else dict()
-    current_s["amount_delta"] = current_s["amount_price_vat"] -\
-        previous_s.get("amount_price_vat", 0)
-    current_s["number_delta"] = current_s["number_sales"] -\
-        previous_s.get("number_sales", 0)
+    current_s["amount_delta"] = current_s["net_price_vat"] -\
+        previous_s.get("net_price_vat", 0)
+    current_s["number_delta"] = current_s["net_number_sales"] -\
+        previous_s.get("net_number_sales", 0)
 
     if current_s["amount_delta"] == 0: current_s["amount_direction"] = "equal"
     elif current_s["amount_delta"] > 0: current_s["amount_direction"] = "up"

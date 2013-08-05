@@ -67,13 +67,18 @@ def put_json(url, authenticate = True, token = False, **kwargs):
 
 def handle_error(error):
     data = error.get_data()
+    error = data.get("error", None)
+    error_description = data.get("error_description", None)
     exception = data.get("exception", {})
-    exception_name = exception.get("exception_name", None)
-    message = exception.get("message", None)
+    exception_name = exception.get("exception_name", error)
+    message = exception.get("message", error_description)
     if exception_name == "ControllerValidationReasonFailed":
         reset_session_id()
+        raise RuntimeError("invalid session")
     elif exception_name:
         raise RuntimeError("%s - %s" % (exception_name, message))
+    else:
+        raise RuntimeError("invalid error received")
 
 def ensure_token():
     access_token = flask.session.get("omnix.access_token", None)
@@ -106,7 +111,6 @@ def ensure_session_id():
     flask.session["omnix.acl"] = acl
     flask.session["omnix.session_id"] = session_id
     flask.session["tokens"] = tokens
-    flask.session["acl"] = quorum.check_login
 
 def reset_session():
     if "omnix.access_token" in flask.session: del flask.session["omnix.access_token"]

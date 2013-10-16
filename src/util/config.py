@@ -92,13 +92,25 @@ SCOPE = (
 """ The list of permission to be used to create the
 scope string for the oauth value """
 
-AT_SUBMIT_TYPES = (
+AT_SALE_TYPES = (
     "MoneySaleSlip",
     "Invoice",
     "CreditNote",
     "DebitNote"
 )
-""" The set of valid types for submission to at """
+""" The list containing the complete set of types that
+are considered to be of type sake """
+
+AT_TRANSPORT_TYPES = (
+    "TransportationSlip",
+    "ExpeditionSlip"
+)
+""" The list containing the complete set of types that
+are considered to be of type transport """
+
+AT_SUBMIT_TYPES = AT_SALE_TYPES + AT_TRANSPORT_TYPES
+""" The set of valid types for submission to at, note
+that this range of values should be changed with care """
 
 REMOTE = quorum.conf("REMOTE", False)
 REDIRECT_URL = quorum.conf("REDIRECT_URL", REDIRECT_URL)

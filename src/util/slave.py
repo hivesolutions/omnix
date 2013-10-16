@@ -96,7 +96,12 @@ class Slave(threading.Thread):
         if not config.REMOTE: return
 
     def callback(self, channel, method, properties, body):
+        # loads the contents of the body that is going to be submitted this
+        # is considered the payload of the document to be submitted
         document = json.loads(body)
+
+        # retrieves the various attributes of the document that is going to
+        # be submitted, making sure that the issue date is correctly formatted
         type = document["_class"]
         object_id = document["object_id"]
         representation = document["representation"]
@@ -104,6 +109,8 @@ class Slave(threading.Thread):
         issue_date_d = datetime.datetime.utcfromtimestamp(issue_date)
         issue_date_s = issue_date_d.strftime("%d %b %Y %H:%M:%S")
 
+        # verifies if the document is considered to be outdated (timeout passed)
+        # in case it's returns immediately printing a message
         outdated = not properties.timestamp or\
             properties.timestamp < time.time() - MESSAGE_TIMEOUT
         if outdated:
@@ -127,10 +134,14 @@ class Slave(threading.Thread):
             )
         )
 
+        # resolves the url for the currently retrieved data type (class)
+        # this should raise an exception in case the type is invalid
+        url = self._resolve_url(type)
+
         try:
             # creates the complete url value for the submission
             # operation and run the submission for the current document
-            url = config.BASE_URL + "omni/signed_documents/submit_invoice_at.json"
+            url = config.BASE_URL + url
             quorum.get_json(
                 url,
                 session_id = self.session_id,
@@ -159,6 +170,14 @@ class Slave(threading.Thread):
         self.auth()
         self.connect(queue = "omnix")
         self.disconnect()
+
+    def _resolve_url(self, type):
+        if type in config.AT_SALE_TYPES:
+            return "omni/signed_documents/submit_invoice_at.json"
+        elif type in config.AT_TRANSPORT_TYPES:
+            return "omni/signed_documents/submit_transport_at.json"
+        else:
+            raise RuntimeError("Invalid document type")
 
 def run(count = 1):
     for _index in range(count):

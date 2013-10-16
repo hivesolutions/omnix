@@ -119,7 +119,7 @@ class Supervisor(threading.Thread):
             "filters[]" : [
                 "issue_date:greater:1356998400",
                 "submitted_at:equals:2",
-                "document_type:equals:3"
+                "document_type:in:1;3"
             ]
         }
         url = config.BASE_URL + "omni/signed_documents.json"

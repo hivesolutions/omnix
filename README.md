@@ -1,6 +1,9 @@
 # Omni (x)Extensions
 
-Simple web application consuming the omni api.
+Simple web application consuming the Omni API.
+
+This application may be used as a supervisor of the Omni Platform to run taks in an async
+fashion, this way it's possible to remove async tasks from the Omni core.
 
 ## Usage
 

@@ -15,3 +15,6 @@ part of the omni extension (supervisor).
 this value will be sent in plain text (using an SSL encrypted connection)
 * `REMOTE` - If the remove mode should be used (production url creation)
 * `REDIRECT_URL` - The url that will be used for outh based callbacks
+
+Additionally one must also configure the mondogb and rabbitmq instances to be able to execute
+the proper master and slave supervisors. For that use the `MONGOHQ_URL` and `CLOUDAMQP_URL` variables.

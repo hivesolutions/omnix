@@ -156,6 +156,8 @@ class Supervisor(threading.Thread):
                 # pre-defined queue system, this is a fallback of the error
                 self.connect(queue = "omnix")
 
+        # prints an information message about the new documents that
+        # have been queued for submission by the "slaves"
         quorum.info("Queued %d documents for submission" % len(valid_documents))
 
     def loop(self):

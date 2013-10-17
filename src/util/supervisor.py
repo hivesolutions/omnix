@@ -131,17 +131,30 @@ class Supervisor(threading.Thread):
         # as not submitted and creates a task for their submission
         # then adds the task to the rabbit queue to be processed
         for document in valid_documents:
-            self.channel.basic_publish(
-                exchange = "",
-                routing_key = "omnix",
-                body = json.dumps(document),
-                properties = quorum.properties_rabbit(
-                    delivery_mode = 2,
-                    priority = MESSAGE_RETRIES,
-                    expiration = str(MESSAGE_TIMEOUT * 1000),
-                    timestamp = time.time()
+            try:
+                # tries to run the basic publish operation, this operation
+                # may fail for a variety of reasons including errors in the
+                # underlying library so a reconnection is attempted in case
+                # there's an exception raised under this operation
+                self.channel.basic_publish(
+                    exchange = "",
+                    routing_key = "omnix",
+                    body = json.dumps(document),
+                    properties = quorum.properties_rabbit(
+                        delivery_mode = 2,
+                        priority = MESSAGE_RETRIES,
+                        expiration = str(MESSAGE_TIMEOUT * 1000),
+                        timestamp = time.time()
+                    )
                 )
-            )
+            except BaseException, exception:
+                # prints a warning message about the exception that has just occurred
+                # so that it's possible to act on it
+                quorum.warning("Exception in publish (will re-connect) - %s" % unicode(exception))
+
+                # re-tries to connect with the rabbit channels using the currently
+                # pre-defined queue system, this is a fallback of the error
+                self.connect(queue = "omnix")
 
         quorum.info("Queued %d documents for submission" % len(valid_documents))
 

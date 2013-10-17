@@ -19,6 +19,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Hive Omnix System. If not, see <http://www.gnu.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,6 +37,17 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-import base
+from omnix import app
+from omnix import quorum
 
-from base import *
+@app.route("/api/log.json", methods = ("GET",), json = True)
+@quorum.ensure("base.admin")
+def log_api():
+    memory_handler = app.handlers.get("memory", None)
+
+    count = quorum.get_field("count", None, cast = int)
+    level = quorum.get_field("level", None, cast = int)
+
+    return dict(
+        messages = memory_handler.get_latest(count = count, level = level)
+    )

@@ -150,7 +150,10 @@ class Supervisor(threading.Thread):
             except BaseException, exception:
                 # prints a warning message about the exception that has just occurred
                 # so that it's possible to act on it
-                quorum.warning("Exception in publish (will re-connect) - %s" % unicode(exception))
+                quorum.warning(
+                    "Exception in publish (will re-connect) - %s" % unicode(exception),
+                    log_trace = True
+                )
 
                 # re-tries to connect with the rabbit channels using the currently
                 # pre-defined queue system, this is a fallback of the error
@@ -164,7 +167,10 @@ class Supervisor(threading.Thread):
         while True:
             try: self.execute()
             except BaseException, exception:
-                quorum.error("Exception while executing - %s" % unicode(exception))
+                quorum.error(
+                    "Exception while executing - %s" % unicode(exception),
+                    log_trace = True
+                )
             time.sleep(LOOP_TIMEOUT)
 
     def run(self):

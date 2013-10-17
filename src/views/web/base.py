@@ -48,7 +48,7 @@ from omnix import quorum
 
 @app.route("/", methods = ("GET",))
 @app.route("/index", methods = ("GET",))
-@quorum.ensure("foundation.oauth.start_session")
+@quorum.ensure("base")
 def index():
     return flask.render_template(
         "index.html.tpl",
@@ -85,7 +85,7 @@ def logout():
     )
 
 @app.route("/about", methods = ("GET",))
-@quorum.ensure("foundation.oauth.start_session")
+@quorum.ensure("base")
 def about():
     access_token = flask.session.get("omnix.access_token", None)
     session_id = flask.session.get("omnix.session_id", None)

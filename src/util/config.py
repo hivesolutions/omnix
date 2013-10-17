@@ -69,6 +69,7 @@ CLIENT_SECRET = "4c37a7dff4c3411ba1646093d2109d87"
 omni api as the client """
 
 SCOPE = (
+    "base",
     "base.user",
     "base.admin",
     "foundation.store.list",

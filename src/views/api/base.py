@@ -46,7 +46,7 @@ def log_api():
     memory_handler = app.handlers.get("memory", None)
 
     count = quorum.get_field("count", None, cast = int)
-    level = quorum.get_field("level", None, cast = int)
+    level = quorum.get_field("level", None)
 
     return dict(
         messages = memory_handler.get_latest(count = count, level = level)

@@ -52,6 +52,12 @@ MESSAGE_TIMEOUT = 120
 considered out dated and is discarded from the
 queue even without processing """
 
+LOOP_TIMEOUT = 120
+""" The time to be used in between reading new
+messages from the omni service, this will only be
+used in case there's a problem in the client
+connection with the queueing service """
+
 class Slave(threading.Thread):
 
     session_id = None
@@ -85,12 +91,21 @@ class Slave(threading.Thread):
     def connect(self, queue = "default"):
         if not config.REMOTE: return
 
-        self.connection = quorum.get_rabbit()
-        self.channel = self.connection.channel()
-        self.channel.queue_declare(queue = queue, durable = True)
-        self.channel.basic_qos(prefetch_count = 1)
-        self.channel.basic_consume(self.callback, queue = queue)
-        self.channel.start_consuming()
+        while True:
+            try:
+                self.connection = quorum.get_rabbit()
+                self.channel = self.connection.channel()
+                self.channel.queue_declare(queue = queue, durable = True)
+                self.channel.basic_qos(prefetch_count = 1)
+                self.channel.basic_consume(self.callback, queue = queue)
+                self.channel.start_consuming()
+            except BaseException, exception:
+                quorum.error(
+                    "Exception while executing - %s" % unicode(exception),
+                    log_trace = True
+                )
+
+            time.sleep(LOOP_TIMEOUT)
 
     def disconnect(self):
         if not config.REMOTE: return

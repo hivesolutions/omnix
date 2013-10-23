@@ -92,7 +92,7 @@ class Supervisor(threading.Thread):
     def connect(self, queue = "default"):
         if not config.REMOTE: return
 
-        self.connection = quorum.get_rabbit()
+        self.connection = quorum.get_rabbit(force = True)
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue = queue, durable = True)
 

@@ -93,7 +93,7 @@ class Slave(threading.Thread):
 
         while True:
             try:
-                self.connection = quorum.get_rabbit()
+                self.connection = quorum.get_rabbit(force = True)
                 self.channel = self.connection.channel()
                 self.channel.queue_declare(queue = queue, durable = True)
                 self.channel.basic_qos(prefetch_count = 1)

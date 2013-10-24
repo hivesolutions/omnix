@@ -194,7 +194,7 @@ def get_sales(id = None):
     previous_month, previous_year = (month - 1, year) if not month == 1 else (12, year - 1)
     next_month, next_year = (month + 1, year) if not month == 12 else (1, year + 1)
 
-    start_month, start_year = (month, year) if now.day >= 21 else (previous_month, previous_year)
+    start_month, start_year = (month, year) if now.day >= util.COMMISSION_DAY else (previous_month, previous_year)
     end_month, end_year = (start_month + 1, start_year) if not start_month == 12 else (1, start_year + 1)
 
     start = datetime.datetime(year = start_year, month = start_month, day = util.COMMISSION_DAY)

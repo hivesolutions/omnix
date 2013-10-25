@@ -107,12 +107,14 @@ def ensure_session_id():
     session_id = contents_s.get("session_id", None)
     tokens = get_tokens(acl)
 
+    flask.session["omnix.base_url"] = config.BASE_URL
     flask.session["omnix.username"] = username
     flask.session["omnix.acl"] = acl
     flask.session["omnix.session_id"] = session_id
     flask.session["tokens"] = tokens
 
 def reset_session():
+    if "omnix.base_url" in flask.session: del flask.session["omnix.base_url"]
     if "omnix.access_token" in flask.session: del flask.session["omnix.access_token"]
     if "omnix.username" in flask.session: del flask.session["omnix.username"]
     if "omnix.acl" in flask.session: del flask.session["omnix.acl"]

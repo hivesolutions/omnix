@@ -89,6 +89,10 @@ class Supervisor(threading.Thread):
         )
         self.session_id = contents_s["session_id"]
 
+    def auth_callback(self, params):
+        self.auth()
+        params["session_id"] = self.session_id
+
     def connect(self, queue = "default"):
         if not config.REMOTE: return
 
@@ -123,7 +127,11 @@ class Supervisor(threading.Thread):
             ]
         }
         url = config.BASE_URL + "omni/signed_documents.json"
-        contents_s = quorum.get_json(url, **kwargs)
+        contents_s = quorum.get_json(
+            url,
+            auth_callback = self.auth_callback,
+            **kwargs
+        )
         valid_documents = [value for value in contents_s\
             if value["_class"] in config.AT_SUBMIT_TYPES]
 

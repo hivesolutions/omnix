@@ -88,6 +88,10 @@ class Slave(threading.Thread):
         )
         self.session_id = contents_s["session_id"]
 
+    def auth_callback(self, params):
+        self.auth()
+        params["session_id"] = self.session_id
+
     def connect(self, queue = "default"):
         if not config.REMOTE: return
 
@@ -160,7 +164,8 @@ class Slave(threading.Thread):
             quorum.get_json(
                 url,
                 session_id = self.session_id,
-                document_id = object_id
+                document_id = object_id,
+                auth_callback = self.auth_callback
             )
         except BaseException, exception:
             quorum.error("Exception while submitting document - %s" % unicode(exception))

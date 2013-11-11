@@ -4,7 +4,7 @@
 {% block content %}
     <div class="quote">{{ title }}</div>
     <div class="separator-horizontal"></div>
-    <table class="table-resume three">
+    <table class="table table-resume three">
         <tbody>
             <tr>
                 <td>
@@ -22,7 +22,7 @@
             </tr>
         </tbody>
     </table>
-    <table class="table-list">
+    <table class="table table-list">
         <thead>
             <tr>
                 <th class="left label" width="25%">Date</th>

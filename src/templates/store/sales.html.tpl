@@ -4,7 +4,7 @@
 {% block content %}
     <div class="quote">{{ current.date.strftime('%b %d, %Y') }}</div>
     <div class="separator-horizontal"></div>
-    <table class="table-resume">
+    <table class="table table-resume">
         <tbody>
             <tr>
                 <td>
@@ -18,7 +18,7 @@
             </tr>
         </tbody>
     </table>
-    <table class="table-list">
+    <table class="table table-list">
         <thead>
             <tr>
                 <th class="left label" width="50%">Previous Days</th>

@@ -3,7 +3,7 @@
 {% block name %}Sales Report{% endblock %}
 {% block description %}Actualizado a 09/01/2013 19:34{% endblock %}
 {% block content %}
-    <table class="table-full table-report">
+    <table class="table table-full table-report">
         <thead>
             <tr>
                 <th class="center label" data-width="60">Rank</th>

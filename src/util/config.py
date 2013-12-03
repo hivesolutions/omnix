@@ -88,6 +88,7 @@ SCOPE = (
     "documents.signed_document.list",
     "documents.signed_document.submit_invoice_at",
     "analytics.sale_snapshot.list",
+    "inventory.transactional_merchandise.list",
     "inventory.transactional_merchandise.update"
 )
 """ The list of permission to be used to create the

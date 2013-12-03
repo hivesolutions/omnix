@@ -5,7 +5,13 @@
     <ul>
         <li>
             <div class="name">
-                <a href="{{ url_for('prices_extras') }}">Price List</a>
+                <a href="{{ url_for('images_extras') }}">Images List</a>
+            </div>
+            <div class="description">Upload a list of images to be used in entities</div>
+        </li>
+        <li>
+            <div class="name">
+                <a href="{{ url_for('prices_extras') }}">Prices List</a>
             </div>
             <div class="description">Import list of prices to the current data source</div>
         </li>

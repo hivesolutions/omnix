@@ -38,6 +38,8 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import os
+import shutil
+import zipfile
 import tempfile
 
 import util
@@ -54,6 +56,104 @@ def list_extras():
         link = "extras"
     )
 
+@app.route("/extras/images", methods = ("GET",))
+@quorum.ensure("base.admin")
+def images_extras():
+    return flask.render_template(
+        "extra/images.html.tpl",
+        link = "extras"
+    )
+
+@app.route("/extras/images", methods = ("POST",))
+@quorum.ensure("base.admin")
+def do_images_extras():
+    url = util.ensure_token()
+    if url: return flask.redirect(url)
+
+    # tries to retrieve the images file from the current
+    # form in case it's not available renders the current
+    # template with an error message
+    images_file = quorum.get_field("images_file", None)
+    if images_file == None or not images_file.filename:
+        return flask.render_template(
+            "extra/images.html.tpl",
+            link = "extras",
+            error = "No file defined"
+        )
+
+    # creates a temporary file path for the storage of the file
+    # and then saves it into that directory
+    fd, file_path = tempfile.mkstemp()
+    images_file.save(file_path)
+
+    try:
+        temp_path = tempfile.mkdtemp()
+        try:
+            zip = zipfile.ZipFile(file_path)
+            try: zip.extractall(temp_path)
+            finally: zip.close()
+
+            for name in os.listdir(temp_path):
+                base, extension = os.path.splitext(name)
+                if not extension in (".png",):
+                    quorum.info("Skipping, '%s' not a valid image file" % name)
+                    continue
+
+                kwargs = {
+                    "filter_string" : "",
+                    "start_record" : 0,
+                    "number_records" : 1,
+                    "filters[]" : [
+                        "company_product_code:equals:%s" % base
+                    ]
+                }
+
+                url = util.BASE_URL + "omni/merchandise.json"
+                contents_s = util.get_json(
+                    url,
+                    **kwargs
+                )
+
+                if not contents_s:
+                    quorum.info("Skipping, '%s' not found in data source" % base)
+                    continue
+
+                image_path = os.path.join(temp_path, name)
+                image_file = open(image_path, "rb")
+                try: contents = image_file.read()
+                finally: image_file.close()
+
+                entity = contents_s[0]
+                object_id = entity["object_id"]
+
+                image_tuple = (name, contents)
+
+                data_m = {
+                    "object_id" : object_id,
+                    "transactional_merchandise[_parameters][image_file]" : image_tuple
+                }
+
+                # uses the "resolved" items structure in the post operation to
+                # the omni api so that the images for them get updated
+                url = util.BASE_URL + "omni/merchandise/%d/update.json" % object_id
+                util.post_json(url, data_m = data_m)
+        finally:
+            shutil.rmtree(temp_path, ignore_errors = True)
+    finally:
+        # closes the temporary file descriptor and removes the temporary
+        # file (avoiding any memory leaks)
+        os.close(fd);
+        os.remove(file_path)
+
+    # redirects the user back to the images list page with a success
+    # message indicating that everything went as expected
+    return flask.redirect(
+        flask.url_for(
+            "images_extras",
+            message = "Images file processed with success"
+        )
+    )
+
 @app.route("/extras/prices", methods = ("GET",))
 @quorum.ensure("base.admin")
 def prices_extras():
@@ -68,6 +168,9 @@ def do_prices_extras():
     url = util.ensure_token()
     if url: return flask.redirect(url)
 
+    # tries to retrieve the prices file from the current
+    # form in case it's not available renders the current
+    # template with an error message
     prices_file = quorum.get_field("prices_file", None)
     if prices_file == None or not prices_file.filename:
         return flask.render_template(

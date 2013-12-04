@@ -87,20 +87,32 @@ def do_images_extras():
     images_file.save(file_path)
 
     try:
+        # creates a new temporary directory that is going to be used
+        # in the extraction of the images zip file
         temp_path = tempfile.mkdtemp()
         try:
+            # creates the zip file reference with the current file path
+            # and then extracts the complete set of contents to the "target"
+            # temporary path closing the zip file afterwards
             zip = zipfile.ZipFile(file_path)
             try: zip.extractall(temp_path)
             finally: zip.close()
 
+            # iterates over the complete set of names in the temporary path
+            # to try to upload the image to the target data source, note that
+            # only the image files are considered and the base name of them
+            # are going to be validation for existence in the data source
             for name in os.listdir(temp_path):
+                # splits the file name into base name and extension and validates
+                # the extension, so that only image files are considered
                 base, extension = os.path.splitext(name)
                 if not extension in (".png",):
                     quorum.info("Skipping, '%s' not a valid image file" % name)
                     continue
 
+                # creates the keyword arguments map so that the the merchandise
+                # with the provided company product code is retrieved
                 kwargs = {
-                    "filter_string" : "",
                     "start_record" : 0,
                     "number_records" : 1,
                     "filters[]" : [
@@ -108,26 +120,40 @@ def do_images_extras():
                     ]
                 }
 
+                # creates the url for the merchandise retrieval and runs the get
+                # operation with the provided filter so that the target merchandise
+                # is retrieved for object id validation
                 url = util.BASE_URL + "omni/merchandise.json"
                 contents_s = util.get_json(
                     url,
                     **kwargs
                 )
 
+                # verifies that at least one entity was retrieved in case nothing
+                # is found skips the current loop with a not found error
                 if not contents_s:
                     quorum.info("Skipping, '%s' not found in data source" % base)
                     continue
 
+                # retrieves the first entity from the resulting list and then retrieves
+                # the object identifier from it to be used in the update operation
+                entity = contents_s[0]
+                object_id = entity["object_id"]
+
+                # creates the target temporary image path from the temporary directory
+                # path and then "read" the complete set of contents from it closing the
+                # file afterwards (no more reading allowed)
                 image_path = os.path.join(temp_path, name)
                 image_file = open(image_path, "rb")
                 try: contents = image_file.read()
                 finally: image_file.close()
 
-                entity = contents_s[0]
-                object_id = entity["object_id"]
-
+                # creates the image (file) tuple with both the name of the file and the
+                # contents if it (multipart standard)
                 image_tuple = (name, contents)
 
+                # creates the multipart data map with both the object id and the image
+                # file parameters that are going to be used in the encoding
                 data_m = {
                     "object_id" : object_id,
                     "transactional_merchandise[_parameters][image_file]" : image_tuple
@@ -138,6 +164,8 @@ def do_images_extras():
                 url = util.BASE_URL + "omni/merchandise/%d/update.json" % object_id
                 util.post_json(url, data_m = data_m)
         finally:
+            # removes the temporary path as it's no longer going to be
+            # required for the operation (errors are ignored)
             shutil.rmtree(temp_path, ignore_errors = True)
     finally:
         # closes the temporary file descriptor and removes the temporary

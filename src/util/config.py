@@ -47,7 +47,7 @@ REMOTE_PREFIX = "adm/"
 """ The web prefix to be used when trying to access administration
 related resources from a remote perspective """
 
-LOCAL_URL = "http://localhost:8080/dynamic/rest/mvc/"
+LOCAL_URL = "http://localhost:8080/mvc/"
 """ The base url to be used to compose the various
 complete url values for the various operations, this is
 the local version of it used mostly for debugging """

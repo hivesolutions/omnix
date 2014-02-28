@@ -39,7 +39,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 from omnix import quorum
 
-LOCAL_PREFIX = "omni_web_adm/"
+LOCAL_PREFIX = "omni_adm/"
 """ The web prefix to be used when trying to access administration
 related resources from a local perspective """
 

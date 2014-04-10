@@ -54,6 +54,8 @@ class Base(quorum.Model):
     )
 
     def pre_create(self):
+        quorum.Model.pre_create(self)
+        
         self.enabled = True
 
     def enable(self):

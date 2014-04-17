@@ -135,6 +135,11 @@ class Supervisor(threading.Thread):
         valid_documents = [value for value in contents_s\
             if value["_class"] in config.AT_SUBMIT_TYPES]
 
+        # starts the counter value to zero, so that we're able to count
+        # the number of messages that have been successfully queued to
+        # the remote queueing mechanism (for debugging)
+        count = 0
+
         # iterates over all the valid documents that have been found
         # as not submitted and creates a task for their submission
         # then adds the task to the rabbit queue to be processed
@@ -155,6 +160,7 @@ class Supervisor(threading.Thread):
                         timestamp = time.time()
                     )
                 )
+                count += 1
             except BaseException, exception:
                 # prints a warning message about the exception that has just occurred
                 # so that it's possible to act on it
@@ -169,7 +175,7 @@ class Supervisor(threading.Thread):
 
         # prints an information message about the new documents that
         # have been queued for submission by the "slaves"
-        quorum.info("Queued %d documents for submission" % len(valid_documents))
+        quorum.info("Queued %d (out of %d) documents for submission" % (count, len(valid_documents)))
 
     def loop(self):
         while True:

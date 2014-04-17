@@ -97,6 +97,7 @@ class Slave(threading.Thread):
 
         while True:
             try:
+                quorum.debug("Running loop cycle in slave ...")
                 self.connection = quorum.get_rabbit(force = True)
                 self.channel = self.connection.channel()
                 self.channel.queue_declare(queue = queue, durable = True)

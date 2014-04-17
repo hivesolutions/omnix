@@ -46,9 +46,8 @@ from omnix import quorum
 @app.route("/customers", methods = ("GET",))
 @quorum.ensure("customers.customer_person.list")
 def list_customers():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
-
     return flask.render_template(
         "customer/list.html.tpl",
         link = "customers"
@@ -57,34 +56,21 @@ def list_customers():
 @app.route("/customers.json", methods = ("GET",), json = True)
 @quorum.ensure("customers.customer_person.list")
 def list_customers_json():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
+    api = util.get_api()
+    object = quorum.get_object()
+    return api.list_persons(**object)
 
-    filter_string = quorum.get_field("filter_string", None)
-    start_record = quorum.get_field("start_record", 0)
-    number_records = quorum.get_field("number_records", 0)
-
-    url = util.BASE_URL + "omni/customer_persons.json"
-    contents_s = util.get_json(
-        url,
-        filter_string = filter_string,
-        start_record = start_record,
-        number_records = number_records
-    )
-
-    return contents_s
-
-@app.route("/customers/<id>", methods = ("GET",))
+@app.route("/customers/<int:id>", methods = ("GET",))
 @quorum.ensure("customers.customer_person.show")
 def show_customers(id):
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
-
-    url = util.BASE_URL + "omni/customer_persons/%s.json" % id
-    contents_s = util.get_json(url)
-
+    api = util.get_api()
+    customer = api.get_person(id)
     return flask.render_template(
         "customer/show.html.tpl",
         link = "customers",
-        customer = contents_s
+        customer = customer
     )

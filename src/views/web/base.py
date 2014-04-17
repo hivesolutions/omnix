@@ -63,7 +63,7 @@ def signin():
 
 @app.route("/signin", methods = ("POST",))
 def login():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
     return flask.redirect(
         flask.url_for("index")
@@ -71,7 +71,7 @@ def login():
 
 @app.route("/signin_do", methods = ("GET",))
 def do_login():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
     return flask.redirect(
         flask.url_for("index")

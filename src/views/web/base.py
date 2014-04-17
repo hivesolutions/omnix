@@ -108,7 +108,7 @@ def reset():
 @app.route("/flush_at", methods = ("GET",))
 @quorum.ensure("base.admin")
 def flush_at():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
 
     # creates a values map structure to retrieve the complete
@@ -125,12 +125,12 @@ def flush_at():
             "document_type:equals:3"
         ]
     }
-    url = util.BASE_URL + "omni/signed_documents.json"
-    contents_s = util.get_json(url, **kwargs)
+    api = util.get_api()
+    documents = api.list_signed_documents(**kwargs)
 
     # filters the result set retrieved so that only the valid at
     # "submittable" documents are present in the sequence
-    valid_documents = [value for value in contents_s\
+    valid_documents = [value for value in documents\
         if value["_class"] in util.AT_SUBMIT_TYPES]
 
     # "calculates" the total set of valid documents present in the
@@ -161,10 +161,10 @@ def flush_at():
         )
 
         try:
-            # creates the complete url value for the submission
-            # operation and run the submission for the current document
-            url = util.BASE_URL + "omni/signed_documents/submit_invoice_at.json"
-            util.get_json(url, document_id = object_id)
+            # starts the submission process for the invoice, taking into
+            # account that the document id to be submitted is the one that
+            # has been extracted from the (signed) document structure
+            api.submit_invoice_at(object_id)
         except BaseException, exception:
             quorum.error("Exception while submitting document - %s" % unicode(exception))
         else:
@@ -181,6 +181,11 @@ def flush_at():
 
 @app.route("/oauth", methods = ("GET",))
 def oauth():
+    # retrieves the reference to the current api object, so that
+    # it may be used for the retrieval of the access token from
+    # the currently received code value
+    api = util.get_api()
+
     # retrieves the code value provided that is going to be used
     # to redeem the access token
     code = quorum.get_field("code", None)
@@ -194,23 +199,13 @@ def oauth():
     # creates the access token url for the api usage and sends the
     # appropriate attributes for the retrieval of the access token,
     # then stores it in the current session
-    url = util.BASE_URL + "omni/oauth/access_token"
-    contents_s = util.post_json(
-        url,
-        authenticate = False,
-        token = False,
-        client_id = util.CLIENT_ID,
-        client_secret = util.CLIENT_SECRET,
-        grant_type = "authorization_code",
-        redirect_uri = util.REDIRECT_URL,
-        code = code
-    )
-    access_token = contents_s["access_token"]
+    access_token = api.oauth_access(code)
     flask.session["omnix.access_token"] = access_token
 
-    # ensures that a correct session id value exists in session, creating
-    # a new session in case that's required
-    util.ensure_session_id()
+    # ensures that a correct session value exists in session, creating
+    # a new session in case that's required, this ensures that the acl
+    # exists for the current user that is logging in
+    api.oauth_session()
 
     return flask.redirect(
         flask.url_for("index")
@@ -219,14 +214,9 @@ def oauth():
 @app.route("/top", methods = ("GET",))
 @quorum.ensure("base.admin")
 def top():
-    access_token = flask.session.get("omnix.access_token", None)
-    session_id = flask.session.get("omnix.session_id", None)
-
     return flask.render_template(
         "top.html.tpl",
-        link = "top",
-        access_token = access_token,
-        session_id = session_id
+        link = "top"
     )
 
 @app.errorhandler(404)

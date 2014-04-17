@@ -67,8 +67,13 @@ def images_extras():
 @app.route("/extras/images", methods = ("POST",))
 @quorum.ensure("base.admin")
 def do_images_extras():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
+
+    # retrieves the reference to the (omni) api object that
+    # is going to be used for the operations of updating of
+    # the merchandise in bulk (multiple operations at a time)
+    api = util.get_api()
 
     # tries to retrieve the images file from the current
     # form in case it's not available renders the current
@@ -123,21 +128,17 @@ def do_images_extras():
                 # creates the url for the merchandise retrieval and runs the get
                 # operation with the provided filter so that the target merchandise
                 # is retrieved for object id validation
-                url = util.BASE_URL + "omni/merchandise.json"
-                contents_s = util.get_json(
-                    url,
-                    **kwargs
-                )
+                merchandise = api.list_merchandise(**kwargs)
 
                 # verifies that at least one entity was retrieved in case nothing
                 # is found skips the current loop with a not found error
-                if not contents_s:
+                if not merchandise:
                     quorum.info("Skipping, '%s' not found in data source" % base)
                     continue
 
                 # retrieves the first entity from the resulting list and then retrieves
                 # the object identifier from it to be used in the update operation
-                entity = contents_s[0]
+                entity = merchandise[0]
                 object_id = entity["object_id"]
 
                 # creates the target temporary image path from the temporary directory
@@ -159,10 +160,9 @@ def do_images_extras():
                     "transactional_merchandise[_parameters][image_file]" : image_tuple
                 }
 
-                # uses the "resolved" items structure in the post operation to
+                # uses the "resolved" items structure in the operation to
                 # the omni api so that the images for them get updated
-                url = util.BASE_URL + "omni/merchandise/%d/update.json" % object_id
-                util.post_json(url, data_m = data_m)
+                api.update_merchandise(object_id, data_m)
         finally:
             # removes the temporary path as it's no longer going to be
             # required for the operation (errors are ignored)
@@ -193,8 +193,12 @@ def prices_extras():
 @app.route("/extras/prices", methods = ("POST",))
 @quorum.ensure("base.admin")
 def do_prices_extras():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
+
+    # retrieves the reference to the api object that is going
+    # to be used for the updating of prices operation
+    api = util.get_api()
 
     # tries to retrieve the prices file from the current
     # form in case it's not available renders the current
@@ -227,8 +231,7 @@ def do_prices_extras():
 
     # uses the "resolved" items structure in the put operation to
     # the omni api so that the prices for them get updated
-    url = util.BASE_URL + "omni/merchandise/prices.json"
-    util.put_json(url, data_j = items)
+    api.prices_merchandise(items)
 
     # redirects the user back to the prices list page with a success
     # message indicating that everything went ok

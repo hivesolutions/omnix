@@ -45,9 +45,8 @@ from omnix import quorum
 
 @app.route("/suppliers", methods = ("GET",))
 def list_suppliers():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
-
     return flask.render_template(
         "supplier/list.html.tpl",
         link = "suppliers"
@@ -55,33 +54,20 @@ def list_suppliers():
 
 @app.route("/suppliers.json", methods = ("GET",), json = True)
 def list_suppliers_json():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
+    api = util.get_api()
+    object = quorum.get_object()
+    return api.list_companies(**object)
 
-    filter_string = quorum.get_field("filter_string", None)
-    start_record = quorum.get_field("start_record", 0)
-    number_records = quorum.get_field("number_records", 0)
-
-    url = util.BASE_URL + "omni/supplier_companies.json"
-    contents_s = util.get_json(
-        url,
-        filter_string = filter_string,
-        start_record = start_record,
-        number_records = number_records
-    )
-
-    return contents_s
-
-@app.route("/suppliers/<id>", methods = ("GET",))
+@app.route("/suppliers/<int:id>", methods = ("GET",))
 def show_suppliers(id):
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
-
-    url = util.BASE_URL + "omni/supplier_companies/%s.json" % id
-    contents_s = util.get_json(url)
-
+    api = util.get_api()
+    supplier = api.get_company(id)
     return flask.render_template(
         "supplier/show.html.tpl",
         link = "suppliers",
-        supplier = contents_s
+        supplier = supplier
     )

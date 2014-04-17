@@ -48,9 +48,8 @@ from omnix import quorum
 @app.route("/stores", methods = ("GET",))
 @quorum.ensure("foundation.store.list")
 def list_stores():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
-
     return flask.render_template(
         "store/list.html.tpl",
         link = "stores"
@@ -59,97 +58,81 @@ def list_stores():
 @app.route("/stores.json", methods = ("GET",), json = True)
 @quorum.ensure("foundation.store.list")
 def list_stores_json():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
+    api = util.get_api()
+    object = quorum.get_object()
+    return api.list_stores(**object)
 
-    filter_string = quorum.get_field("filter_string", None)
-    start_record = quorum.get_field("start_record", 0)
-    number_records = quorum.get_field("number_records", 0)
-
-    url = util.BASE_URL + "omni/stores.json"
-    contents_s = util.get_json(
-        url,
-        filter_string = filter_string,
-        start_record = start_record,
-        number_records = number_records
-    )
-
-    return contents_s
-
-@app.route("/stores/<id>", methods = ("GET",))
+@app.route("/stores/<int:id>", methods = ("GET",))
 @quorum.ensure("foundation.store.show")
 def show_stores(id):
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
-
-    url = util.BASE_URL + "omni/stores/%s.json" % id
-    contents_s = util.get_json(url)
-
+    api = util.get_api()
+    store = api.get_store(id)
     return flask.render_template(
         "store/show.html.tpl",
         link = "stores",
         sub_link = "info",
-        store = contents_s
+        store = store
     )
 
-@app.route("/stores/<id>/sales", methods = ("GET",))
+@app.route("/stores/<int:id>/sales", methods = ("GET",))
 def sales_stores(id):
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
+
+    api = util.get_api()
 
     now = datetime.datetime.utcnow()
     current_day = datetime.datetime(now.year, now.month, now.day)
 
-    id_s = str(id)
+    store = api.get_store(id)
 
-    url = util.BASE_URL + "omni/stores/%s.json" % id
-    contents_s = util.get_json(url)
-    store_s = contents_s
-
-    url = util.BASE_URL + "omni/sale_snapshots/stats.json"
-    contents_s = util.get_json(url, unit = "day", store_id = id_s)
-    stats_s = contents_s[id_s]
-    current_s = dict(
-        net_price_vat = stats_s["net_price_vat"][-1],
-        net_number_sales = stats_s["net_number_sales"][-1],
+    contents = api.stats_sales(unit = "day", store_id = id)
+    stats = contents[str(id)]
+    current = dict(
+        net_price_vat = stats["net_price_vat"][-1],
+        net_number_sales = stats["net_number_sales"][-1],
         date = current_day
     )
 
-    days_s = []
+    days = []
 
-    count = len(stats_s["net_price_vat"]) - 1
+    count = len(stats["net_price_vat"]) - 1
     count_r = range(count)
     count_r.reverse()
     _current_day = current_day
     for index in count_r:
         _current_day -= datetime.timedelta(1)
         day = dict(
-            net_price_vat = stats_s["net_price_vat"][index],
-            net_number_sales = stats_s["net_number_sales"][index],
+            net_price_vat = stats["net_price_vat"][index],
+            net_number_sales = stats["net_number_sales"][index],
             date = _current_day
         )
-        days_s.append(day)
+        days.append(day)
 
-    previous_s = days_s[0] if days_s else dict()
-    current_s["amount_delta"] = current_s["net_price_vat"] -\
+    previous_s = days[0] if days else dict()
+    current["amount_delta"] = current["net_price_vat"] -\
         previous_s.get("net_price_vat", 0)
-    current_s["number_delta"] = current_s["net_number_sales"] -\
+    current["number_delta"] = current["net_number_sales"] -\
         previous_s.get("net_number_sales", 0)
 
-    if current_s["amount_delta"] == 0: current_s["amount_direction"] = "equal"
-    elif current_s["amount_delta"] > 0: current_s["amount_direction"] = "up"
-    else: current_s["amount_direction"] = "down"
+    if current["amount_delta"] == 0: current["amount_direction"] = "equal"
+    elif current["amount_delta"] > 0: current["amount_direction"] = "up"
+    else: current["amount_direction"] = "down"
 
-    if current_s["number_delta"] == 0: current_s["number_direction"] = "equal"
-    elif current_s["number_delta"] > 0: current_s["number_direction"] = "up"
-    else: current_s["number_direction"] = "down"
+    if current["number_delta"] == 0: current["number_direction"] = "equal"
+    elif current["number_delta"] > 0: current["number_direction"] = "up"
+    else: current["number_direction"] = "down"
 
     return flask.render_template(
         "store/sales.html.tpl",
         link = "stores",
         sub_link = "sales",
-        store = store_s,
-        stats = stats_s,
-        current = current_s,
-        days = days_s
+        store = store,
+        stats = stats,
+        current = current,
+        days = days
     )

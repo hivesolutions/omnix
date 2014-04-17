@@ -3,6 +3,7 @@
 	<name>omnix</name>
 	<comment></comment>
 	<projects>
+		<project>omni_api</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

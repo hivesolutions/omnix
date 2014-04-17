@@ -37,12 +37,32 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
+import omni
 import urllib
 
 import config
 
 from omnix import flask
 from omnix import quorum
+
+def get_api():
+    return omni.Api(
+        base_url = config.BASE_URL,
+        client_id = config.CLIENT_ID,
+        client_secret = config.CLIENT_SECRET,
+        redirect_url = config.REDIRECT_URL,
+        scope = config.SCOPE,
+        access_token = flask.session.get("omnix.access_token", None),
+        session_id = flask.session.get("omnix.session_id", None),
+        username = config.USERNAME,
+        password = config.PASSWORD
+    )
+
+def ensure_api():
+    access_token = flask.session.get("omnix.access_token", None)
+    if access_token: return
+    api = get_api()
+    return api.oauth_autorize()
 
 def get_json(url, authenticate = True, token = False, **kwargs):
     if authenticate: kwargs["session_id"] = flask.session["omnix.session_id"]

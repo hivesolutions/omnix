@@ -38,12 +38,10 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import omni
-import urllib
 
 import config
 
 from omnix import flask
-from omnix import quorum
 
 def get_api():
     api = omni.Api(
@@ -68,84 +66,12 @@ def ensure_api():
     return api.oauth_autorize()
 
 def on_auth(contents):
+    start_session(contents)
+
+def start_session(contents):
     username = contents.get("username", None)
     acl = contents.get("acl", None)
     session_id = contents.get("session_id", None)
-    tokens = get_tokens(acl)
-
-    flask.session["omnix.base_url"] = config.BASE_URL
-    flask.session["omnix.username"] = username
-    flask.session["omnix.acl"] = acl
-    flask.session["omnix.session_id"] = session_id
-    flask.session["tokens"] = tokens
-
-
-
-
-
-
-
-def get_json(url, authenticate = True, token = False, **kwargs):
-    if authenticate: kwargs["session_id"] = flask.session["omnix.session_id"]
-    if token: kwargs["access_token"] = flask.session["omnix.access_token"]
-    try: data = quorum.get_json(url, **kwargs)
-    except quorum.JsonError, error: handle_error(error)
-    return data
-
-def post_json(url, authenticate = True, token = False, **kwargs):
-    if authenticate: kwargs["session_id"] = flask.session["omnix.session_id"]
-    if token: kwargs["access_token"] = flask.session["omnix.access_token"]
-    try: data = quorum.post_json(url, **kwargs)
-    except quorum.JsonError, error: handle_error(error)
-    return data
-
-def put_json(url, authenticate = True, token = False, **kwargs):
-    if authenticate: kwargs["session_id"] = flask.session["omnix.session_id"]
-    if token: kwargs["access_token"] = flask.session["omnix.access_token"]
-    try: data = quorum.put_json(url, **kwargs)
-    except quorum.JsonError, error: handle_error(error)
-    return data
-
-def handle_error(error):
-    data = error.get_data()
-    error = data.get("error", None)
-    error_description = data.get("error_description", None)
-    exception = data.get("exception", {})
-    exception_name = exception.get("exception_name", error)
-    message = exception.get("message", error_description)
-    if exception_name == "ControllerValidationReasonFailed":
-        reset_session_id()
-        raise RuntimeError("invalid session")
-    elif exception_name:
-        raise RuntimeError("%s - %s" % (exception_name, message))
-    else:
-        raise RuntimeError("invalid error received")
-
-def ensure_token():
-    access_token = flask.session.get("omnix.access_token", None)
-    if access_token: ensure_session_id(); return None
-
-    url = config.BASE_URL + config.PREFIX + "oauth/authorize"
-    values = {
-        "client_id" : config.CLIENT_ID,
-        "redirect_uri" : config.REDIRECT_URL,
-        "response_type" : "code",
-        "scope" : " ".join(config.SCOPE)
-    }
-
-    data = urllib.urlencode(values)
-    url = url + "?" + data
-    return url
-
-def ensure_session_id():
-    session_id = flask.session.get("omnix.session_id", None)
-    if session_id: return None
-
-    url = config.BASE_URL + "omni/oauth/start_session"
-    contents_s = get_json(url, authenticate = False, token = True)
-    username = contents_s.get("username", None)
-    acl = contents_s.get("acl", None)
-    session_id = contents_s.get("session_id", None)
     tokens = get_tokens(acl)
 
     flask.session["omnix.base_url"] = config.BASE_URL
@@ -162,14 +88,6 @@ def reset_session():
     if "omnix.session_id" in flask.session: del flask.session["omnix.session_id"]
     if "tokens" in flask.session: del flask.session["tokens"]
     flask.session.modified = True
-
-def reset_session_id():
-    if "omnix.session_id" in flask.session:
-        del flask.session["omnix.session_id"]
-    if "omnix.access_token" in flask.session:
-        del flask.session["omnix.access_token"]
-    flask.session.modified = True
-    ensure_session_id()
 
 def get_tokens(acl):
     return acl.keys()

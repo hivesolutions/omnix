@@ -49,9 +49,8 @@ from omnix import quorum
 @app.route("/employees", methods = ("GET",))
 @quorum.ensure("foundation.employee.list")
 def list_employees():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
-
     return flask.render_template(
         "employee/list.html.tpl",
         link = "employees"
@@ -60,54 +59,41 @@ def list_employees():
 @app.route("/employees.json", methods = ("GET",), json = True)
 @quorum.ensure("foundation.employee.list")
 def list_employees_json():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
-
-    filter_string = quorum.get_field("filter_string", None)
-    start_record = quorum.get_field("start_record", 0)
-    number_records = quorum.get_field("number_records", 0)
-
-    url = util.BASE_URL + "omni/employees.json"
-    contents_s = util.get_json(
-        url,
-        filter_string = filter_string,
-        start_record = start_record,
-        number_records = number_records
-    )
-
-    return contents_s
+    api = util.get_api()
+    object = quorum.get_object()
+    return api.list_employees(**object)
 
 @app.route("/employees/self", methods = ("GET",))
 @quorum.ensure("foundation.employee.show.self")
 def show_employee():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
-
-    url = util.BASE_URL + "omni/employees/self.json"
-    contents_s = util.get_json(url)
-
+    api = util.get_api()
+    employee = api.self_employee()
     return flask.render_template(
         "employee/show.html.tpl",
         link = "employees",
         sub_link = "info",
         is_self = True,
-        employee = contents_s
+        employee = employee
     )
 
 @app.route("/employees/self/sales", methods = ("GET",))
 @quorum.ensure(("sales.sale_transaction.list.self", "sales.customer_return.list.self"))
 def sales_employee():
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
 
-    url = util.BASE_URL + "omni/employees/self.json"
-    contents_s = util.get_json(url)
+    api = util.get_api()
+    employee = api.self_employee()
 
     operations,\
-    target_s,\
+    target,\
     sales_total,\
-    sales_s,\
-    returns_s,\
+    sales,\
+    returns,\
     previous_month,\
     previous_year,\
     next_month,\
@@ -119,42 +105,40 @@ def sales_employee():
         link = "employees",
         sub_link = "sales",
         is_self = True,
-        employee = contents_s,
+        employee = employee,
         operations = operations,
         commission_rate = util.COMMISSION_RATE,
-        title = target_s,
+        title = target,
         sales_total = sales_total,
-        sales_count = len(sales_s),
-        returns_count = len(returns_s),
+        sales_count = len(sales),
+        returns_count = len(returns),
         previous = (previous_month, previous_year),
         next = (next_month, next_year),
         has_next = has_next
     )
 
-@app.route("/employees/<id>", methods = ("GET",))
+@app.route("/employees/<int:id>", methods = ("GET",))
 @quorum.ensure("foundation.employee.show")
 def show_employees(id):
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
-
-    url = util.BASE_URL + "omni/employees/%s.json" % id
-    contents_s = util.get_json(url)
-
+    api = util.get_api()
+    employee = api.get_employee(id)
     return flask.render_template(
         "employee/show.html.tpl",
         link = "employees",
         sub_link = "info",
-        employee = contents_s
+        employee = employee
     )
 
-@app.route("/employees/<id>/sales", methods = ("GET",))
+@app.route("/employees/<int:id>/sales", methods = ("GET",))
 @quorum.ensure(("sales.sale_transaction.list", "sales.customer_return.list"))
 def sales_employees(id):
-    url = util.ensure_token()
+    url = util.ensure_api()
     if url: return flask.redirect(url)
 
-    url = util.BASE_URL + "omni/employees/%s.json" % id
-    contents_s = util.get_json(url)
+    api = util.get_api()
+    employee = api.get_employee(id)
 
     operations,\
     target_s,\
@@ -172,7 +156,7 @@ def sales_employees(id):
         link = "employees",
         sub_link = "sales",
         is_self = False,
-        employee = contents_s,
+        employee = employee,
         operations = operations,
         commission_rate = util.COMMISSION_RATE,
         title = target_s,
@@ -185,6 +169,8 @@ def sales_employees(id):
     )
 
 def get_sales(id = None):
+    api = util.get_api()
+
     now = datetime.datetime.utcnow()
     month = quorum.get_field("month", now.month, cast = int)
     year = quorum.get_field("year", now.year, cast = int)
@@ -204,7 +190,7 @@ def get_sales(id = None):
     end_t = calendar.timegm(end.utctimetuple())
 
     target = datetime.datetime(year = end_year, month = end_month, day = 1)
-    target_s = target.strftime("%B %Y")
+    target = target.strftime("%B %Y")
 
     kwargs = {
         "filter_string" : "",
@@ -217,10 +203,7 @@ def get_sales(id = None):
         ]
     }
     if id: kwargs["filters[]"].append("primary_seller:equals:" + id)
-
-    partial_url = "omni/sales.json" if id else "omni/sales/self.json"
-    url = util.BASE_URL + partial_url
-    sales_s = util.get_json(url, **kwargs)
+    sales = api.self_sales(**kwargs)
 
     kwargs = {
         "filter_string" : "",
@@ -234,19 +217,16 @@ def get_sales(id = None):
     }
 
     if id: kwargs["filters[]"].append("primary_return_processor:equals:" + id)
+    returns = api.self_returns(**kwargs)
 
-    partial_url = "omni/returns.json" if id else "omni/returns/self.json"
-    url = util.BASE_URL + partial_url
-    returns_s = util.get_json(url, **kwargs)
-
-    operations = returns_s + sales_s
+    operations = returns + sales
 
     sorter = lambda x, y: cmp(x["date"], y["date"])
     operations.sort(sorter, reverse = True)
 
     sales_total = 0
-    for sale in sales_s: sales_total += sale["price"]["value"]
-    for _return in returns_s: sales_total -= _return["price"]["value"]
+    for sale in sales: sales_total += sale["price"]["value"]
+    for _return in returns: sales_total -= _return["price"]["value"]
 
     for operation in operations:
         date = operation["date"]
@@ -255,10 +235,10 @@ def get_sales(id = None):
 
     return (
         operations,
-        target_s,
+        target,
         sales_total,
-        sales_s,
-        returns_s,
+        sales,
+        returns,
         previous_month,
         previous_year,
         next_month,

@@ -46,8 +46,9 @@ from omnix import flask
 from omnix import quorum
 
 def get_api():
-    return omni.Api(
+    api = omni.Api(
         base_url = config.BASE_URL,
+        prefix = config.PREFIX,
         client_id = config.CLIENT_ID,
         client_secret = config.CLIENT_SECRET,
         redirect_url = config.REDIRECT_URL,
@@ -57,12 +58,32 @@ def get_api():
         username = config.USERNAME,
         password = config.PASSWORD
     )
+    api.bind("auth", on_auth)
+    return api
 
 def ensure_api():
     access_token = flask.session.get("omnix.access_token", None)
     if access_token: return
     api = get_api()
     return api.oauth_autorize()
+
+def on_auth(contents):
+    username = contents.get("username", None)
+    acl = contents.get("acl", None)
+    session_id = contents.get("session_id", None)
+    tokens = get_tokens(acl)
+
+    flask.session["omnix.base_url"] = config.BASE_URL
+    flask.session["omnix.username"] = username
+    flask.session["omnix.acl"] = acl
+    flask.session["omnix.session_id"] = session_id
+    flask.session["tokens"] = tokens
+
+
+
+
+
+
 
 def get_json(url, authenticate = True, token = False, **kwargs):
     if authenticate: kwargs["session_id"] = flask.session["omnix.session_id"]

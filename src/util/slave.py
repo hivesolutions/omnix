@@ -97,7 +97,7 @@ class Slave(threading.Thread):
 
         while True:
             try:
-                quorum.debug("Running loop cycle in slave ...")
+                quorum.debug("Starting loop cycle in slave ...")
                 self.connection = quorum.get_rabbit(force = True)
                 self.channel = self.connection.channel()
                 self.channel.queue_declare(queue = queue, durable = True)
@@ -116,6 +116,10 @@ class Slave(threading.Thread):
         if not config.REMOTE: return
 
     def callback(self, channel, method, properties, body):
+        # prints a debug message about the callback call for the message, this
+        # may be used latter for debugging purposes (as requested)
+        quorum.debug("Received callback for message")
+
         # loads the contents of the body that is going to be submitted this
         # is considered the payload of the document to be submitted
         document = json.loads(body)

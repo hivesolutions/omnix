@@ -203,7 +203,7 @@ def get_sales(id = None):
         ]
     }
     if id: kwargs["filters[]"].append("primary_seller:equals:" + str(id))
-    sales = api.self_sales(**kwargs)
+    sales = api.list_sales(**kwargs)
 
     kwargs = {
         "filter_string" : "",
@@ -217,7 +217,7 @@ def get_sales(id = None):
     }
 
     if id: kwargs["filters[]"].append("primary_return_processor:equals:" + str(id))
-    returns = api.self_returns(**kwargs)
+    returns = api.list_returns(**kwargs)
 
     operations = returns + sales
 

@@ -42,10 +42,11 @@ import time
 import datetime
 import threading
 
+import omni
 import quorum
 
-import config
 import logic
+import config
 
 MESSAGE_TIMEOUT = 120
 """ The amount of seconds before a message is
@@ -79,18 +80,7 @@ class Slave(threading.Thread):
         if username == None or password == None:
             raise RuntimeError("Missing authentication information")
 
-        url = config.BASE_URL + "omni/login.json"
-        contents_s = logic.post_json(
-            url,
-            authenticate = False,
-            username = username,
-            password = password
-        )
-        self.session_id = contents_s["session_id"]
-
-    def auth_callback(self, params):
-        self.auth()
-        params["session_id"] = self.session_id
+        self.api = logic.get_api(mode = omni.DIRECT_MODE)
 
     def connect(self, queue = "default"):
         if not config.REMOTE: return
@@ -158,20 +148,15 @@ class Slave(threading.Thread):
             )
         )
 
-        # resolves the url for the currently retrieved data type (class)
+        # resolves the method for the currently retrieved data type (class)
         # this should raise an exception in case the type is invalid
-        url = self._resolve_url(type)
+        method = self._resolve_method(type)
 
         try:
-            # creates the complete url value for the submission
-            # operation and run the submission for the current document
-            url = config.BASE_URL + url
-            quorum.get_json(
-                url,
-                session_id = self.session_id,
-                document_id = object_id,
-                auth_callback = self.auth_callback
-            )
+            # calls the proper method for the submission of the document
+            # described by the provided object id, in case there's a problem
+            # in the request an exception should be raised and handled properly
+            method(object_id)
         except BaseException, exception:
             quorum.error("Exception while submitting document - %s" % unicode(exception))
             retries = properties.priority or 0
@@ -196,11 +181,11 @@ class Slave(threading.Thread):
         self.connect(queue = "omnix")
         self.disconnect()
 
-    def _resolve_url(self, type):
+    def _resolve_method(self, type):
         if type in config.AT_SALE_TYPES:
-            return "omni/signed_documents/submit_invoice_at.json"
+            return self.api.submit_invoice_at
         elif type in config.AT_TRANSPORT_TYPES:
-            return "omni/signed_documents/submit_transport_at.json"
+            return self.api.submit_transport_at
         else:
             raise RuntimeError("Invalid document type")
 

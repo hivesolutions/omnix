@@ -41,10 +41,11 @@ import time
 import json
 import threading
 
+import omni
 import quorum
 
-import config
 import logic
+import config
 
 LOOP_TIMEOUT = 120
 """ The time to be used in between queueing new
@@ -80,18 +81,7 @@ class Supervisor(threading.Thread):
         if username == None or password == None:
             raise RuntimeError("Missing authentication information")
 
-        url = config.BASE_URL + "omni/login.json"
-        contents_s = logic.post_json(
-            url,
-            authenticate = False,
-            username = username,
-            password = password
-        )
-        self.session_id = contents_s["session_id"]
-
-    def auth_callback(self, params):
-        self.auth()
-        params["session_id"] = self.session_id
+        self.api = logic.get_api(mode = omni.DIRECT_MODE)
 
     def connect(self, queue = "default"):
         if not config.REMOTE: return
@@ -126,13 +116,8 @@ class Supervisor(threading.Thread):
                 "document_type:in:1;3"
             ]
         }
-        url = config.BASE_URL + "omni/signed_documents.json"
-        contents_s = quorum.get_json(
-            url,
-            auth_callback = self.auth_callback,
-            **kwargs
-        )
-        valid_documents = [value for value in contents_s\
+        documents = self.api.list_signed_documents(**kwargs)
+        valid_documents = [value for value in documents\
             if value["_class"] in config.AT_SUBMIT_TYPES]
 
         # starts the counter value to zero, so that we're able to count

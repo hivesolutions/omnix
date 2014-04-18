@@ -43,7 +43,9 @@ import config
 
 from omnix import flask
 
-def get_api():
+def get_api(mode = omni.OAUTH_MODE):
+    access_token = flask.session and flask.session.get("omnix.access_token", None)
+    session_id = flask.session and flask.session.get("omnix.session_id", None)
     api = omni.Api(
         base_url = config.BASE_URL,
         prefix = config.PREFIX,
@@ -51,10 +53,11 @@ def get_api():
         client_secret = config.CLIENT_SECRET,
         redirect_url = config.REDIRECT_URL,
         scope = config.SCOPE,
-        access_token = flask.session.get("omnix.access_token", None),
-        session_id = flask.session.get("omnix.session_id", None),
+        access_token = access_token,
+        session_id = session_id,
         username = config.USERNAME,
-        password = config.PASSWORD
+        password = config.PASSWORD,
+        mode = mode
     )
     api.bind("auth", on_auth)
     return api
@@ -69,6 +72,8 @@ def on_auth(contents):
     start_session(contents)
 
 def start_session(contents):
+    if not flask.session: return
+
     username = contents.get("username", None)
     acl = contents.get("acl", None)
     session_id = contents.get("session_id", None)
@@ -81,6 +86,8 @@ def start_session(contents):
     flask.session["tokens"] = tokens
 
 def reset_session():
+    if not flask.session: return
+
     if "omnix.base_url" in flask.session: del flask.session["omnix.base_url"]
     if "omnix.access_token" in flask.session: del flask.session["omnix.access_token"]
     if "omnix.username" in flask.session: del flask.session["omnix.username"]

@@ -150,13 +150,13 @@ class Slave(threading.Thread):
 
         # resolves the method for the currently retrieved data type (class)
         # this should raise an exception in case the type is invalid
-        method = self._resolve_method(type)
+        api_method = self._resolve_method(type)
 
         try:
             # calls the proper method for the submission of the document
             # described by the provided object id, in case there's a problem
             # in the request an exception should be raised and handled properly
-            method(object_id)
+            api_method(object_id)
         except BaseException, exception:
             quorum.error("Exception while submitting document - %s" % unicode(exception))
             retries = properties.priority or 0

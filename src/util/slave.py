@@ -174,7 +174,10 @@ class Slave(threading.Thread):
         else:
             quorum.info("Document submitted with success")
 
+        # marks the message as acknowledged in the message queue server
+        # and then prints a debug message about the action
         channel.basic_ack(delivery_tag = method.delivery_tag)
+        quorum.info("Marked message as acknowledged in message queue")
 
     def run(self):
         self.auth()

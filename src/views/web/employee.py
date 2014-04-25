@@ -221,7 +221,7 @@ def get_sales(id = None):
 
     operations = returns + sales
 
-    sorter = lambda x, y: cmp(x["date"], y["date"])
+    sorter = lambda x, y: x["date"] - y["date"]
     operations.sort(sorter, reverse = True)
 
     sales_total = 0

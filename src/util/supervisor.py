@@ -44,8 +44,8 @@ import threading
 import omni
 import quorum
 
-import logic
-import config
+from util import logic
+from util import config
 
 LOOP_TIMEOUT = 120
 """ The time to be used in between queueing new
@@ -146,11 +146,11 @@ class Supervisor(threading.Thread):
                     )
                 )
                 count += 1
-            except BaseException, exception:
+            except BaseException as exception:
                 # prints a warning message about the exception that has just occurred
                 # so that it's possible to act on it
                 quorum.warning(
-                    "Exception in publish (will re-connect) - %s" % unicode(exception),
+                    "Exception in publish (will re-connect) - %s" % quorum.UNICODE(exception),
                     log_trace = True
                 )
 
@@ -165,9 +165,9 @@ class Supervisor(threading.Thread):
     def loop(self):
         while True:
             try: self.execute()
-            except BaseException, exception:
+            except BaseException as exception:
                 quorum.error(
-                    "Exception while executing - %s" % unicode(exception),
+                    "Exception while executing - %s" % quorum.UNICODE(exception),
                     log_trace = True
                 )
             time.sleep(LOOP_TIMEOUT)

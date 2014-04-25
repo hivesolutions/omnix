@@ -39,9 +39,9 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 import omni
 
-import config
-
 from omnix import flask
+
+from util import config
 
 def get_api(mode = omni.OAUTH_MODE):
     access_token = flask.session and flask.session.get("omnix.access_token", None)

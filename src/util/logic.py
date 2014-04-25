@@ -40,6 +40,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 import omni
 
 from omnix import flask
+from omnix import quorum
 
 from util import config
 
@@ -97,4 +98,5 @@ def reset_session():
     flask.session.modified = True
 
 def get_tokens(acl):
-    return acl.keys()
+    tokens = acl.keys()
+    return quorum.eager(tokens)

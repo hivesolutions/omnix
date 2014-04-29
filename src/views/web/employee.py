@@ -183,8 +183,16 @@ def get_sales(id = None):
     start_month, start_year = (month, year) if now.day >= util.COMMISSION_DAY else (previous_month, previous_year)
     end_month, end_year = (start_month + 1, start_year) if not start_month == 12 else (1, start_year + 1)
 
-    start = datetime.datetime(year = start_year, month = start_month, day = util.COMMISSION_DAY)
-    end = datetime.datetime(year = end_year, month = end_month, day = util.COMMISSION_DAY)
+    start = datetime.datetime(
+        year = start_year,
+        month = start_month,
+        day = util.COMMISSION_DAY
+    )
+    end = datetime.datetime(
+        year = end_year,
+        month = end_month,
+        day = util.COMMISSION_DAY
+    )
 
     start_t = calendar.timegm(start.utctimetuple())
     end_t = calendar.timegm(end.utctimetuple())

@@ -60,7 +60,7 @@ def mail_activity_all(api = None, year = None, month = None, validate = False):
 
 def mail_activity(api = None, id = None, year = None, month = None, validate = False):
     api = api or logic.get_api()
-    employee = api.get_employee(id)
+    employee = api.get_employee(id) if id else api.self_employee()
 
     name = employee.get("full_name", None)
     contact_information = employee.get("primary_contact_information", {})

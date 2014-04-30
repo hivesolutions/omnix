@@ -117,6 +117,19 @@ def sales_employee():
         has_next = has_next
     )
 
+@app.route("/employees/self/mail", methods = ("GET",))
+@quorum.ensure("foundation.employee.show.self")
+def mail_employee():
+    url = util.ensure_api()
+    if url: return flask.redirect(url)
+
+    year = quorum.get_field("year", None, cast = int)
+    month = quorum.get_field("month", None, cast = int)
+
+    util.mail_activity(year = year, month = month)
+
+    return show_employee()
+
 @app.route("/employees/<int:id>", methods = ("GET",))
 @quorum.ensure("foundation.employee.show")
 def show_employees(id):
@@ -172,8 +185,8 @@ def sales_employees(id):
     )
 
 @app.route("/employees/<int:id>/mail", methods = ("GET",))
-@quorum.ensure(("sales.sale_transaction.list", "sales.customer_return.list"))
-def mail_employee(id):
+@quorum.ensure("foundation.employee.show")
+def mail_employees(id):
     url = util.ensure_api()
     if url: return flask.redirect(url)
 

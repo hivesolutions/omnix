@@ -2,45 +2,33 @@
 {% block title %}Sales Report{% endblock %}
 {% block content %}
     <p>
-        This email confirms your reservation in {{ link(url_for("provider.show", name = schedule.provider.name), schedule.provider.full_name) }}
-        with the reservation number {{ link(url_for("account.schedule_own", id = schedule.id), schedule.uuid_s()) }}. We hope you enjoy
-        the service defined in the reservation.
+        This email contaiins information about the latest operations made on the omni
+        system on your behalf.
     </p>
     {{ h2("Sales & Returns") }}
     <p>
         <table cellspacing="0" width="100%">
-            <tr>
-                <td width="100">
-                    <strong>Nr.</strong>
-                </td>
-                <td>{{ schedule.uuid_s() }}</td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>Name</strong>
-                </td>
-                <td>{{ schedule.account.full_name() }} ({{ schedule.account.phone }})</td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>Date</strong>
-                </td>
-                <td>{{ schedule.start_s() }}</td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>Address</strong>
-                </td>
-                <td>{{ schedule.account.street }}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>{{ schedule.account.zip_code }} {{ schedule.account.province }}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>{{ schedule.account.country }}</td>
-            </tr>
+            {% for operation in operations %}
+                <tr>
+                    <td>{{ operation.date_f }}</td>
+                    {% if operation._class == 'SaleTransaction' %}
+                        <td >
+                            <a href="#">{{ operation.identifier }}</a>
+                        </td>
+                    {% else %}
+                        <td class="left">
+                            <a href="#">{{ operation.identifier }}</a>
+                        </td>
+                    {% endif %}
+                    {% if operation._class == 'SaleTransaction' %}
+                        <td>{{ "%.2f" % (operation.price.value * commission_rate) }} €</td>
+                        <td>{{ "%.2f" % operation.price.value }} / {{ "%.2f" % operation.price_vat }} €</td>
+                    {% else %}
+                        <td>{{ "%.2f" % (operation.price.value * commission_rate * -1) }} €</td>
+                        <td>{{ "%.2f" % (operation.price.value * -1) }} / {{ "%.2f" % (operation.price_vat * -1) }} €</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
         </table>
     </p>
     {{ h2("We've Got You Covered") }}

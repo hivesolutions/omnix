@@ -45,7 +45,13 @@ import quorum
 from util import logic
 from util import config
 
-def mail_activity_all(api = None, year = None, month = None, validate = False):
+def mail_activity_all(
+    api = None,
+    year = None,
+    month = None,
+    validate = False,
+    links = True
+):
     api = api or logic.get_api()
     employees = api.list_employees(object = dict(limit = -1))
     for employee in employees:
@@ -54,11 +60,19 @@ def mail_activity_all(api = None, year = None, month = None, validate = False):
             id = employee["object_id"],
             year = year,
             month = month,
-            validate = True
+            validate = validate,
+            links = links
         )
         except quorum.OperationalError: pass
 
-def mail_activity(api = None, id = None, year = None, month = None, validate = False):
+def mail_activity(
+    api = None,
+    id = None,
+    year = None,
+    month = None,
+    validate = False,
+    links = True
+):
     api = api or logic.get_api()
     employee = api.get_employee(id) if id else api.self_employee()
 
@@ -90,7 +104,8 @@ def mail_activity(api = None, id = None, year = None, month = None, validate = F
         rich = "email/activity.en_us.html.tpl",
         context = dict(
             settings = dict(
-                logo = True
+                logo = True,
+                links = links
             ),
             operations = operations,
             sales_total = sales_total,

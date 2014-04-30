@@ -3,9 +3,8 @@
 {% block content %}
     <p>
         This email contains information about the latest created operations
-        in the Omni system. This report should contain the description of
-        the complete set of operations that are associated with the current
-        period.
+        in the Omni system. This report should contain descriptions for the
+        complete set of operations that are associated with the current period.
     </p>
     {{ h2("Overview") }}
     <p>

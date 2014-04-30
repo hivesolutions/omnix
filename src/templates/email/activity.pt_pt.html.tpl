@@ -3,7 +3,7 @@
 {% block content %}
     <p>
         Este email contêm informações sobre as suas últimas operações feitas
-        no sistema Omni. Este relatório deve conter a descrição de conjunto
+        no sistema Omni. Este relatório deve conter a descrições para o conjunto
         completo de operações associadas ao corrente período.
     </p>
     {{ h2("Resumo") }}

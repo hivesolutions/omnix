@@ -45,7 +45,20 @@ import quorum
 from util import logic
 from util import config
 
-def mail_activity(api = None, id = None, year = None, month = None):
+def mail_activity_all(api = None, year = None, month = None, validate = False):
+    api = api or logic.get_api()
+    employees = api.list_employees(object = dict(limit = -1))
+    for employee in employees:
+        try: mail_activity(
+            api = api,
+            id = employee["object_id"],
+            year = year,
+            month = month,
+            validate = True
+        )
+        except quorum.OperationalError: pass
+
+def mail_activity(api = None, id = None, year = None, month = None, validate = False):
     api = api or logic.get_api()
     employee = api.get_employee(id)
 
@@ -67,6 +80,9 @@ def mail_activity(api = None, id = None, year = None, month = None):
     _next_year,\
     _has_next = get_sales(api = api, id = id, year = year, month = month)
 
+    if validate and not operations: return
+
+    quorum.debug("Sending activity email to %s <%s>" % (name, email))
     quorum.send_mail(
         subject = "Your latest activity on omni",
         sender = config.SENDER_EMAIL,

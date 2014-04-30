@@ -96,7 +96,8 @@ def mail_activity(api = None, id = None, year = None, month = None, validate = F
             sales_total = sales_total,
             sales_count = len(sales_s),
             returns_count = len(returns_s),
-            omnix_base_url = config.BASE_URL,
+            base_url = config.BASE_URL,
+            omnix_base_url = config.OMNI_URL,
             commission_rate = config.COMMISSION_RATE
         )
     )

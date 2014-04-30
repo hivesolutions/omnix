@@ -48,7 +48,7 @@ def get_api(mode = omni.OAUTH_MODE):
     access_token = flask.session and flask.session.get("omnix.access_token", None)
     session_id = flask.session and flask.session.get("omnix.session_id", None)
     api = omni.Api(
-        base_url = config.BASE_URL,
+        base_url = config.OMNI_URL,
         prefix = config.PREFIX,
         client_id = config.CLIENT_ID,
         client_secret = config.CLIENT_SECRET,
@@ -80,7 +80,7 @@ def start_session(contents):
     session_id = contents.get("session_id", None)
     tokens = get_tokens(acl)
 
-    flask.session["omnix.base_url"] = config.BASE_URL
+    flask.session["omnix.base_url"] = config.OMNI_URL
     flask.session["omnix.username"] = username
     flask.session["omnix.acl"] = acl
     flask.session["omnix.session_id"] = session_id

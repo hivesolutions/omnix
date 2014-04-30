@@ -45,8 +45,8 @@ import quorum
 from util import logic
 from util import config
 
-def mail_activity(id = None, year = None, month = None):
-    api = logic.get_api()
+def mail_activity(api = None, id = None, year = None, month = None):
+    api = api or logic.get_api()
     employee = api.get_employee(id)
 
     name = employee.get("full_name", None)
@@ -65,7 +65,7 @@ def mail_activity(id = None, year = None, month = None):
     _previous_year,\
     _next_month,\
     _next_year,\
-    _has_next = get_sales(id = id, year = year, month = month)
+    _has_next = get_sales(api = api, id = id, year = year, month = month)
 
     quorum.send_mail(
         subject = "Your latest activity on omni",
@@ -85,8 +85,8 @@ def mail_activity(id = None, year = None, month = None):
         )
     )
 
-def get_sales(id = None, year = None, month = None):
-    api = logic.get_api()
+def get_sales(api = None, id = None, year = None, month = None):
+    api = api or logic.get_api()
 
     now = datetime.datetime.utcnow()
     year = year or now.year

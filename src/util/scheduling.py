@@ -59,5 +59,5 @@ def load_mail():
 
 def tick_mail():
     api = logic.get_api(mode = omni.DIRECT_MODE)
-    business.mail_activity_all(api = api, validate = True)
+    business.mail_activity_all(api = api, validate = True, links = False)
     quorum.debug("Finished sending activity emails")

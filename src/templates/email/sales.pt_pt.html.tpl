@@ -2,7 +2,7 @@
 {% block title %}Relatório de Vendas{% endblock %}
 {% block content %}
     <p>
-        Este email contêm informação sobre a sua ultima atividade no sistema..
+        Este email contêm informação sobre a sua ultima atividade no sistema.
     </p>
     {{ h2("Vendas & Devoluções") }}
     <p>
@@ -12,11 +12,11 @@
                     <td>{{ operation.date_f }}</td>
                     {% if operation._class == 'SaleTransaction' %}
                         <td >
-                            <a href="#">{{ operation.identifier }}</a>
+                            <a href="{{ omnix_base_url }}sam/sales/{{ operation.object_id }}">{{ operation.identifier }}</a>
                         </td>
                     {% else %}
                         <td class="left">
-                            <a href="#">{{ operation.identifier }}</a>
+                            <a href="{{ omnix_base_url }}sam/returns/{{ operation.object_id }}">{{ operation.identifier }}</a>
                         </td>
                     {% endif %}
                     {% if operation._class == 'SaleTransaction' %}
@@ -33,6 +33,6 @@
     {{ h2("Estamos Sempre Consigo") }}
     <p>
         Algum problema? A nossa equipa de apoio está disponível para o ajudar.
-        Envie-nos um email para {{ link("mailto:ajuda@lugardajoia.com", "ajuda@lugardajoia.com", False) }}.
+        Envie-nos um email para {{ link("mailto:ajuda@omnix.com", "ajuda@omnix.com", False) }}.
     </p>
 {% endblock %}

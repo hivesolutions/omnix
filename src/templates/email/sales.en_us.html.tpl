@@ -34,6 +34,6 @@
     {{ h2("We've Got You Covered") }}
     <p>
         Have any problems? Our support team is available at the drop of a hat.
-        Send us an email, day or night, on {{ link("mailto:help@lugardajoia.com", "help@lugardajoia.com", False) }}.
+        Send us an email, day or night, on {{ link("mailto:help@omnix.com", "help@omnix.com", False) }}.
     </p>
 {% endblock %}

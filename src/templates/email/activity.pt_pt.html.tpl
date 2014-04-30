@@ -2,7 +2,8 @@
 {% block title %}Relatório de Vendas{% endblock %}
 {% block content %}
     <p>
-        Este email contêm informação sobre a sua ultima atividade no sistema.
+        Este email contêm informação sobre as suas ultimas operações feitas
+        no sistema omni.
     </p>
     {{ h2("Vendas & Devoluções") }}
     <p>

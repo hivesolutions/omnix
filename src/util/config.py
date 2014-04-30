@@ -118,6 +118,7 @@ that this range of values should be changed with care """
 
 REMOTE = quorum.conf("REMOTE", False)
 REDIRECT_URL = quorum.conf("REDIRECT_URL", REDIRECT_URL)
+SENDER_EMAIL = quorum.conf("SENDER_EMAIL", "Omnix <no-reply@omnix.com>")
 USERNAME = quorum.conf("OMNIX_USERNAME", None)
 PASSWORD = quorum.conf("OMNIX_PASSWORD", None)
 COMMISSION_RATE = quorum.conf("OMNIX_COMMISSION_RATE", 0.01)

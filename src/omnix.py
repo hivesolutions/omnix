@@ -56,6 +56,7 @@ def onrun():
     import util
     util.run_slave(1)
     util.run_supervisor()
+    util.load_scheduling()
 
 app = quorum.load(
     name = __name__,

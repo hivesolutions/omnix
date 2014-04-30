@@ -35,11 +35,19 @@
                         <td>{{ operation.date_f }}</td>
                         {% if operation._class == 'SaleTransaction' %}
                             <td >
-                                <a href="{{ omnix_base_url }}sam/sales/{{ operation.object_id }}">{{ operation.identifier }}</a>
+                                {% if settings.links %}
+                                    <a href="{{ omnix_base_url }}sam/sales/{{ operation.object_id }}">{{ operation.identifier }}</a>
+                                {% else %}
+                                    <span>{{ operation.identifier }}</span>
+                                {% endif %}
                             </td>
                         {% else %}
                             <td>
-                                <a href="{{ omnix_base_url }}sam/returns/{{ operation.object_id }}">{{ operation.identifier }}</a>
+                                {% if settings.links %}
+                                    <a href="{{ omnix_base_url }}sam/returns/{{ operation.object_id }}">{{ operation.identifier }}</a>
+                                {% else %}
+                                    <span>{{ operation.identifier }}</span>
+                                {% endif %}
                             </td>
                         {% endif %}
                         {% if operation._class == 'SaleTransaction' %}

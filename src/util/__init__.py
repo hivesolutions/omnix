@@ -37,11 +37,13 @@ __license__ = "GNU General Public License (GPL), Version 3"
 from . import business
 from . import config
 from . import logic
+from . import scheduling
 from . import slave
 from . import supervisor
 
 from .business import *
 from .config import *
 from .logic import *
+from .scheduling import load as load_scheduling
 from .slave import run as run_slave
 from .supervisor import run as run_supervisor

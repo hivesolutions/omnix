@@ -1,34 +1,57 @@
 {% extends "email/layout.pt_pt.html.tpl" %}
-{% block title %}Relatório de Vendas{% endblock %}
+{% block title %}Relatório de Atividade{% endblock %}
 {% block content %}
     <p>
         Este email contêm informação sobre as suas ultimas operações feitas
         no sistema omni.
     </p>
+    {{ h2("Resumo") }}
+    <p>
+        <strong>Vendas Líquidas:</strong>
+        <span>{{ "%.2f" % sales_total }} €</span>
+    </p>
+    <p>
+        <strong>Vendas & Devoluções:</strong>
+        <span>{{ sales_count }} / {{ returns_count }}</span>
+    </p>
+    <p>
+        <strong>Comissões:</strong>
+        <span>{{ "%.2f" % (sales_total * commission_rate) }} €</span>
+    </p>
     {{ h2("Vendas & Devoluções") }}
     <p>
         <table cellspacing="0" width="100%">
-            {% for operation in operations %}
+            <thead>
                 <tr>
-                    <td>{{ operation.date_f }}</td>
-                    {% if operation._class == 'SaleTransaction' %}
-                        <td >
-                            <a href="{{ omnix_base_url }}sam/sales/{{ operation.object_id }}">{{ operation.identifier }}</a>
-                        </td>
-                    {% else %}
-                        <td class="left">
-                            <a href="{{ omnix_base_url }}sam/returns/{{ operation.object_id }}">{{ operation.identifier }}</a>
-                        </td>
-                    {% endif %}
-                    {% if operation._class == 'SaleTransaction' %}
-                        <td>{{ "%.2f" % (operation.price.value * commission_rate) }} €</td>
-                        <td>{{ "%.2f" % operation.price.value }} / {{ "%.2f" % operation.price_vat }} €</td>
-                    {% else %}
-                        <td>{{ "%.2f" % (operation.price.value * commission_rate * -1) }} €</td>
-                        <td>{{ "%.2f" % (operation.price.value * -1) }} / {{ "%.2f" % (operation.price_vat * -1) }} €</td>
-                    {% endif %}
+                    <th>Data</th>
+                    <th>Operação</th>
+                    <th>Comissões</th>
+                    <th>Valor</th>
                 </tr>
-            {% endfor %}
+            </thead>
+            <tbody>
+                {% for operation in operations %}
+                    <tr>
+                        <td>{{ operation.date_f }}</td>
+                        {% if operation._class == 'SaleTransaction' %}
+                            <td >
+                                <a href="{{ omnix_base_url }}sam/sales/{{ operation.object_id }}">{{ operation.identifier }}</a>
+                            </td>
+                        {% else %}
+                            <td>
+                                <a href="{{ omnix_base_url }}sam/returns/{{ operation.object_id }}">{{ operation.identifier }}</a>
+                            </td>
+                        {% endif %}
+                        {% if operation._class == 'SaleTransaction' %}
+                            <td>{{ "%.2f" % (operation.price.value * commission_rate) }} €</td>
+                            <td>{{ "%.2f" % operation.price.value }} / {{ "%.2f" % operation.price_vat }} €</td>
+                        {% else %}
+                            <td>{{ "%.2f" % (operation.price.value * commission_rate * -1) }} €</td>
+                            <td>{{ "%.2f" % (operation.price.value * -1) }} / {{ "%.2f" % (operation.price_vat * -1) }} €</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </p>
     {{ h2("Estamos Sempre Consigo") }}

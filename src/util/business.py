@@ -43,12 +43,12 @@ import datetime
 from util import config
 from util import logic
 
-def get_sales(id = None, month = None, year = None):
+def get_sales(id = None, year = None, month = None):
     api = logic.get_api()
 
     now = datetime.datetime.utcnow()
-    month = month or now.month
     year = year or now.year
+    month = month or now.month
 
     has_next = int("%04d%02d" % (year, month)) < int("%04d%02d" % (now.year, now.month))
 

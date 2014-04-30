@@ -86,6 +86,9 @@ def sales_employee():
     url = util.ensure_api()
     if url: return flask.redirect(url)
 
+    year = quorum.get_field("year", None, cast = int)
+    month = quorum.get_field("month", None, cast = int)
+
     api = util.get_api()
     employee = api.self_employee()
 
@@ -98,7 +101,7 @@ def sales_employee():
     previous_year,\
     next_month,\
     next_year,\
-    has_next = util.get_sales()
+    has_next = util.get_sales(year = year, month = month)
 
     return flask.render_template(
         "employee/sales.html.tpl",
@@ -137,6 +140,9 @@ def sales_employees(id):
     url = util.ensure_api()
     if url: return flask.redirect(url)
 
+    year = quorum.get_field("year", None, cast = int)
+    month = quorum.get_field("month", None, cast = int)
+
     api = util.get_api()
     employee = api.get_employee(id)
 
@@ -149,7 +155,7 @@ def sales_employees(id):
     previous_year,\
     next_month,\
     next_year,\
-    has_next = util.get_sales(id = id)
+    has_next = util.get_sales(id = id, year = year, month = month)
 
     return flask.render_template(
         "employee/sales.html.tpl",
@@ -174,8 +180,8 @@ def mail_employee(id):
     url = util.ensure_api()
     if url: return flask.redirect(url)
 
-    month = quorum.get_field("month", None, cast = int)
     year = quorum.get_field("year", None, cast = int)
+    month = quorum.get_field("month", None, cast = int)
 
     api = util.get_api()
     employee = api.get_employee(id)
@@ -196,7 +202,7 @@ def mail_employee(id):
     _previous_year,\
     _next_month,\
     _next_year,\
-    _has_next = util.get_sales(id = id, month = month, year = year)
+    _has_next = util.get_sales(id = id, year = year, month = month)
 
     quorum.send_mail(
         subject = "Your latest activity on omni",

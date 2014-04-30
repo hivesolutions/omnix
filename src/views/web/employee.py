@@ -37,9 +37,6 @@ __copyright__ = "Copyright (c) 2008-2014 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-import calendar
-import datetime
-
 import util
 
 from omnix import app
@@ -183,43 +180,6 @@ def mail_employee(id):
     year = quorum.get_field("year", None, cast = int)
     month = quorum.get_field("month", None, cast = int)
 
-    api = util.get_api()
-    employee = api.get_employee(id)
-
-    name = employee.get("full_name", None)
-    contact_information = employee.get("primary_contact_information", {})
-    email = contact_information.get("email", None)
-
-    if not name: raise quorum.OperationalError("No name defined")
-    if not email: raise quorum.OperationalError("No email defined")
-
-    operations,\
-    _target_s,\
-    sales_total,\
-    sales_s,\
-    returns_s,\
-    _previous_month,\
-    _previous_year,\
-    _next_month,\
-    _next_year,\
-    _has_next = util.get_sales(id = id, year = year, month = month)
-
-    quorum.send_mail(
-        subject = "Your latest activity on omni",
-        sender = util.SENDER_EMAIL,
-        receivers = ["%s <%s>" % (name, email)],
-        rich = "email/activity.pt_pt.html.tpl",
-        context = dict(
-            settings = dict(
-                logo = True
-            ),
-            operations = operations,
-            sales_total = sales_total,
-            sales_count = len(sales_s),
-            returns_count = len(returns_s),
-            omnix_base_url = util.config.BASE_URL,
-            commission_rate = util.COMMISSION_RATE
-        )
-    )
+    util.mail_activity(id = id, year = year, month = month)
 
     return show_employees(id)

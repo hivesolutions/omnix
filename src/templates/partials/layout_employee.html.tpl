@@ -14,6 +14,12 @@
             {% else %}
                 <a href="{{ url_for('sales_employee') }}">sales</a>
             {% endif %}
+            //
+            {% if sub_link == "mail" %}
+                <a href="{{ url_for('mail_employee') }}" class="active">mail</a>
+            {% else %}
+                <a href="{{ url_for('mail_employee') }}">mail</a>
+            {% endif %}
         {% else %}
             {% if sub_link == "info" %}
                 <a href="{{ url_for('show_employees', id = employee.object_id) }}" class="active">info</a>
@@ -25,6 +31,12 @@
                 <a href="{{ url_for('sales_employees', id = employee.object_id) }}" class="active">sales</a>
             {% else %}
                 <a href="{{ url_for('sales_employees', id = employee.object_id) }}">sales</a>
+            {% endif %}
+            //
+            {% if sub_link == "mail" %}
+                <a href="{{ url_for('mail_employees', id = employee.object_id) }}" class="active">mail</a>
+            {% else %}
+                <a href="{{ url_for('mail_employees', id = employee.object_id) }}">mail</a>
             {% endif %}
         {% endif %}
     </div>

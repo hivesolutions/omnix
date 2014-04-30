@@ -7,6 +7,10 @@
     </p>
     {{ h2("Overview") }}
     <p>
+        <strong>Period:</strong>
+        <span>{{ target }}</span>
+    </p>
+    <p>
         <strong>Net Sales:</strong>
         <span>{{ "%.2f" % sales_total }} €</span>
     </p>

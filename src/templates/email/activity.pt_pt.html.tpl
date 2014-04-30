@@ -2,8 +2,9 @@
 {% block title %}Relatório de Atividade{% endblock %}
 {% block content %}
     <p>
-        Este email contêm informação sobre as suas ultimas operações feitas
-        no sistema omni.
+        Este email contêm informações sobre as suas últimas operações feitas
+        no sistema Omni. Este relatório deve conter a descrição de conjunto
+        completo de operações associadas ao corrente período.
     </p>
     {{ h2("Resumo") }}
     <p>

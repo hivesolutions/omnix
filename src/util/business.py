@@ -40,8 +40,50 @@ __license__ = "GNU General Public License (GPL), Version 3"
 import calendar
 import datetime
 
-from util import config
+import quorum
+
 from util import logic
+from util import config
+
+def mail_activity(id = None, year = None, month = None):
+    api = logic.get_api()
+    employee = api.get_employee(id)
+
+    name = employee.get("full_name", None)
+    contact_information = employee.get("primary_contact_information", {})
+    email = contact_information.get("email", None)
+
+    if not name: raise quorum.OperationalError("No name defined")
+    if not email: raise quorum.OperationalError("No email defined")
+
+    operations,\
+    _target_s,\
+    sales_total,\
+    sales_s,\
+    returns_s,\
+    _previous_month,\
+    _previous_year,\
+    _next_month,\
+    _next_year,\
+    _has_next = get_sales(id = id, year = year, month = month)
+
+    quorum.send_mail(
+        subject = "Your latest activity on omni",
+        sender = config.SENDER_EMAIL,
+        receivers = ["%s <%s>" % (name, email)],
+        rich = "email/activity.en_us.html.tpl",
+        context = dict(
+            settings = dict(
+                logo = True
+            ),
+            operations = operations,
+            sales_total = sales_total,
+            sales_count = len(sales_s),
+            returns_count = len(returns_s),
+            omnix_base_url = config.BASE_URL,
+            commission_rate = config.COMMISSION_RATE
+        )
+    )
 
 def get_sales(id = None, year = None, month = None):
     api = logic.get_api()
@@ -104,8 +146,8 @@ def get_sales(id = None, year = None, month = None):
 
     operations = returns + sales
 
-    sorter = lambda x, y: x["date"] - y["date"]
-    operations.sort(sorter, reverse = True)
+    sorter = lambda x: x["date"]
+    operations.sort(key = sorter, reverse = True)
 
     sales_total = 0
     for sale in sales: sales_total += sale["price"]["value"]

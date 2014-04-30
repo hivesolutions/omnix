@@ -44,12 +44,14 @@ import omni
 import quorum
 
 from util import logic
+from util import config
 from util import business
 
 def load():
     load_mail()
 
 def load_mail():
+    if not config.REMOTE: return
     now = datetime.datetime.utcnow()
     today = datetime.datetime(year = now.year, month = now.month, day = now.day)
     tomorrow = today + datetime.timedelta(days = 1)

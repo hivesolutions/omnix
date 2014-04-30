@@ -98,7 +98,7 @@ def sales_employee():
     previous_year,\
     next_month,\
     next_year,\
-    has_next = get_sales()
+    has_next = util.get_sales()
 
     return flask.render_template(
         "employee/sales.html.tpl",
@@ -149,7 +149,7 @@ def sales_employees(id):
     previous_year,\
     next_month,\
     next_year,\
-    has_next = get_sales(id = id)
+    has_next = util.get_sales(id = id)
 
     return flask.render_template(
         "employee/sales.html.tpl",
@@ -168,88 +168,52 @@ def sales_employees(id):
         has_next = has_next
     )
 
-def get_sales(id = None):
+@app.route("/employees/<int:id>/mail", methods = ("GET",))
+@quorum.ensure(("sales.sale_transaction.list", "sales.customer_return.list"))
+def mail_employee(id):
+    url = util.ensure_api()
+    if url: return flask.redirect(url)
+
+    month = quorum.get_field("month", None, cast = int)
+    year = quorum.get_field("year", None, cast = int)
+
     api = util.get_api()
+    employee = api.get_employee(id)
 
-    now = datetime.datetime.utcnow()
-    month = quorum.get_field("month", now.month, cast = int)
-    year = quorum.get_field("year", now.year, cast = int)
+    name = employee.get("full_name", None)
+    contact_information = employee.get("primary_contact_information", {})
+    email = contact_information.get("email", None)
 
-    has_next = int("%04d%02d" % (year, month)) < int("%04d%02d" % (now.year, now.month))
+    if not name: raise quorum.OperationalError("No name defined")
+    if not email: raise quorum.OperationalError("No email defined")
 
-    previous_month, previous_year = (month - 1, year) if not month == 1 else (12, year - 1)
-    next_month, next_year = (month + 1, year) if not month == 12 else (1, year + 1)
+    operations,\
+    _target_s,\
+    sales_total,\
+    sales_s,\
+    returns_s,\
+    _previous_month,\
+    _previous_year,\
+    _next_month,\
+    _next_year,\
+    _has_next = util.get_sales(id = id, month = month, year = year)
 
-    start_month, start_year = (month, year) if now.day >= util.COMMISSION_DAY else (previous_month, previous_year)
-    end_month, end_year = (start_month + 1, start_year) if not start_month == 12 else (1, start_year + 1)
-
-    start = datetime.datetime(
-        year = start_year,
-        month = start_month,
-        day = util.COMMISSION_DAY
+    quorum.send_mail(
+        subject = "Your latest activity on omni",
+        sender = util.SENDER_EMAIL,
+        receivers = ["%s <%s>" % (name, email)],
+        rich = "email/activity.pt_pt.html.tpl",
+        context = dict(
+            settings = dict(
+                logo = True
+            ),
+            operations = operations,
+            sales_total = sales_total,
+            sales_count = len(sales_s),
+            returns_count = len(returns_s),
+            omnix_base_url = util.config.BASE_URL,
+            commission_rate = util.COMMISSION_RATE
+        )
     )
-    end = datetime.datetime(
-        year = end_year,
-        month = end_month,
-        day = util.COMMISSION_DAY
-    )
 
-    start_t = calendar.timegm(start.utctimetuple())
-    end_t = calendar.timegm(end.utctimetuple())
-
-    target = datetime.datetime(year = end_year, month = end_month, day = 1)
-    target = target.strftime("%B %Y")
-
-    kwargs = {
-        "filter_string" : "",
-        "start_record" : 0,
-        "number_records" : -1,
-        "sort" : "date:descending",
-        "filters[]" : [
-            "date:greater:" + str(start_t),
-            "date:lesser:" + str(end_t)
-        ]
-    }
-    if id: kwargs["filters[]"].append("primary_seller:equals:" + str(id))
-    sales = api.list_sales(**kwargs) if id else api.self_sales(**kwargs)
-
-    kwargs = {
-        "filter_string" : "",
-        "start_record" : 0,
-        "number_records" : -1,
-        "sort" : "date:descending",
-        "filters[]" : [
-            "date:greater:" + str(start_t),
-            "date:lesser:" + str(end_t)
-        ]
-    }
-
-    if id: kwargs["filters[]"].append("primary_return_processor:equals:" + str(id))
-    returns = api.list_returns(**kwargs) if id else api.self_returns(**kwargs)
-
-    operations = returns + sales
-
-    sorter = lambda x, y: x["date"] - y["date"]
-    operations.sort(sorter, reverse = True)
-
-    sales_total = 0
-    for sale in sales: sales_total += sale["price"]["value"]
-    for _return in returns: sales_total -= _return["price"]["value"]
-
-    for operation in operations:
-        date = operation["date"]
-        date_t = datetime.datetime.utcfromtimestamp(date)
-        operation["date_f"] = date_t.strftime("%b %d, %Y")
-
-    return (
-        operations,
-        target,
-        sales_total,
-        sales,
-        returns,
-        previous_month,
-        previous_year,
-        next_month,
-        next_year,
-        has_next
-    )
+    return show_employees(id)

@@ -8,7 +8,7 @@
         <tbody>
             <tr>
                 <td>
-                    <span class="label">Sales Amount</span><br />
+                    <span class="label">Net Sales</span><br />
                     <span class="value">{{ "%.2f" % sales_total }} €</span>
                 </td>
                 <td>

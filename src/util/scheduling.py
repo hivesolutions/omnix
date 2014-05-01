@@ -49,7 +49,7 @@ from util import business
 
 def load():
     if not config.SCHEDULE: return
-    quorum.debug("Loading the scheduling tasks ...")
+    quorum.debug("Loading scheduling tasks ...")
     load_mail()
 
 def load_mail():

@@ -48,6 +48,8 @@ from util import config
 from util import business
 
 def load():
+    if not config.SCHEDULE: return
+    quorum.debug("Loading the scheduling tasks ...")
     load_mail()
 
 def load_mail():

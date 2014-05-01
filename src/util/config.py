@@ -122,8 +122,9 @@ REDIRECT_URL = quorum.conf("REDIRECT_URL", REDIRECT_URL)
 SENDER_EMAIL = quorum.conf("SENDER_EMAIL", "Omnix <no-reply@omnix.com>")
 USERNAME = quorum.conf("OMNIX_USERNAME", None)
 PASSWORD = quorum.conf("OMNIX_PASSWORD", None)
-COMMISSION_RATE = quorum.conf("OMNIX_COMMISSION_RATE", 0.01)
-COMMISSION_DAY = quorum.conf("OMNIX_COMMISSION_DAY", 26)
+SCHEDULE = quorum.conf("OMNIX_SCHEDULE", True, cast = bool)
+COMMISSION_RATE = quorum.conf("OMNIX_COMMISSION_RATE", 0.01, cast = float)
+COMMISSION_DAY = quorum.conf("OMNIX_COMMISSION_DAY", 26, cast = int)
 
 OMNI_URL = REMOTE_URL if REMOTE else LOCAL_URL
 PREFIX = REMOTE_PREFIX if REMOTE else LOCAL_PREFIX

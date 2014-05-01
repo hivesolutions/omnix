@@ -30,7 +30,7 @@
                 <tr>
                     <th>Data</th>
                     <th>Operação</th>
-                    <th>Comissões</th>
+                    <th>Comissão</th>
                     <th>Valor</th>
                 </tr>
             </thead>

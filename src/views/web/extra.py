@@ -111,7 +111,7 @@ def do_images_extras():
                 # splits the file name into base name and extension and validates
                 # the extension, so that only image files are considered
                 base, extension = os.path.splitext(name)
-                if not extension in (".png",):
+                if not extension in (".png", ".jpg", ".jpeg"):
                     quorum.info("Skipping, '%s' not a valid image file" % name)
                     continue
 

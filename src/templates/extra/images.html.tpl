@@ -5,7 +5,7 @@
     <div class="quote">
         Please provide the file containing the list of images to be imported
         to the data source, the file should be <strong>zip file
-        based</strong> conatining image files with their names.<br />
+        based</strong> containing image files with their names.<br />
         Remember this is a <strong>dangerous operation</strong>.
     </div>
     <div class="separator-horizontal"></div>

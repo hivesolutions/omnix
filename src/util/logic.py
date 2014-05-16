@@ -67,7 +67,7 @@ def ensure_api():
     access_token = flask.session.get("omnix.access_token", None)
     if access_token: return
     api = get_api()
-    return api.oauth_autorize()
+    return api.oauth_authorize()
 
 def on_auth(contents):
     start_session(contents)

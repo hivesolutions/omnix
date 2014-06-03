@@ -38,13 +38,14 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import omni
+import appier
 
 from omnix import flask
 from omnix import quorum
 
 from util import config
 
-def get_api(mode = omni.OAUTH_MODE):
+def get_api(mode = appier.OAuthApi.OAUTH_MODE):
     access_token = flask.session and flask.session.get("omnix.access_token", None)
     session_id = flask.session and flask.session.get("omnix.session_id", None)
     api = omni.Api(

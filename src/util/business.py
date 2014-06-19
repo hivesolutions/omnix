@@ -84,7 +84,7 @@ def mail_activity(
     if not email: raise quorum.OperationalError("No email defined")
 
     now = datetime.datetime.utcnow()
-    now_s = now.strftime("%B %d")
+    now_s = now.strftime("%B %d %Y")
 
     operations,\
     target_s,\

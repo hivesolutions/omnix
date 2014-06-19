@@ -62,6 +62,6 @@ def load_mail():
     quorum.interval_work(tick_mail, interval = 86400, initial = target)
 
 def tick_mail():
-    api = logic.get_api(mode = omni.DIRECT_MODE)
+    api = logic.get_api(mode = omni.Api.DIRECT_MODE)
     business.mail_activity_all(api = api, validate = True, links = False)
     quorum.debug("Finished sending activity emails")

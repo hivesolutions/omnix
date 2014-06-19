@@ -57,8 +57,8 @@ def load_mail():
     month_time = quorum.monthly_work(tick_previous, monthday = 26, offset = 14400)
     week_date = datetime.datetime.utcfromtimestamp(week_time)
     month_date = datetime.datetime.utcfromtimestamp(month_time)
-    quorum.debug("Scheduled initial weekly tick mail task for %s" % week_date)
-    quorum.debug("Scheduled initial monthly tick previous task for %s" % month_date)
+    quorum.debug("Scheduled initial weekly mail task for %s" % week_date)
+    quorum.debug("Scheduled initial monthly previous task for %s" % month_date)
 
 def tick_mail(year = None, month = None):
     api = logic.get_api(mode = omni.Api.DIRECT_MODE)

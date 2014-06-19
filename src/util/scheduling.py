@@ -37,7 +37,6 @@ __copyright__ = "Copyright (c) 2008-2014 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-import calendar
 import datetime
 
 import omni
@@ -54,14 +53,21 @@ def load():
 
 def load_mail():
     if not config.REMOTE: return
-    now = datetime.datetime.utcnow()
-    today = datetime.datetime(year = now.year, month = now.month, day = now.day)
-    tomorrow = today + datetime.timedelta(days = 1)
-    tomorrow_tuple = tomorrow.utctimetuple()
-    target = calendar.timegm(tomorrow_tuple)
-    quorum.interval_work(tick_mail, interval = 86400, initial = target)
+    quorum.weekly_work(tick_mail, weekday = 4, offset = 14400)
+    quorum.monthly_work(tick_previous, monthday = 26, offset = 14400)
 
-def tick_mail():
+def tick_previous():
+    now = datetime.datetime.utcnow()
+    pre_year, pre_month = (now.year - 1, 12) if now.month == 1 else (now.year, now.month - 1)
+    tick_mail(year = pre_year, month = pre_month)
+
+def tick_mail(year = None, month = None):
     api = logic.get_api(mode = omni.Api.DIRECT_MODE)
-    business.mail_activity_all(api = api, validate = True, links = False)
+    business.mail_activity_all(
+        api = api,
+        year = year,
+        month = month,
+        validate = True,
+        links = False
+    )
     quorum.debug("Finished sending activity emails")

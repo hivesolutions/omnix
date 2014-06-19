@@ -84,7 +84,7 @@ def mail_activity(
     if not email: raise quorum.OperationalError("No email defined")
 
     now = datetime.datetime.utcnow()
-    now_s = now.strftime("%b %d")
+    now_s = now.strftime("%B %d")
 
     operations,\
     target_s,\
@@ -101,7 +101,7 @@ def mail_activity(
 
     quorum.debug("Sending activity email to %s <%s>" % (name, email))
     quorum.send_mail(
-        subject = "Omni activity report %s" % now_s,
+        subject = "Omni activity report for %s as of %s" % (target_s, now_s),
         sender = config.SENDER_EMAIL,
         receivers = ["%s <%s>" % (name, email)],
         rich = "email/activity.en_us.html.tpl",

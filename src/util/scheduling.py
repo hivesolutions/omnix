@@ -53,8 +53,12 @@ def load():
 
 def load_mail():
     if not config.REMOTE: return
-    quorum.weekly_work(tick_mail, weekday = 4, offset = 14400)
-    quorum.monthly_work(tick_previous, monthday = 26, offset = 14400)
+    week_time = quorum.weekly_work(tick_mail, weekday = 4, offset = 14400)
+    month_time = quorum.monthly_work(tick_previous, monthday = 26, offset = 14400)
+    week_date = datetime.datetime.utcfromtimestamp(week_time)
+    month_date = datetime.datetime.utcfromtimestamp(month_time)
+    quorum.debug("Scheduled weekly tick mail task for %s" % week_date)
+    quorum.debug("Scheduled monthly tick previous task for %s" % month_date)
 
 def tick_mail(year = None, month = None):
     api = logic.get_api(mode = omni.Api.DIRECT_MODE)

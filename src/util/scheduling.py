@@ -56,11 +56,6 @@ def load_mail():
     quorum.weekly_work(tick_mail, weekday = 4, offset = 14400)
     quorum.monthly_work(tick_previous, monthday = 26, offset = 14400)
 
-def tick_previous():
-    now = datetime.datetime.utcnow()
-    pre_year, pre_month = (now.year - 1, 12) if now.month == 1 else (now.year, now.month - 1)
-    tick_mail(year = pre_year, month = pre_month)
-
 def tick_mail(year = None, month = None):
     api = logic.get_api(mode = omni.Api.DIRECT_MODE)
     business.mail_activity_all(
@@ -71,3 +66,8 @@ def tick_mail(year = None, month = None):
         links = False
     )
     quorum.debug("Finished sending activity emails")
+
+def tick_previous():
+    now = datetime.datetime.utcnow()
+    pre_year, pre_month = (now.year - 1, 12) if now.month == 1 else (now.year, now.month - 1)
+    tick_mail(year = pre_year, month = pre_month)

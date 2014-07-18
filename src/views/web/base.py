@@ -105,6 +105,14 @@ def reset():
         flask.url_for("index")
     )
 
+@app.route("/flush_mail", methods = ("GET",))
+@quorum.ensure("base.admin")
+def flush_mail():
+    util.mail_activity_all(
+        validate = True,
+        links = False
+    )
+
 @app.route("/flush_at", methods = ("GET",))
 @quorum.ensure("base.admin")
 def flush_at():

@@ -114,8 +114,10 @@ def flush_mail():
     )
 
     return flask.redirect(
-        flask.url_for("index"),
-        message = "Emails have been sent"
+        flask.url_for(
+            "index",
+             message = "Emails have been sent"
+        )
     )
 
 @app.route("/flush_at", methods = ("GET",))
@@ -188,8 +190,10 @@ def flush_at():
         index += 1
 
     return flask.redirect(
-        flask.url_for("index"),
-        message = "Signed documents have been sent to AT"
+        flask.url_for(
+            "index",
+            message = "Signed documents have been sent to AT"
+        )
     )
 
 @app.route("/oauth", methods = ("GET",))

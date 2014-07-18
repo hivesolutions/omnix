@@ -113,6 +113,10 @@ def flush_mail():
         links = False
     )
 
+    return flask.redirect(
+        flask.url_for("index")
+    )
+
 @app.route("/flush_at", methods = ("GET",))
 @quorum.ensure("base.admin")
 def flush_at():
@@ -182,9 +186,8 @@ def flush_at():
         # as been processed (submitted or failed)
         index += 1
 
-    return flask.render_template(
-        "index.html.tpl",
-        link = "home"
+    return flask.redirect(
+        flask.url_for("index")
     )
 
 @app.route("/oauth", methods = ("GET",))

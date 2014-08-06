@@ -87,9 +87,11 @@ def do_images_extras():
         )
 
     # creates a temporary file path for the storage of the file
-    # and then saves it into that directory
+    # and then saves it into that directory, closing the same
+    # file afterwards, as it has been properly saved
     fd, file_path = tempfile.mkstemp()
-    images_file.save(file_path)
+    try: images_file.save(file_path)
+    finally: images_file.close()
 
     try:
         # creates a new temporary directory that is going to be used

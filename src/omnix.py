@@ -64,7 +64,8 @@ app = quorum.load(
     mongo_database = MONGO_DATABASE,
     logger = "omnix.debug",
     models = models,
-    PERMANENT_SESSION_LIFETIME = datetime.timedelta(31)
+    PERMANENT_SESSION_LIFETIME = datetime.timedelta(31),
+    MAX_CONTENT_LENGTH = 1024 ** 3
 )
 
 from views import * #@UnusedWildImport

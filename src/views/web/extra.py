@@ -115,6 +115,10 @@ def do_images_extras():
                     quorum.info("Skipping, '%s' not a valid image file" % name)
                     continue
 
+                # prints a logging message about the upload of image file that
+                # is going to be performed for the current mechrandise
+                quorum.info("Changing image file for '%s'" % base)
+
                 # creates the keyword arguments map so that the the merchandise
                 # with the provided company product code is retrieved
                 kwargs = {

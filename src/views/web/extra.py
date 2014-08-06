@@ -115,10 +115,6 @@ def do_images_extras():
                     quorum.info("Skipping, '%s' not a valid image file" % name)
                     continue
 
-                # prints a logging message about the upload of image file that
-                # is going to be performed for the current mechrandise
-                quorum.info("Changing image file for '%s'" % base)
-
                 # creates the keyword arguments map so that the the merchandise
                 # with the provided company product code is retrieved
                 kwargs = {
@@ -139,6 +135,10 @@ def do_images_extras():
                 if not merchandise:
                     quorum.info("Skipping, '%s' not found in data source" % base)
                     continue
+
+                # prints a logging message about the upload of image file that
+                # is going to be performed for the current merchandise
+                quorum.info("Changing image file for merchandise '%s'" % base)
 
                 # retrieves the first entity from the resulting list and then retrieves
                 # the object identifier from it to be used in the update operation

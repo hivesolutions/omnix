@@ -138,7 +138,7 @@ def do_images_extras():
 
                 # prints a logging message about the upload of image file that
                 # is going to be performed for the current merchandise
-                quorum.info("Changing image file for merchandise '%s'" % base)
+                quorum.debug("Changing image file for merchandise '%s'" % base)
 
                 # retrieves the first entity from the resulting list and then retrieves
                 # the object identifier from it to be used in the update operation

@@ -231,9 +231,38 @@ def oauth():
 @app.route("/top", methods = ("GET",))
 @quorum.ensure("base.admin")
 def top():
+    url = util.ensure_api()
+    if url: return flask.redirect(url)
+
+    year = quorum.get_field("year", None, cast = int)
+    month = quorum.get_field("month", None, cast = int)
+
+    api = util.get_api()
+    stats = api.stats_employee(
+        unit = "month",
+        year = year,
+        month = month,
+        span = 1,
+        has_global = True
+    )
+
+    top_employees = []
+    for object_id, values in stats.items():
+        values = values["-1"]
+        values["object_id"] = object_id
+        values["amount_price_vat"] = values["amount_price_vat"][0]
+        values["number_sales"] = values["number_sales"][0]
+        top_employees.append(values)
+
+    top_employees.sort(
+        reverse = True,
+        key = lambda value: value["amount_price_vat"]
+    )
+
     return flask.render_template(
         "top.html.tpl",
-        link = "top"
+        link = "top",
+        top_employees = top_employees
     )
 
 @app.errorhandler(404)

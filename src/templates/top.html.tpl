@@ -7,24 +7,14 @@
     <table class="table table-resume three">
         <tbody>
             <tr>
-                <td>
-                    <span class="label strong">1º</span><br />
-                    <a href="#">John Doe</a><br />
-                    <span class="label">Dolce Vita Tejo</span><br />
-                    <span class="label strong">240.00 €</span>
-                </td>
-                <td>
-                    <span class="label strong">2º</span><br />
-                    <a href="#">Sofia Albertina</a><br />
-                    <span class="label">Sede</span><br />
-                    <span class="label strong">280.00 €</span>
-                </td>
-                <td>
-                    <span class="label strong">3º</span><br />
-                    <a href="#">Adalberto Faria</a><br />
-                    <span class="label">Dolce Vita Douro</span><br />
-                    <span class="label strong">600.00 €</span>
-                </td>
+                {% for index in range(3) %}
+                    <td>
+                        <span class="label strong">{{ index + 1 }}º</span><br />
+                        <a href="{{ session['omnix.base_url'] }}adm/employees/{{ top_employees[index].object_id }}">{{ top_employees[index].employee }}</a><br />
+                        <span class="label">Dolce Vita Tejo</span><br />
+                        <span class="label strong">{{ '%0.2f' % top_employees[index].amount_price_vat }} €</span>
+                    </td>
+                {% endfor %}
             </tr>
         </tbody>
     </table>
@@ -32,62 +22,22 @@
         <thead>
             <tr>
                 <th class="left label" width="6%">Rank</th>
-                <th class="left label" width="20%">Seller</th>
-                <th class="left label" width="34%">Store</th>
+                <th class="left label" width="30%">Seller</th>
+                <th class="left label" width="30%">Store</th>
+                <th class="right label" width="14%">Count</th>
                 <th class="right label" width="20%">Sales</th>
-                <th class="right label" width="20%">Commision</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td class="left">4º</td>
-                <td class="left"><a href="#">Alberto F.</a></td>
-                <td class="left">Sede</td>
-                <td class="right"><a href="#">120.00 €</a></td>
-                <td class="right">12.00 €</td>
-            </tr>
-            <tr>
-                <td class="left">5º</td>
-                <td class="left"><a href="#">Maria D.</a></td>
-                <td class="left">NorteShopping</td>
-                <td class="right"><a href="#">110.20 €</a></td>
-                <td class="right">11.02 €</td>
-            </tr>
-            <tr>
-                <td class="left">6º</td>
-                <td class="left"><a href="#">Maria D.</a></td>
-                <td class="left">NorteShopping</td>
-                <td class="right"><a href="#">112.20 €</a></td>
-                <td class="right">11.02 €</td>
-            </tr>
-            <tr>
-                <td class="left">7º</td>
-                <td class="left"><a href="#">Alberto F.</a></td>
-                <td class="left">Sede</td>
-                <td class="right"><a href="#">120.00 €</a></td>
-                <td class="right">12.00 €</td>
-            </tr>
-            <tr>
-                <td class="left">8º</td>
-                <td class="left"><a href="#">Maria D.</a></td>
-                <td class="left">NorteShopping</td>
-                <td class="right"><a href="#">110.20 €</a></td>
-                <td class="right">11.02 €</td>
-            </tr>
-            <tr>
-                <td class="left">9º</td>
-                <td class="left"><a href="#">Alberto F.</a></td>
-                <td class="left">Sede</td>
-                <td class="right"><a href="#">120.00 €</a></td>
-                <td class="right">12.00 €</td>
-            </tr>
-            <tr>
-                <td class="left">10º</td>
-                <td class="left"><a href="#">Maria D.</a></td>
-                <td class="left">NorteShopping</td>
-                <td class="right"><a href="#">110.20 €</a></td>
-                <td class="right">11.02 €</td>
-            </tr>
+            {% for index in range(3, 10) %}
+                <tr>
+                    <td class="left">{{ index + 1 }}º</td>
+                    <td class="left"><a href="{{ session['omnix.base_url'] }}adm/employees/{{ top_employees[index].object_id }}">{{ top_employees[index].employee }}</a></td>
+                    <td class="left">Sede</td>
+                    <td class="right">{{ '%d' % top_employees[index].number_sales }} x</td>
+                    <td class="right">{{ '%0.2f' % top_employees[index].amount_price_vat }} €</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
     <table>

@@ -121,7 +121,7 @@ def mail_activity(
         )
     )
 
-def get_date(year = None, month = None):
+def get_date(year = None, month = None, pivot = config.FIRST_DAY):
     now = datetime.datetime.utcnow()
     year = year or now.year
     month = month or now.month
@@ -131,18 +131,19 @@ def get_date(year = None, month = None):
     previous_month, previous_year = (month - 1, year) if not month == 1 else (12, year - 1)
     next_month, next_year = (month + 1, year) if not month == 12 else (1, year + 1)
 
-    start_month, start_year = (month, year) if now.day >= config.COMMISSION_DAY else (previous_month, previous_year)
-    end_month, end_year = (start_month + 1, start_year) if not start_month == 12 else (1, start_year + 1)
+    start_month, start_year = (month, year) if now.day >= pivot else (previous_month, previous_year)
+    if pivot == config.FIRST_DAY: end_month, end_year = start_month, start_year
+    else: end_month, end_year = (start_month + 1, start_year) if not start_month == 12 else (1, start_year + 1)
 
     start = datetime.datetime(
         year = start_year,
         month = start_month,
-        day = config.COMMISSION_DAY
+        day = pivot
     )
     end = datetime.datetime(
         year = end_year,
         month = end_month,
-        day = config.COMMISSION_DAY
+        day = pivot
     )
 
     start_t = calendar.timegm(start.utctimetuple())
@@ -170,7 +171,7 @@ def get_top(api = None, year = None, month = None):
     target, \
     month, \
     year, \
-    _start_t, \
+    start_t, \
     _end_t, \
     previous_month, \
     previous_year, \
@@ -179,9 +180,8 @@ def get_top(api = None, year = None, month = None):
     has_next = get_date(year = year, month = month)
 
     stats = api.stats_employee(
+        date = start_t,
         unit = "month",
-        year = year,
-        month = month,
         span = 1,
         has_global = True
     )
@@ -221,7 +221,7 @@ def get_sales(api = None, id = None, year = None, month = None):
     previous_year, \
     next_month, \
     next_year, \
-    has_next = get_date(year = year, month = month)
+    has_next = get_date(year = year, month = month, pivot = config.COMMISSION_DAY)
 
     kwargs = {
         "filter_string" : "",

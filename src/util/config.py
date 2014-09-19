@@ -70,6 +70,10 @@ CLIENT_SECRET = "4c37a7dff4c3411ba1646093d2109d87"
 omni api as the client, this value should not be shared
 with every single person (keep private) """
 
+FIRST_DAY = 1
+""" The constant value that defines the first day of a month
+this is obvious and should be used as a constant for readability """
+
 SCOPE = (
     "base",
     "base.user",

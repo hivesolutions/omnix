@@ -237,32 +237,22 @@ def top():
     year = quorum.get_field("year", None, cast = int)
     month = quorum.get_field("month", None, cast = int)
 
-    api = util.get_api()
-    stats = api.stats_employee(
-        unit = "month",
-        year = year,
-        month = month,
-        span = 1,
-        has_global = True
-    )
-
-    top_employees = []
-    for object_id, values in stats.items():
-        values = values["-1"]
-        values["object_id"] = object_id
-        values["amount_price_vat"] = values["amount_price_vat"][0]
-        values["number_sales"] = values["number_sales"][0]
-        top_employees.append(values)
-
-    top_employees.sort(
-        reverse = True,
-        key = lambda value: value["amount_price_vat"]
-    )
+    top_employees,\
+    target_s, \
+    previous_month,\
+    previous_year,\
+    next_month,\
+    next_year,\
+    has_next = util.get_top(year = year, month = month)
 
     return flask.render_template(
         "top.html.tpl",
         link = "top",
-        top_employees = top_employees
+        title = target_s,
+        top_employees = top_employees,
+        previous = (previous_month, previous_year),
+        next = (next_month, next_year),
+        has_next = has_next
     )
 
 @app.errorhandler(404)

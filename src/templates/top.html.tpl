@@ -2,7 +2,7 @@
 {% block title %}Top Sellers{% endblock %}
 {% block name %}Top Sellers{% endblock %}
 {% block content %}
-    <div class="quote">January 2013</div>
+    <div class="quote">{{ title }}</div>
     <div class="separator-horizontal"></div>
     <table class="table table-resume three">
         <tbody>
@@ -45,7 +45,13 @@
             <tr>
                 <td>
                     <div class="links">
-                        <a href="#">previous</a> // <a href="#">next</a>
+                        <a href="{{ url_for('top', month = previous[0], year = previous[1]) }}">previous</a>
+                        //
+                        {% if has_next %}
+                            <a href="{{ url_for('top', month = next[0], year = next[1]) }}">next</a>
+                        {% else %}
+                            <span>next</span>
+                        {% endif %}
                     </div>
                 </td>
             </tr>

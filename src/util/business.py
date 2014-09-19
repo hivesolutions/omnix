@@ -121,9 +121,7 @@ def mail_activity(
         )
     )
 
-def get_sales(api = None, id = None, year = None, month = None):
-    api = api or logic.get_api()
-
+def get_date(year = None, month = None):
     now = datetime.datetime.utcnow()
     year = year or now.year
     month = month or now.month
@@ -152,6 +150,78 @@ def get_sales(api = None, id = None, year = None, month = None):
 
     target = datetime.datetime(year = end_year, month = end_month, day = 1)
     target = target.strftime("%B %Y")
+
+    return (
+        target,
+        month,
+        year,
+        start_t,
+        end_t,
+        previous_month,
+        previous_year,
+        next_month,
+        next_year,
+        has_next
+    )
+
+def get_top(api = None, year = None, month = None):
+    api = api or logic.get_api()
+
+    target, \
+    month, \
+    year, \
+    _start_t, \
+    _end_t, \
+    previous_month, \
+    previous_year, \
+    next_month, \
+    next_year, \
+    has_next = get_date(year = year, month = month)
+
+    stats = api.stats_employee(
+        unit = "month",
+        year = year,
+        month = month,
+        span = 1,
+        has_global = True
+    )
+
+    top_employees = []
+    for object_id, values in stats.items():
+        values = values["-1"]
+        values["object_id"] = object_id
+        values["amount_price_vat"] = values["amount_price_vat"][0]
+        values["number_sales"] = values["number_sales"][0]
+        top_employees.append(values)
+
+    top_employees.sort(
+        reverse = True,
+        key = lambda value: value["amount_price_vat"]
+    )
+
+    return (
+        top_employees,
+        target,
+        previous_month,
+        previous_year,
+        next_month,
+        next_year,
+        has_next
+    )
+
+def get_sales(api = None, id = None, year = None, month = None):
+    api = api or logic.get_api()
+
+    target, \
+    month, \
+    year, \
+    start_t, \
+    end_t, \
+    previous_month, \
+    previous_year, \
+    next_month, \
+    next_year, \
+    has_next = get_date(year = year, month = month)
 
     kwargs = {
         "filter_string" : "",

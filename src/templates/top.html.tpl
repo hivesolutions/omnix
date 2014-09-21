@@ -11,8 +11,9 @@
                     <td>
                         <span class="label strong">{{ index + 1 }}º</span><br />
                         <a href="{{ session['omnix.base_url'] }}adm/employees/{{ top_employees[index].object_id }}">{{ top_employees[index].employee }}</a><br />
-                        <span class="label">Dolce Vita Tejo</span><br />
-                        <span class="label strong">{{ '%0.2f' % top_employees[index].amount_price_vat }} €</span>
+                        <span class="label strong">
+                            '%d' % top_employees[index].number_sales }} x - {{ '%0.2f' % top_employees[index].amount_price_vat }} €
+                        </span>
                     </td>
                 {% endfor %}
             </tr>
@@ -22,10 +23,9 @@
         <thead>
             <tr>
                 <th class="left label" width="6%">Rank</th>
-                <th class="left label" width="30%">Seller</th>
-                <th class="left label" width="30%">Store</th>
+                <th class="left label" width="56%">Seller</th>
                 <th class="right label" width="14%">Count</th>
-                <th class="right label" width="20%">Sales</th>
+                <th class="right label" width="24%">Sales</th>
             </tr>
         </thead>
         <tbody>
@@ -33,7 +33,6 @@
                 <tr>
                     <td class="left">{{ index + 1 }}º</td>
                     <td class="left"><a href="{{ session['omnix.base_url'] }}adm/employees/{{ top_employees[index].object_id }}">{{ top_employees[index].employee }}</a></td>
-                    <td class="left">Sede</td>
                     <td class="right">{{ '%d' % top_employees[index].number_sales }} x</td>
                     <td class="right">{{ '%0.2f' % top_employees[index].amount_price_vat }} €</td>
                 </tr>

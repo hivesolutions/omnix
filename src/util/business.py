@@ -252,7 +252,7 @@ def get_sales(api = None, id = None, year = None, month = None):
 
     operations = returns + sales
 
-    sorter = lambda x: x["date"]
+    sorter = lambda item: item["date"]
     operations.sort(key = sorter, reverse = True)
 
     sales_total = 0

@@ -37,8 +37,8 @@ __copyright__ = "Copyright (c) 2008-2014 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-from omnix import app
-from omnix import quorum
+from omnix.main import app
+from omnix.main import quorum
 
 @app.route("/api/log.json", methods = ("GET",), json = True)
 @quorum.ensure("base.admin", json = True)

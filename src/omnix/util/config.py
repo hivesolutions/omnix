@@ -37,7 +37,7 @@ __copyright__ = "Copyright (c) 2008-2014 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-from omnix.main import quorum
+import quorum
 
 LOCAL_PREFIX = "omni_adm/"
 """ The web prefix to be used when trying to access administration

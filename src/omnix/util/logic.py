@@ -39,8 +39,10 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 import omni
 
-from omnix.main import flask
-from omnix.main import quorum
+import flask
+
+import quorum
+
 from omnix.util import config
 
 def get_api(mode = omni.Api.OAUTH_MODE):

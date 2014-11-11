@@ -1,1 +1,1 @@
-web: python src/omnix.py
+web: python src/omnix/main.py

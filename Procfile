@@ -1,1 +1,1 @@
-web: cd src && python omnix.py
+web: cd src && python omnix/main.py

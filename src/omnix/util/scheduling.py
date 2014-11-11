@@ -42,9 +42,9 @@ import datetime
 import omni
 import quorum
 
-from util import logic
-from util import config
-from util import business
+from omnix.util import logic
+from omnix.util import config
+from omnix.util import business
 
 def load():
     if not config.SCHEDULE: return

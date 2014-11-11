@@ -45,8 +45,8 @@ import threading
 import omni
 import quorum
 
-from util import logic
-from util import config
+from omnix.util import logic
+from omnix.util import config
 
 MESSAGE_TIMEOUT = 120
 """ The amount of seconds before a message is
@@ -96,7 +96,7 @@ class Slave(threading.Thread):
                 self.channel.start_consuming()
             except BaseException as exception:
                 quorum.error(
-                    "Exception while executing - %s" % quorum.UNICODE(exception),
+                    "Exception while executing - %s" % quorum.legacy.UNICODE(exception),
                     log_trace = True
                 )
 
@@ -158,7 +158,7 @@ class Slave(threading.Thread):
             # in the request an exception should be raised and handled properly
             api_method(object_id)
         except BaseException as exception:
-            quorum.error("Exception while submitting document - %s" % quorum.UNICODE(exception))
+            quorum.error("Exception while submitting document - %s" % quorum.legacy.UNICODE(exception))
             retries = properties.priority or 0
             retries -= 1
             properties.priority = retries

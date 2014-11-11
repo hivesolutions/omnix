@@ -39,11 +39,11 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 import datetime
 
-import util
+from omnix import util
 
-from omnix import app
-from omnix import flask
-from omnix import quorum
+from omnix.main import app
+from omnix.main import flask
+from omnix.main import quorum
 
 @app.route("/stores", methods = ("GET",))
 @quorum.ensure("foundation.store.list")

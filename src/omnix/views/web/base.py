@@ -40,11 +40,11 @@ __license__ = "GNU General Public License (GPL), Version 3"
 import datetime
 import traceback
 
-import util
+from omnix import util
 
-from omnix import app
-from omnix import flask
-from omnix import quorum
+from omnix.main import app
+from omnix.main import flask
+from omnix.main import quorum
 
 @app.route("/", methods = ("GET",))
 @app.route("/index", methods = ("GET",))
@@ -181,7 +181,7 @@ def flush_at():
             # has been extracted from the (signed) document structure
             api.submit_invoice_at(object_id)
         except BaseException as exception:
-            quorum.error("Exception while submitting document - %s" % quorum.UNICODE(exception))
+            quorum.error("Exception while submitting document - %s" % quorum.legacy.UNICODE(exception))
         else:
             quorum.info("Document submitted with success")
 

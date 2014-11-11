@@ -42,11 +42,11 @@ import shutil
 import zipfile
 import tempfile
 
-import util
+from omnix import util
 
-from omnix import app
-from omnix import flask
-from omnix import quorum
+from omnix.main import app
+from omnix.main import flask
+from omnix.main import quorum
 
 @app.route("/extras", methods = ("GET",))
 @quorum.ensure("base.admin")

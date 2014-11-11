@@ -42,10 +42,12 @@ from . import report
 from . import store
 from . import supplier
 
-from .base import *
-from .customer import *
-from .employee import *
-from .extra import *
-from .report import *
-from .store import *
-from .supplier import *
+from .base import index, signin, login, do_login, logout, about, reset, flush_mail,\
+    flush_at, oauth, top, handler_404, handler_413, handler_exception
+from .customer import list_customers, list_customers_json, show_customers
+from .employee import list_employees, list_employees_json, show_employee, sales_employee,\
+    mail_employee, show_employees, sales_employees, mail_employees
+from .extra import list_extras, images_extras, do_images_extras, prices_extras, do_prices_extras
+from .report import list_reports, sales_reports
+from .store import list_stores, list_stores_json, show_stores, sales_stores
+from .supplier import list_suppliers, list_suppliers_json, show_suppliers

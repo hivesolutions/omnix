@@ -34,16 +34,12 @@ __copyright__ = "Copyright (c) 2008-2014 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-from . import business
-from . import config
-from . import logic
-from . import scheduling
-from . import slave
-from . import supervisor
+from . import models
+from . import util
+from . import views
+from . import main
 
-from .business import *
-from .config import *
-from .logic import *
-from .scheduling import load as load_scheduling
-from .slave import run as run_slave
-from .supervisor import run as run_supervisor
+from .models import *
+from .util import *
+from .views import *
+from .main import app

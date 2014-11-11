@@ -42,8 +42,11 @@ from . import slave
 from . import supervisor
 
 from .business import mail_activity_all, mail_activity, get_date, get_top, get_sales
-from .config import *
-from .logic import *
+from .config import LOCAL_PREFIX, REMOTE_PREFIX, LOCAL_URL, REMOTE_URL, REDIRECT_URL,\
+    CLIENT_ID, CLIENT_SECRET, FIRST_DAY, SCOPE, AT_SALE_TYPES, AT_TRANSPORT_TYPES,\
+    AT_SUBMIT_TYPES, REMOTE, BASE_URL, SENDER_EMAIL, USERNAME, PASSWORD, SCHEDULE,\
+    COMMISSION_RATE, COMMISSION_DAY, OMNI_URL, PREFIX
+from .logic import get_api, ensure_api, on_auth, start_session, reset_session, get_tokens
 
 from .scheduling import load as load_scheduling
 from .slave import run as run_slave

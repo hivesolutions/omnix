@@ -40,8 +40,9 @@ __license__ = "GNU General Public License (GPL), Version 3"
 import flask #@UnusedImport
 import datetime
 
-import models
 import quorum
+
+import omnix.models
 
 MONGO_DATABASE = "omnix"
 """ The default database to be used for the connection with
@@ -63,12 +64,12 @@ app = quorum.load(
     secret_key = SECRET_KEY,
     mongo_database = MONGO_DATABASE,
     logger = "omnix.debug",
-    models = models,
+    models = omnix.models,
     PERMANENT_SESSION_LIFETIME = datetime.timedelta(31),
     MAX_CONTENT_LENGTH = 1024 ** 3
 )
 
-from views import * #@UnusedWildImport
+import omnix.views #@UnusedImport
 
 if __name__ == "__main__":
     quorum.run(server = "netius")

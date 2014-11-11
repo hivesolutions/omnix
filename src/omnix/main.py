@@ -54,10 +54,10 @@ processes handled by flask (eg: sessions) """
 
 @quorum.onrun
 def onrun():
-    import util
-    util.run_slave(1)
-    util.run_supervisor()
-    util.load_scheduling()
+    import omnix.util
+    omnix.util.run_slave(1)
+    omnix.util.run_supervisor()
+    omnix.util.load_scheduling()
 
 app = quorum.load(
     name = __name__,

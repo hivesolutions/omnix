@@ -45,8 +45,8 @@ import threading
 import omni
 import quorum
 
-from omnix.util import logic
-from omnix.util import config
+from . import logic
+from . import config
 
 MESSAGE_TIMEOUT = 120
 """ The amount of seconds before a message is

@@ -43,7 +43,7 @@ import flask
 
 import quorum
 
-from omnix.util import config
+from . import config
 
 def get_api(mode = omni.Api.OAUTH_MODE):
     access_token = flask.session and flask.session.get("omnix.access_token", None)

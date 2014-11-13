@@ -42,8 +42,8 @@ import datetime
 
 import quorum
 
-from omnix.util import logic
-from omnix.util import config
+from . import logic
+from . import config
 
 def mail_activity_all(
     api = None,

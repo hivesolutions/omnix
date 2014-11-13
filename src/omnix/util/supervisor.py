@@ -44,8 +44,8 @@ import threading
 import omni
 import quorum
 
-from omnix.util import logic
-from omnix.util import config
+from . import logic
+from . import config
 
 LOOP_TIMEOUT = 120
 """ The time to be used in between queueing new

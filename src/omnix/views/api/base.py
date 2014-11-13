@@ -43,8 +43,8 @@ from omnix.main import quorum
 @app.route("/api/log.json", methods = ("GET",), json = True)
 @quorum.ensure("base.admin", json = True)
 def log_api():
-    memory_handler = app.handlers.get("memory", None)
-
+    memory_handler = quorum.get_handler("memory", app = app)
+ 
     count = quorum.get_field("count", None, cast = int)
     level = quorum.get_field("level", None)
 

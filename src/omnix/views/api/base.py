@@ -44,7 +44,7 @@ from omnix.main import quorum
 @quorum.ensure("base.admin", json = True)
 def log_api():
     memory_handler = quorum.get_handler("memory")
- 
+
     count = quorum.get_field("count", None, cast = int)
     level = quorum.get_field("level", None)
 

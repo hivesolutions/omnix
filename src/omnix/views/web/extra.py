@@ -176,7 +176,7 @@ def do_images_extras():
     finally:
         # closes the temporary file descriptor and removes the temporary
         # file (avoiding any memory leaks)
-        os.close(fd);
+        os.close(fd)
         os.remove(file_path)
 
     # redirects the user back to the images list page with a success
@@ -232,7 +232,7 @@ def do_prices_extras():
     finally:
         # closes the temporary file descriptor and removes the temporary
         # file (avoiding any memory leaks)
-        os.close(fd);
+        os.close(fd)
         os.remove(file_path)
 
     # uses the "resolved" items structure in the put operation to

@@ -15,5 +15,11 @@
             </div>
             <div class="description">Import list of prices to the current data source</div>
         </li>
+        <li>
+            <div class="name">
+                <a href="{{ url_for('template_extras') }}">Template Applier</a>
+            </div>
+            <div class="description">Apply an image template to a base image</div>
+        </li>
     </ul>
 {% endblock %}

@@ -247,3 +247,75 @@ def do_prices_extras():
             message = "Prices file processed with success"
         )
     )
+
+@app.route("/extras/template", methods = ("GET",))
+@quorum.ensure("base.admin")
+def template_extras():
+    return flask.render_template(
+        "extra/template.html.tpl",
+        link = "extras"
+    )
+
+@app.route("/extras/template", methods = ("POST",))
+@quorum.ensure("base.admin")
+def do_template_extras():
+    import PIL.Image
+
+    url = util.ensure_api()
+    if url: return flask.redirect(url)
+
+    object = quorum.get_object()
+    base_file = object.get("base_file", None)
+    base_data = base_file.read()
+
+    api = util.get_api()
+    try: mask_data = api.media_system_company(label = "mask")
+    except: mask_data = None
+
+    if not mask_data: raise quorum.OperationalError("No mask defined")
+
+    base_file = quorum.legacy.BytesIO(base_data)
+    mask_file = quorum.legacy.BytesIO(mask_data)
+    out_file = quorum.legacy.BytesIO()
+
+    base_image = PIL.Image.open(base_file)
+    base_image = base_image.convert("RGBA")
+
+    mask_image = PIL.Image.open(mask_file)
+    mask_image = mask_image.resize(base_image.size)
+
+    base_image.paste(mask_image, (0, 0), mask_image)
+    base_image.save(out_file, "png")
+
+    return flask.Response(
+        out_file.getvalue(),
+        mimetype = "image/png"
+    )
+
+@app.route("/extras/mask", methods = ("POST",))
+@quorum.ensure("base.admin")
+def do_mask_extras():
+    url = util.ensure_api()
+    if url: return flask.redirect(url)
+
+    object = quorum.get_object()
+    mask_file = object.get("mask_file", None)
+
+    api = util.get_api()
+    system_company = api.self_system_company()
+
+    data = mask_file.read()
+    mime_type = mask_file.content_type
+    api.set_media_entity(
+        system_company["object_id"],
+        "mask",
+        data = data,
+        mime_type = mime_type
+    )
+
+    return flask.redirect(
+        flask.url_for(
+            "template_extras",
+            message = "Mask file uploaded with success"
+        )
+    )

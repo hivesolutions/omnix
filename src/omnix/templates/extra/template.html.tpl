@@ -10,7 +10,7 @@
     <div class="quote error">
         {{ error }}
     </div>
-    <form enctype="multipart/form-data" action="{{ url_for('do_template_extras') }}" method="post" class="form small">
+    <form enctype="multipart/form-data" action="{{ url_for('do_template_extras') }}" method="post" class="form no-async small">
         <div class="input">
              <a data-name="base_file" class="uploader">Select & Upload the base image</a>
         </div>

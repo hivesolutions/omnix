@@ -36,6 +36,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 from . import business
 from . import config
+from . import image
 from . import logic
 from . import scheduling
 from . import slave
@@ -45,7 +46,8 @@ from .business import mail_activity_all, mail_activity, get_date, get_top, get_s
 from .config import LOCAL_PREFIX, REMOTE_PREFIX, LOCAL_URL, REMOTE_URL, REDIRECT_URL,\
     CLIENT_ID, CLIENT_SECRET, FIRST_DAY, SCOPE, AT_SALE_TYPES, AT_TRANSPORT_TYPES,\
     AT_SUBMIT_TYPES, REMOTE, BASE_URL, SENDER_EMAIL, USERNAME, PASSWORD, SCHEDULE,\
-    COMMISSION_RATE, COMMISSION_DAY, OMNI_URL, PREFIX
+    COMMISSION_RATE, COMMISSION_DAY, IMAGE_RESIZE, OMNI_URL, PREFIX
+from .image import mask_image
 from .logic import get_api, ensure_api, on_auth, start_session, reset_session, get_tokens
 
 from .scheduling import load as load_scheduling

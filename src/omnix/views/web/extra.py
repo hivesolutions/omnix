@@ -259,8 +259,6 @@ def template_extras():
 @app.route("/extras/template", methods = ("POST",))
 @quorum.ensure("base.admin")
 def do_template_extras():
-    import PIL.Image
-
     url = util.ensure_api()
     if url: return flask.redirect(url)
 
@@ -271,24 +269,12 @@ def do_template_extras():
     api = util.get_api()
     try: mask_data = api.media_system_company(label = "mask")
     except: mask_data = None
-
     if not mask_data: raise quorum.OperationalError("No mask defined")
 
-    base_file = quorum.legacy.BytesIO(base_data)
-    mask_file = quorum.legacy.BytesIO(mask_data)
-    out_file = quorum.legacy.BytesIO()
-
-    base_image = PIL.Image.open(base_file)
-    base_image = base_image.convert("RGBA")
-
-    mask_image = PIL.Image.open(mask_file)
-    mask_image = mask_image.resize(base_image.size)
-
-    base_image.paste(mask_image, (0, 0), mask_image)
-    base_image.save(out_file, "png")
+    out_data = util.mask_image(base_data, mask_data, format = "png")
 
     return flask.Response(
-        out_file.getvalue(),
+        out_data,
         mimetype = "image/png"
     )
 

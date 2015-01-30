@@ -4,7 +4,8 @@
 {% block content %}
     <div class="quote">
         Please provide the file containing the base image to be used in the
-        generation of a final image from a mask.<br />
+        generation of a final image from a mask. Use the <strong>best quality
+        possible</strong> to avoid unwanted results.
     </div>
     <div class="separator-horizontal"></div>
     <div class="quote error">
@@ -20,6 +21,12 @@
             <span class="button" data-submit="true">Convert</span>
         </form>
     {% endif %}
+    <div class="quote">
+        Provide the file containing the template image that is going to be
+        applied to the base image to generate the final image. Use the
+        <strong>best quality possible</strong> to avoid unwanted results.
+    </div>
+    <div class="separator-horizontal"></div>
     {% if acl("foundation.root_entity.set_media") %}
         <form enctype="multipart/form-data" action="{{ url_for('do_mask_extras') }}" method="post" class="form small">
             <div class="input">

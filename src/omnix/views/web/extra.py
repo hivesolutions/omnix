@@ -297,7 +297,7 @@ def do_mask_extras():
         "mask",
         data = data,
         mime_type = mime_type,
-        visibility = "global"
+        visibility = 2
     )
 
     return flask.redirect(

@@ -49,7 +49,7 @@ from omnix.main import flask
 from omnix.main import quorum
 
 @app.route("/extras", methods = ("GET",))
-@quorum.ensure("base.admin")
+@quorum.ensure("base.user")
 def list_extras():
     return flask.render_template(
         "extra/list.html.tpl",
@@ -57,7 +57,7 @@ def list_extras():
     )
 
 @app.route("/extras/images", methods = ("GET",))
-@quorum.ensure("base.admin")
+@quorum.ensure("inventory.transactional_merchandise.update")
 def images_extras():
     return flask.render_template(
         "extra/images.html.tpl",
@@ -65,7 +65,7 @@ def images_extras():
     )
 
 @app.route("/extras/images", methods = ("POST",))
-@quorum.ensure("base.admin")
+@quorum.ensure("inventory.transactional_merchandise.update")
 def do_images_extras():
     url = util.ensure_api()
     if url: return flask.redirect(url)
@@ -189,7 +189,7 @@ def do_images_extras():
     )
 
 @app.route("/extras/prices", methods = ("GET",))
-@quorum.ensure("base.admin")
+@quorum.ensure("inventory.transactional_merchandise.update")
 def prices_extras():
     return flask.render_template(
         "extra/prices.html.tpl",
@@ -197,7 +197,7 @@ def prices_extras():
     )
 
 @app.route("/extras/prices", methods = ("POST",))
-@quorum.ensure("base.admin")
+@quorum.ensure("inventory.transactional_merchandise.update")
 def do_prices_extras():
     url = util.ensure_api()
     if url: return flask.redirect(url)
@@ -249,7 +249,7 @@ def do_prices_extras():
     )
 
 @app.route("/extras/template", methods = ("GET",))
-@quorum.ensure("base.admin")
+@quorum.ensure("base.user")
 def template_extras():
     return flask.render_template(
         "extra/template.html.tpl",
@@ -257,7 +257,7 @@ def template_extras():
     )
 
 @app.route("/extras/template", methods = ("POST",))
-@quorum.ensure("base.admin")
+@quorum.ensure("foundation.system_company.show.self")
 def do_template_extras():
     url = util.ensure_api()
     if url: return flask.redirect(url)
@@ -279,7 +279,7 @@ def do_template_extras():
     )
 
 @app.route("/extras/mask", methods = ("POST",))
-@quorum.ensure("base.admin")
+@quorum.ensure("foundation.root_entity.set_media")
 def do_mask_extras():
     url = util.ensure_api()
     if url: return flask.redirect(url)

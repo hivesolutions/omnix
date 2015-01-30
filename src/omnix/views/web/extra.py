@@ -267,7 +267,7 @@ def do_template_extras():
     base_data = base_file.read()
 
     api = util.get_api()
-    try: mask_data = api.media_system_company(label = "mask")
+    try: mask_data = api.public_media_system_company(label = "mask")
     except: mask_data = None
     if not mask_data: raise quorum.OperationalError("No mask defined")
 
@@ -296,7 +296,8 @@ def do_mask_extras():
         system_company["object_id"],
         "mask",
         data = data,
-        mime_type = mime_type
+        mime_type = mime_type,
+        visibility = "global"
     )
 
     return flask.redirect(

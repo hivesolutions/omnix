@@ -67,7 +67,7 @@
                                 {% endif %}
                             </li>
                         {% endif %}
-                        {% if acl("base.admin") %}
+                        {% if acl("base.user") %}
                             <li>
                                 {% if link == "extras" %}
                                     <a href="{{ url_for('list_extras') }}" class="active">extras</a>

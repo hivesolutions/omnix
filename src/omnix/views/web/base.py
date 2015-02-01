@@ -57,31 +57,36 @@ def index():
 
 @app.route("/signin", methods = ("GET",))
 def signin():
+    next = quorum.get_field("next", None)
     return flask.render_template(
-        "signin.html.tpl"
+        "signin.html.tpl",
+        next = next
     )
 
 @app.route("/signin", methods = ("POST",))
 def login():
-    url = util.ensure_api()
+    next = quorum.get_field("next", None)
+    url = util.ensure_api(state = next)
     if url: return flask.redirect(url)
     return flask.redirect(
-        flask.url_for("index")
+        next or flask.url_for("index")
     )
 
 @app.route("/signin_do", methods = ("GET",))
 def do_login():
-    url = util.ensure_api()
+    next = quorum.get_field("next", None)
+    url = util.ensure_api(state = next)
     if url: return flask.redirect(url)
     return flask.redirect(
-        flask.url_for("index")
+        next or flask.url_for("index")
     )
 
 @app.route("/logout", methods = ("GET",))
 def logout():
+    next = quorum.get_field("next", None)
     util.reset_session()
     return flask.redirect(
-        flask.url_for("index")
+        next or flask.url_for("index")
     )
 
 @app.route("/about", methods = ("GET",))
@@ -123,9 +128,6 @@ def flush_mail():
 @app.route("/flush_at", methods = ("GET",))
 @quorum.ensure("base.admin")
 def flush_at():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
-
     # creates a values map structure to retrieve the complete
     # set of inbound documents that have not yet been submitted
     # to at for the flush operation
@@ -204,8 +206,10 @@ def oauth():
     api = util.get_api()
 
     # retrieves the code value provided that is going to be used
-    # to redeem the access token
+    # to redeem the access token and the state value that is going
+    # to be used as the next value for redirection (if defined)
     code = quorum.get_field("code", None)
+    next = quorum.get_field("state", None)
 
     # tries to retrieve the error field an in case it exists raises
     # an error indicating the oauth based problem
@@ -225,15 +229,12 @@ def oauth():
     api.oauth_session()
 
     return flask.redirect(
-        flask.url_for("index")
+        next or flask.url_for("index")
     )
 
 @app.route("/top", methods = ("GET",))
 @quorum.ensure("base.admin")
 def top():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
-
     year = quorum.get_field("year", None, cast = int)
     month = quorum.get_field("month", None, cast = int)
 

@@ -67,9 +67,6 @@ def images_extras():
 @app.route("/extras/images", methods = ("POST",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def do_images_extras():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
-
     # retrieves the reference to the (omni) api object that
     # is going to be used for the operations of updating of
     # the merchandise in bulk (multiple operations at a time)
@@ -199,9 +196,6 @@ def prices_extras():
 @app.route("/extras/prices", methods = ("POST",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def do_prices_extras():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
-
     # retrieves the reference to the api object that is going
     # to be used for the updating of prices operation
     api = util.get_api()
@@ -259,9 +253,6 @@ def template_extras():
 @app.route("/extras/template", methods = ("POST",))
 @quorum.ensure("foundation.system_company.show.self")
 def do_template_extras():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
-
     object = quorum.get_object()
     base_file = object.get("base_file", None)
     base_data = base_file.read()
@@ -281,9 +272,6 @@ def do_template_extras():
 @app.route("/extras/mask", methods = ("POST",))
 @quorum.ensure("foundation.root_entity.set_media")
 def do_mask_extras():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
-
     object = quorum.get_object()
     mask_file = object.get("mask_file", None)
 

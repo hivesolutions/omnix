@@ -44,26 +44,23 @@ from omnix.main import flask
 from omnix.main import quorum
 
 @app.route("/suppliers", methods = ("GET",))
+@quorum.ensure("foundation.supplier_company.list")
 def list_suppliers():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
     return flask.render_template(
         "supplier/list.html.tpl",
         link = "suppliers"
     )
 
 @app.route("/suppliers.json", methods = ("GET",), json = True)
+@quorum.ensure("foundation.supplier_company.list")
 def list_suppliers_json():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
     api = util.get_api()
     object = quorum.get_object()
     return api.list_companies(**object)
 
 @app.route("/suppliers/<int:id>", methods = ("GET",))
+@quorum.ensure("foundation.supplier_company.show")
 def show_suppliers(id):
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
     api = util.get_api()
     supplier = api.get_company(id)
     return flask.render_template(

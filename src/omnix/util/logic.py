@@ -64,11 +64,11 @@ def get_api(mode = omni.Api.OAUTH_MODE):
     api.bind("auth", on_auth)
     return api
 
-def ensure_api():
+def ensure_api(state = None):
     access_token = flask.session.get("omnix.access_token", None)
     if access_token: return
     api = get_api()
-    return api.oauth_authorize()
+    return api.oauth_authorize(state = state)
 
 def on_auth(contents):
     start_session(contents)

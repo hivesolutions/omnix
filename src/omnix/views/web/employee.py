@@ -46,8 +46,6 @@ from omnix.main import quorum
 @app.route("/employees", methods = ("GET",))
 @quorum.ensure("foundation.employee.list")
 def list_employees():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
     return flask.render_template(
         "employee/list.html.tpl",
         link = "employees"
@@ -56,8 +54,6 @@ def list_employees():
 @app.route("/employees.json", methods = ("GET",), json = True)
 @quorum.ensure("foundation.employee.list")
 def list_employees_json():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
     api = util.get_api()
     object = quorum.get_object()
     return api.list_employees(**object)
@@ -65,8 +61,6 @@ def list_employees_json():
 @app.route("/employees/self", methods = ("GET",))
 @quorum.ensure("foundation.employee.show.self")
 def show_employee():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
     api = util.get_api()
     employee = api.self_employee()
     return flask.render_template(
@@ -80,9 +74,6 @@ def show_employee():
 @app.route("/employees/self/sales", methods = ("GET",))
 @quorum.ensure(("sales.sale_transaction.list.self", "sales.customer_return.list.self"))
 def sales_employee():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
-
     year = quorum.get_field("year", None, cast = int)
     month = quorum.get_field("month", None, cast = int)
 
@@ -120,9 +111,6 @@ def sales_employee():
 @app.route("/employees/self/mail", methods = ("GET",))
 @quorum.ensure("foundation.employee.show.self")
 def mail_employee():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
-
     year = quorum.get_field("year", None, cast = int)
     month = quorum.get_field("month", None, cast = int)
 
@@ -133,8 +121,6 @@ def mail_employee():
 @app.route("/employees/<int:id>", methods = ("GET",))
 @quorum.ensure("foundation.employee.show")
 def show_employees(id):
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
     api = util.get_api()
     employee = api.get_employee(id)
     return flask.render_template(
@@ -147,9 +133,6 @@ def show_employees(id):
 @app.route("/employees/<int:id>/sales", methods = ("GET",))
 @quorum.ensure(("sales.sale_transaction.list", "sales.customer_return.list"))
 def sales_employees(id):
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
-
     year = quorum.get_field("year", None, cast = int)
     month = quorum.get_field("month", None, cast = int)
 
@@ -187,9 +170,6 @@ def sales_employees(id):
 @app.route("/employees/<int:id>/mail", methods = ("GET",))
 @quorum.ensure("foundation.employee.show")
 def mail_employees(id):
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
-
     year = quorum.get_field("year", None, cast = int)
     month = quorum.get_field("month", None, cast = int)
 

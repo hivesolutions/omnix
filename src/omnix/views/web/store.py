@@ -48,8 +48,6 @@ from omnix.main import quorum
 @app.route("/stores", methods = ("GET",))
 @quorum.ensure("foundation.store.list")
 def list_stores():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
     return flask.render_template(
         "store/list.html.tpl",
         link = "stores"
@@ -58,8 +56,6 @@ def list_stores():
 @app.route("/stores.json", methods = ("GET",), json = True)
 @quorum.ensure("foundation.store.list")
 def list_stores_json():
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
     api = util.get_api()
     object = quorum.get_object()
     return api.list_stores(**object)
@@ -67,8 +63,6 @@ def list_stores_json():
 @app.route("/stores/<int:id>", methods = ("GET",))
 @quorum.ensure("foundation.store.show")
 def show_stores(id):
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
     api = util.get_api()
     store = api.get_store(id)
     return flask.render_template(
@@ -79,10 +73,8 @@ def show_stores(id):
     )
 
 @app.route("/stores/<int:id>/sales", methods = ("GET",))
+@quorum.ensure(("foundation.store.show", "analytics.sale_snapshot.list"))
 def sales_stores(id):
-    url = util.ensure_api()
-    if url: return flask.redirect(url)
-
     api = util.get_api()
 
     now = datetime.datetime.utcnow()

@@ -209,7 +209,7 @@ def oauth():
     # to redeem the access token and the state value that is going
     # to be used as the next value for redirection (if defined)
     code = quorum.get_field("code", None)
-    next = quorum.get_field("state", None)
+    state = quorum.get_field("state", None)
 
     # tries to retrieve the error field an in case it exists raises
     # an error indicating the oauth based problem
@@ -229,7 +229,7 @@ def oauth():
     api.oauth_session()
 
     return flask.redirect(
-        next or flask.url_for("index")
+        state or flask.url_for("index")
     )
 
 @app.route("/top", methods = ("GET",))

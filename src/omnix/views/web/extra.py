@@ -258,7 +258,7 @@ def do_template_extras():
     base_file = object.get("base_file", None)
     base_data = base_file.read()
 
-    mask_name = "mask_" + mask_name if mask_name else "mask"
+    mask_name = "mask_" + mask_name.lower() if mask_name else "mask"
 
     api = util.get_api()
     try: mask_data = api.public_media_system_company(label = mask_name)
@@ -279,7 +279,7 @@ def do_mask_extras():
     mask_name = object.get("mask_name", None)
     mask_file = object.get("mask_file", None)
 
-    mask_name = "mask_" + mask_name if mask_name else "mask"
+    mask_name = "mask_" + mask_name.lower() if mask_name else "mask"
 
     api = util.get_api()
     system_company = api.self_system_company()

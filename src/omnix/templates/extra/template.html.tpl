@@ -13,11 +13,8 @@
             {{ error }}
         </div>
         <form enctype="multipart/form-data" action="{{ url_for('do_template_extras') }}" method="post" class="form no-async small">
-            <div class="label">
-                <label>Mask</label>
-            </div>
             <div class="input">
-                <div name="mask_name" class="drop-field drop-field-select">
+                <div name="mask_name" class="drop-field drop-field-select" value="Frame">
                     <ul class="data-source" data-type="local">
                         <li>Frame</li>
                         <li>Label</li>
@@ -44,11 +41,8 @@
         </div>
         <form enctype="multipart/form-data" action="{{ url_for('do_mask_extras') }}" method="post" class="form small">
             <div class="input">
-                <div class="label">
-                    <label>Mask</label>
-                </div>
                 <div class="input">
-                    <div name="mask_name" class="drop-field drop-field-select">
+                    <div name="mask_name" class="drop-field drop-field-select" value="Frame">
                         <ul class="data-source" data-type="local">
                             <li>Frame</li>
                             <li>Label</li>

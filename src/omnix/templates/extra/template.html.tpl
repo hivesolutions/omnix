@@ -17,8 +17,7 @@
                 <label>Mask</label>
             </div>
             <div class="input">
-                <div name="mask_name" class="drop-field drop-field-select" value="{{ labels.label }}"
-                     data-error="{{ errors.mask }}">
+                <div name="mask_name" class="drop-field drop-field-select">
                     <ul class="data-source" data-type="local">
                         <li>Frame</li>
                         <li>Label</li>
@@ -49,8 +48,7 @@
                     <label>Mask</label>
                 </div>
                 <div class="input">
-                    <div name="mask_name" class="drop-field drop-field-select" value="{{ labels.label }}"
-                         data-error="{{ errors.mask }}">
+                    <div name="mask_name" class="drop-field drop-field-select">
                         <ul class="data-source" data-type="local">
                             <li>Frame</li>
                             <li>Label</li>

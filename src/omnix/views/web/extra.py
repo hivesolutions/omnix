@@ -254,11 +254,14 @@ def template_extras():
 @quorum.ensure("foundation.system_company.show.self")
 def do_template_extras():
     object = quorum.get_object()
+    mask_name = object.get("mask_name", None)
     base_file = object.get("base_file", None)
     base_data = base_file.read()
 
+    mask_name = "mask_" + mask_name if mask_name else "mask"
+
     api = util.get_api()
-    try: mask_data = api.public_media_system_company(label = "mask")
+    try: mask_data = api.public_media_system_company(label = mask_name)
     except: mask_data = None
     if not mask_data: raise quorum.OperationalError("No mask defined")
 
@@ -273,7 +276,10 @@ def do_template_extras():
 @quorum.ensure("foundation.root_entity.set_media")
 def do_mask_extras():
     object = quorum.get_object()
+    mask_name = object.get("mask_name", None)
     mask_file = object.get("mask_file", None)
+
+    mask_name = "mask_" + mask_name if mask_name else "mask"
 
     api = util.get_api()
     system_company = api.self_system_company()
@@ -282,7 +288,7 @@ def do_mask_extras():
     mime_type = mask_file.content_type
     api.set_media_entity(
         system_company["object_id"],
-        "mask",
+        mask_name,
         data = data,
         mime_type = mime_type,
         visibility = 2

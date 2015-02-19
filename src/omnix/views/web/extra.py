@@ -259,7 +259,7 @@ def do_template_extras():
     base_data = base_file.read()
 
     mask_name = "mask_" + mask_name if mask_name else "mask"
-    mask_name = mask_name.lower
+    mask_name = mask_name.lower()
     mask_name = mask_name.replace(" ", "_")
 
     api = util.get_api()
@@ -282,7 +282,7 @@ def do_mask_extras():
     mask_file = object.get("mask_file", None)
 
     mask_name = "mask_" + mask_name if mask_name else "mask"
-    mask_name = mask_name.lower
+    mask_name = mask_name.lower()
     mask_name = mask_name.replace(" ", "_")
 
     api = util.get_api()

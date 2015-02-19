@@ -16,7 +16,8 @@
             <div class="input">
                 <div name="mask_name" class="drop-field drop-field-select" value="Label">
                     <ul class="data-source" data-type="local">
-                        <li>Label</li>
+                        <li>Color Label</li>
+                        <li>Black Label</li>
                         <li>Frame</li>
                     </ul>
                 </div>
@@ -44,7 +45,8 @@
                 <div class="input">
                     <div name="mask_name" class="drop-field drop-field-select" value="Label">
                         <ul class="data-source" data-type="local">
-                            <li>Label</li>
+                            <li>Color Label</li>
+                            <li>Black Label</li>
                             <li>Frame</li>
                         </ul>
                     </div>

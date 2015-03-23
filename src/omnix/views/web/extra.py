@@ -259,18 +259,94 @@ def do_ctt_extras():
         "number_records" : -1,
         "eager[]" : [
             "customer",
+            "customer.primary_contact_information",
             "shipping_address"
         ],
         "filters[]" : [
-            "workflow_state:equals:7"
+            "workflow_state:equals:7",
+            "shipping_type:equals:2"
         ]
     })
-    print(len(sale_orders))
-    print(sale_orders)
-    #return flask.Response(
-    #    out_data,
-    #    mimetype = "image/png"
-    #)
+
+    lines = []
+
+    for sale_order in sale_orders:
+        line = dict(
+            reference = sale_order["extended_identifier"][:21],
+            quantity = 1,
+            weight = "100,00gr",
+            price = "0ue",
+            name = sale_order["customer"]["representation"][:60],
+            address = sale_order["shipping_address"]["street_name"][:60],
+            town = sale_order["shipping_address"]["zip_code_name"][:50],
+            zip_code_4 = sale_order["shipping_address"]["zip_code"].split("-", 1)[0][:4],
+            zip_code_3 = sale_order["shipping_address"]["zip_code"].split("-", 1)[1][:3],
+            not_applicable_1 = "",
+            observations = "",
+            back = 0,
+            document_code = "",
+            phone_number = (sale_order["customer"]["primary_contact_information"]["phone_number"] or "")[:15],
+            saturday = 1,
+            email = (sale_order["customer"]["primary_contact_information"]["email"] or "")[:200],
+            country = "PT",
+            fragile = 0,
+            not_applicable_2 = "",
+            document_collection = "",
+            code_email = "",
+            mobile_phone = (sale_order["customer"]["primary_contact_information"]["mobile_phone_number"] or "")[:15],
+            second_delivery = 0,
+            delivery_date = "",
+            return_signed_document = 0,
+            expeditor_instructions = 0,
+            sms = 1,
+            not_applicable_3 = "",
+            printer = "",
+            ticket_machine = "",
+            at_code = ""
+        )
+
+        line = "+".join([
+            line["reference"],
+            str(line["quantity"]),
+            line["weight"],
+            line["price"],
+            line["name"],
+            line["address"],
+            line["town"],
+            line["zip_code_4"],
+            line["zip_code_3"],
+            line["not_applicable_1"],
+            line["observations"],
+            str(line["back"]),
+            line["document_code"],
+            line["phone_number"],
+            str(line["saturday"]),
+            line["email"],
+            line["country"],
+            str(line["fragile"]),
+            line["not_applicable_2"],
+            line["document_collection"],
+            line["code_email"],
+            line["mobile_phone"],
+            str(line["second_delivery"]),
+            line["delivery_date"],
+            str(line["return_signed_document"]),
+            str(line["expeditor_instructions"]),
+            str(line["sms"]),
+            line["not_applicable_3"],
+            line["printer"],
+            line["ticket_machine"],
+            line["at_code"]
+        ])
+
+        lines.append(line)
+
+    out_data = "\n".join(lines)
+
+    return flask.Response(
+        out_data,
+        mimetype = "binary/octet-stream"
+    )
 
 @app.route("/extras/template", methods = ("GET",))
 @quorum.ensure("base.user")

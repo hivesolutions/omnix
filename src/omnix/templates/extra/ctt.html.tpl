@@ -12,7 +12,7 @@
     <div class="quote error">
         {{ error }}
     </div>
-    <form enctype="multipart/form-data" action="{{ url_for('do_ctt_extras') }}" method="post" class="form small">
+    <form action="{{ url_for('do_ctt_extras') }}" method="post" class="form no-async small">
         <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>
         //
         <span class="button" data-submit="true">Generate</span>

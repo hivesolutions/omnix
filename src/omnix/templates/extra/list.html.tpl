@@ -19,6 +19,14 @@
                 <div class="description">Import list of prices to the current data source</div>
             </li>
         {% endif %}
+        {% if acl("sales.sale_order.list") %}
+            <li>
+                <div class="name">
+                    <a href="{{ url_for('ctt_extras') }}">CTT Shipping</a>
+                </div>
+                <div class="description">Generate the standard shipping file for open sale orders</div>
+            </li>
+        {% endif %}
         {% if acl("foundation.system_company.show.self") %}
             <li>
                 <div class="name">

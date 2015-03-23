@@ -242,6 +242,36 @@ def do_prices_extras():
         )
     )
 
+@app.route("/extras/ctt", methods = ("GET",))
+@quorum.ensure("sales.sale_order.list")
+def ctt_extras():
+    return flask.render_template(
+        "extra/ctt.html.tpl",
+        link = "extras"
+    )
+
+@app.route("/extras/ctt", methods = ("POST",))
+@quorum.ensure("sales.sale_order.list")
+def do_ctt_extras():
+    api = util.get_api()
+    sale_orders = api.list_sale_orders(**{
+        "start_record" : 0,
+        "number_records" : -1,
+        "eager[]" : [
+            "customer",
+            "shipping_address"
+        ],
+        "filters[]" : [
+            "workflow_state:equals:7"
+        ]
+    })
+    print(len(sale_orders))
+    print(sale_orders)
+    #return flask.Response(
+    #    out_data,
+    #    mimetype = "image/png"
+    #)
+
 @app.route("/extras/template", methods = ("GET",))
 @quorum.ensure("base.user")
 def template_extras():

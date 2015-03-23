@@ -92,6 +92,7 @@ SCOPE = (
     "customers.customer_person.show",
     "sales.customer_return.list",
     "sales.customer_return.list.self",
+    "sales.sale_order.list",
     "sales.sale_transaction.list",
     "sales.sale_transaction.list.self",
     "documents.signed_document.list",

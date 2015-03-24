@@ -36,6 +36,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 from . import business
 from . import config
+from . import ctt
 from . import image
 from . import logic
 from . import scheduling
@@ -43,6 +44,7 @@ from . import slave
 from . import supervisor
 
 from .business import mail_activity_all, mail_activity, get_date, get_top, get_sales
+from .ctt import encode_ctt
 from .config import LOCAL_PREFIX, REMOTE_PREFIX, LOCAL_URL, REMOTE_URL, REDIRECT_URL,\
     CLIENT_ID, CLIENT_SECRET, FIRST_DAY, SCOPE, AT_SALE_TYPES, AT_TRANSPORT_TYPES,\
     AT_SUBMIT_TYPES, REMOTE, BASE_URL, SENDER_EMAIL, USERNAME, PASSWORD, SCHEDULE,\

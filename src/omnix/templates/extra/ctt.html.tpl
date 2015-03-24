@@ -3,10 +3,10 @@
 {% block name %}CTT Shipping{% endblock %}
 {% block content %}
     <div class="quote">
-        Please provide the file containing the list of prices to be imported
-        to the data source, the file should be <strong>excell and key value
-        based</strong> associating the product id with its price.<br />
-        Remember this is a <strong>dangerous operation</strong>.
+    	The current operation will generate a file containing all the pending
+    	(to be shipped) orders using the CTT defined format. The resulting file
+    	will be encoded using the Windows-1252 encoding as defined in the standard.
+    	<strong>This operation may take some time</strong>, be patient.
     </div>
     <div class="separator-horizontal"></div>
     <div class="quote error">

@@ -3,7 +3,7 @@
 {% block name %}CTT Shipping{% endblock %}
 {% block content %}
     <div class="quote">
-        The current operation will generate a file containing all the pending
+        The current operation will generate a file containing all the reserved
         (to be shipped) orders using the currently <strong>standard CTT (Correios) format</strong>,
         only ship to customer order will be selected.<br/>
         The resulting file will be encoded using the standard <strong>Windows-1252</strong>.<br/>

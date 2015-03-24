@@ -263,7 +263,7 @@ def do_ctt_extras():
             "shipping_address"
         ],
         "filters[]" : [
-            "workflow_state:equals:7",
+            "workflow_state:equals:5",
             "shipping_type:equals:2"
         ]
     })

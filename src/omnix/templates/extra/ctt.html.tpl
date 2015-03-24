@@ -4,10 +4,10 @@
 {% block content %}
     <div class="quote">
         The current operation will generate a file containing all the pending
-        (to be shipped) orders using the currently <strong>standard CTT defined format</strong>,
+        (to be shipped) orders using the currently <strong>standard CTT (Correios) format</strong>,
         only ship to customer order will be selected.<br/>
         The resulting file will be encoded using the standard <strong>Windows-1252</strong>.<br/>
-        <strong>This operation may take some time</strong>, be patient.
+        <strong>This operation may take some time</strong>, please be patient.
     </div>
     <div class="separator-horizontal"></div>
     <div class="quote error">

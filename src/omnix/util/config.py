@@ -135,6 +135,7 @@ SCHEDULE = quorum.conf("OMNIX_SCHEDULE", True, cast = bool)
 COMMISSION_RATE = quorum.conf("OMNIX_COMMISSION_RATE", 0.01, cast = float)
 COMMISSION_DAY = quorum.conf("OMNIX_COMMISSION_DAY", 26, cast = int)
 IMAGE_RESIZE = quorum.conf("OMNIX_IMAGE_RESIZE", "crop")
+LOCALE = quorum.conf("OMNIX_LOCALE", "en_us")
 
 OMNI_URL = REMOTE_URL if REMOTE else LOCAL_URL
 PREFIX = REMOTE_PREFIX if REMOTE else LOCAL_PREFIX

@@ -112,7 +112,7 @@ def mail_birthday(api = None, id = None, links = True):
         subject = "Happy Birthday",
         sender = config.SENDER_EMAIL,
         receivers = ["%s <%s>" % (name, email)],
-        rich = "email/birthday.en_us.html.tpl",
+        rich = "email/birthday.%s.html.tpl" % config.LOCALE,
         context = dict(
             settings = dict(
                 logo = True,
@@ -165,7 +165,7 @@ def mail_activity(
         subject = "Omni activity report for %s as of %s" % (target_s, now_s),
         sender = config.SENDER_EMAIL,
         receivers = ["%s <%s>" % (name, email)],
-        rich = "email/activity.en_us.html.tpl",
+        rich = "email/activity.%s.html.tpl" % config.LOCALE,
         context = dict(
             settings = dict(
                 logo = True,

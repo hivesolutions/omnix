@@ -53,14 +53,27 @@ def load():
 
 def load_mail():
     if not config.REMOTE: return
-    week_time = quorum.weekly_work(tick_mail, weekday = 4, offset = 14400)
-    month_time = quorum.monthly_work(tick_previous, monthday = 26, offset = 14400)
+    day_time = quorum.daily_work(birthday_mail, offset = 14400)
+    week_time = quorum.weekly_work(activity_mail, weekday = 4, offset = 14400)
+    month_time = quorum.monthly_work(activity_previous, monthday = 26, offset = 14400)
+    day_date = datetime.datetime.utcfromtimestamp(day_time)
     week_date = datetime.datetime.utcfromtimestamp(week_time)
     month_date = datetime.datetime.utcfromtimestamp(month_time)
-    quorum.debug("Scheduled initial weekly mail task for %s" % week_date)
-    quorum.debug("Scheduled initial monthly previous task for %s" % month_date)
+    quorum.debug("Scheduled initial daily birthday mail task for %s" % day_date)
+    quorum.debug("Scheduled initial weekly activity mail task for %s" % week_date)
+    quorum.debug("Scheduled initial monthly activity previous task for %s" % month_date)
 
-def tick_mail(year = None, month = None):
+def birthday_mail(month = None, day = None):
+    api = logic.get_api(mode = omni.Api.DIRECT_MODE)
+    business.mail_birthday_all(
+        api = api,
+        month = month,
+        day = day,
+        links = False
+    )
+    quorum.debug("Finished sending birthday emails")
+
+def activity_mail(year = None, month = None):
     api = logic.get_api(mode = omni.Api.DIRECT_MODE)
     business.mail_activity_all(
         api = api,
@@ -71,7 +84,7 @@ def tick_mail(year = None, month = None):
     )
     quorum.debug("Finished sending activity emails")
 
-def tick_previous():
+def activity_previous():
     now = datetime.datetime.utcnow()
     pre_year, pre_month = (now.year - 1, 12) if now.month == 1 else (now.year, now.month - 1)
-    tick_mail(year = pre_year, month = pre_month)
+    activity_mail(year = pre_year, month = pre_month)

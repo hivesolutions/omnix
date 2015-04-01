@@ -43,7 +43,8 @@ from . import scheduling
 from . import slave
 from . import supervisor
 
-from .business import mail_activity_all, mail_activity, get_date, get_top, get_sales
+from .business import mail_birthday_all, mail_activity_all, mail_birthday, mail_activity,\
+    get_date, get_top, get_sales
 from .ctt import encode_ctt
 from .config import LOCAL_PREFIX, REMOTE_PREFIX, LOCAL_URL, REMOTE_URL, REDIRECT_URL,\
     CLIENT_ID, CLIENT_SECRET, FIRST_DAY, SCOPE, AT_SALE_TYPES, AT_TRANSPORT_TYPES,\

@@ -110,9 +110,28 @@ def reset():
         flask.url_for("index")
     )
 
-@app.route("/flush_mail", methods = ("GET",))
+@app.route("/flush_birthday", methods = ("GET",))
 @quorum.ensure("base.admin")
-def flush_mail():
+def flush_birthday():
+    month = quorum.get_field("month", None, cast = int)
+    day = quorum.get_field("day", None, cast = int)
+
+    util.mail_birthday_all(
+        month = month,
+        day = day,
+        links = False
+    )
+
+    return flask.redirect(
+        flask.url_for(
+            "index",
+             message = "Birthday emails have been sent"
+        )
+    )
+
+@app.route("/flush_activity", methods = ("GET",))
+@quorum.ensure("base.admin")
+def flush_activity():
     util.mail_activity_all(
         validate = True,
         links = False
@@ -121,7 +140,7 @@ def flush_mail():
     return flask.redirect(
         flask.url_for(
             "index",
-             message = "Emails have been sent"
+             message = "Activity emails have been sent"
         )
     )
 

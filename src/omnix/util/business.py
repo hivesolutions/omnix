@@ -45,6 +45,35 @@ import quorum
 from . import logic
 from . import config
 
+def mail_birthday_all(
+    api = None,
+    month = None,
+    day = None,
+    validate = False,
+    links = True
+):
+    api = api or logic.get_api()
+    has_date = month and day
+    if not has_date:
+        current = datetime.datetime.utcnow()
+        month, day = current.month, current.day
+    birth_day = "%02d/%02d" % (month, day)
+    employees = api.list_employees(
+        object = dict(limit = -1),
+        **{
+            "filters[]" : [
+                "birth_day:equals:%s" % birth_day
+            ]
+        }
+    )
+    for employee in employees:
+        try: mail_birthday(
+            api = api,
+            id = employee["object_id"],
+            links = links
+        )
+        except quorum.OperationalError: pass
+
 def mail_activity_all(
     api = None,
     year = None,
@@ -65,6 +94,36 @@ def mail_activity_all(
         )
         except quorum.OperationalError: pass
 
+def mail_birthday(api = None, id = None, links = True):
+    api = api or logic.get_api()
+    employee = api.get_employee(id) if id else api.self_employee()
+
+    name = employee.get("full_name", None)
+    working = employee.get("working", None)
+    contact_information = employee.get("primary_contact_information", {})
+    email = contact_information.get("email", None)
+
+    if not name: raise quorum.OperationalError("No name defined")
+    if not email: raise quorum.OperationalError("No email defined")
+    if not working == 1: raise quorum.OperationalError("No longer working")
+
+    quorum.debug("Sending birthday email to %s <%s>" % (name, email))
+    quorum.send_mail(
+        subject = "Happy Birthday",
+        sender = config.SENDER_EMAIL,
+        receivers = ["%s <%s>" % (name, email)],
+        rich = "email/birthday.en_us.html.tpl",
+        context = dict(
+            settings = dict(
+                logo = True,
+                links = links
+            ),
+            base_url = config.BASE_URL,
+            omnix_base_url = config.OMNI_URL,
+            commission_rate = config.COMMISSION_RATE
+        )
+    )
+
 def mail_activity(
     api = None,
     id = None,
@@ -77,11 +136,13 @@ def mail_activity(
     employee = api.get_employee(id) if id else api.self_employee()
 
     name = employee.get("full_name", None)
+    working = employee.get("working", None)
     contact_information = employee.get("primary_contact_information", {})
     email = contact_information.get("email", None)
 
     if not name: raise quorum.OperationalError("No name defined")
     if not email: raise quorum.OperationalError("No email defined")
+    if not working == 1: raise quorum.OperationalError("No longer working")
 
     now = datetime.datetime.utcnow()
     now_s = now.strftime("%B %d %Y")

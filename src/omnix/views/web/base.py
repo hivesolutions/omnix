@@ -113,12 +113,10 @@ def reset():
 @app.route("/flush_birthday", methods = ("GET",))
 @quorum.ensure("base.admin")
 def flush_birthday():
-    year = quorum.get_field("year", None, cast = int)
     month = quorum.get_field("month", None, cast = int)
     day = quorum.get_field("day", None, cast = int)
 
     util.mail_birthday_all(
-        year = year,
         month = month,
         day = day,
         links = False

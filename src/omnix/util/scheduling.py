@@ -63,11 +63,10 @@ def load_mail():
     quorum.debug("Scheduled initial weekly activity mail task for %s" % week_date)
     quorum.debug("Scheduled initial monthly activity previous task for %s" % month_date)
 
-def birthday_mail(year = None, month = None, day = None):
+def birthday_mail(month = None, day = None):
     api = logic.get_api(mode = omni.Api.DIRECT_MODE)
     business.mail_birthday_all(
         api = api,
-        year = year,
         month = month,
         day = day,
         links = False

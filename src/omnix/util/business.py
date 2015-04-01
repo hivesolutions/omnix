@@ -47,25 +47,22 @@ from . import config
 
 def mail_birthday_all(
     api = None,
-    year = None,
     month = None,
     day = None,
     validate = False,
     links = True
 ):
     api = api or logic.get_api()
-    has_date = year and month and day
+    has_date = month and day
     if not has_date:
         current = datetime.datetime.utcnow()
-        year, month, day = current.year, current.month, current.day
-    date = datetime.datetime(year = year, month = month, day = day)
-    timestamp = calendar.timegm(date.utctimetuple())
-    timestamp = int(timestamp)
+        month, day = current.month, current.day
+    birth_day = "%02d/%02d" % (month, day)
     employees = api.list_employees(
-        object = {
-            "limit" : -1,
+        object = dict(limit = -1),
+        **{
             "filters[]" : [
-                "birth_date:equals:%d" % timestamp
+                "birth_day:equals:%s" % birth_day
             ]
         }
     )
@@ -102,11 +99,13 @@ def mail_birthday(api = None, id = None, links = True):
     employee = api.get_employee(id) if id else api.self_employee()
 
     name = employee.get("full_name", None)
+    working = employee.get("working", None)
     contact_information = employee.get("primary_contact_information", {})
     email = contact_information.get("email", None)
 
     if not name: raise quorum.OperationalError("No name defined")
     if not email: raise quorum.OperationalError("No email defined")
+    if not working == 1: raise quorum.OperationalError("No longer working")
 
     quorum.debug("Sending birthday email to %s <%s>" % (name, email))
     quorum.send_mail(
@@ -137,11 +136,13 @@ def mail_activity(
     employee = api.get_employee(id) if id else api.self_employee()
 
     name = employee.get("full_name", None)
+    working = employee.get("working", None)
     contact_information = employee.get("primary_contact_information", {})
     email = contact_information.get("email", None)
 
     if not name: raise quorum.OperationalError("No name defined")
     if not email: raise quorum.OperationalError("No email defined")
+    if not working == 1: raise quorum.OperationalError("No longer working")
 
     now = datetime.datetime.utcnow()
     now_s = now.strftime("%B %d %Y")

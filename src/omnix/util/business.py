@@ -97,7 +97,7 @@ def mail_activity_all(
         )
         except quorum.OperationalError: pass
 
-def mail_birthday(api = None, links = True):
+def mail_birthday(api = None, id = None, links = True):
     api = api or logic.get_api()
     employee = api.get_employee(id) if id else api.self_employee()
 

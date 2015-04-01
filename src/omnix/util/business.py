@@ -57,7 +57,7 @@ def mail_birthday_all(
     has_date = year and month and day
     if not has_date:
         current = datetime.datetime.utcnow()
-        year, month, day = current.year, current.month, current,day
+        year, month, day = current.year, current.month, current.day
     date = datetime.datetime(year = year, month = month, day = day)
     timestamp = calendar.timegm(date.utctimetuple())
     timestamp = int(timestamp)

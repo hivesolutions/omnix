@@ -45,6 +45,16 @@ import quorum
 from . import logic
 from . import config
 
+BIRTHDAY_SUBJECT = dict(
+    en_us = "Happy Birthday",
+    pt_pt = "Feliz Aniversário"
+)
+
+ACTIVITY_SUBJECT = dict(
+    en_us = "Omni activity report for %s as of %s",
+    pt_pt = "Relatório de atividade Omni para %s em %s"
+)
+
 def mail_birthday_all(
     api = None,
     month = None,
@@ -109,7 +119,7 @@ def mail_birthday(api = None, id = None, links = True):
 
     quorum.debug("Sending birthday email to %s <%s>" % (name, email))
     quorum.send_mail(
-        subject = "Happy Birthday",
+        subject = BIRTHDAY_SUBJECT[config.LOCALE],
         sender = config.SENDER_EMAIL,
         receivers = ["%s <%s>" % (name, email)],
         rich = "email/birthday.%s.html.tpl" % config.LOCALE,
@@ -162,7 +172,7 @@ def mail_activity(
 
     quorum.debug("Sending activity email to %s <%s>" % (name, email))
     quorum.send_mail(
-        subject = "Omni activity report for %s as of %s" % (target_s, now_s),
+        subject = ACTIVITY_SUBJECT[config.LOCALE] % (target_s, now_s),
         sender = config.SENDER_EMAIL,
         receivers = ["%s <%s>" % (name, email)],
         rich = "email/activity.%s.html.tpl" % config.LOCALE,

@@ -105,6 +105,9 @@ def mail_birthday(api = None, id = None, links = True):
     contact_information = employee.get("primary_contact_information", {})
     email = contact_information.get("email", None)
 
+    if not name: raise quorum.OperationalError("No name defined")
+    if not email: raise quorum.OperationalError("No email defined")
+
     quorum.debug("Sending birthday email to %s <%s>" % (name, email))
     quorum.send_mail(
         subject = "Happy Birthday",

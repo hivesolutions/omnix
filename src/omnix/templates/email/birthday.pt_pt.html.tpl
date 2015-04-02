@@ -1,4 +1,4 @@
-{% extends "email/layout.en_us.html.tpl" %}
+{% extends "email/layout.pt_pt.html.tpl" %}
 {% block title %}Feliz Aniversário{% endblock %}
 {% block content %}
     <p>

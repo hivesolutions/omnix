@@ -27,6 +27,9 @@
                     <ul class="data-source" data-type="local">
                         <li>PNG</li>
                         <li>JPEG</li>
+                        <li>GIF</li>
+                        <li>TIFF</li>
+                        <li>WebP</li>
                     </ul>
                 </div>
             </div>

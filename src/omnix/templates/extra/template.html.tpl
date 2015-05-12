@@ -23,6 +23,14 @@
                 </div>
             </div>
             <div class="input">
+                <div name="format" class="drop-field drop-field-select" value="PNG">
+                    <ul class="data-source" data-type="local">
+                        <li>PNG</li>
+                        <li>JPEG</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="input">
                  <a data-name="base_file" class="uploader">Select & Upload the base image</a>
             </div>
             <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>

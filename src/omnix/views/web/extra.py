@@ -41,6 +41,7 @@ import os
 import shutil
 import zipfile
 import tempfile
+import mimetypes
 
 from omnix import util
 
@@ -288,6 +289,7 @@ def template_extras():
 def do_template_extras():
     object = quorum.get_object()
     mask_name = object.get("mask_name", None)
+    format = object.get("format", "png")
     base_file = object.get("base_file", None)
     base_data = base_file.read()
 
@@ -300,11 +302,12 @@ def do_template_extras():
     except: mask_data = None
     if not mask_data: raise quorum.OperationalError("No mask defined")
 
-    out_data = util.mask_image(base_data, mask_data, format = "png")
+    out_data = util.mask_image(base_data, mask_data, format = format)
+    mimetype = mimetypes.guess_type("_." + format)[0]
 
     return flask.Response(
         out_data,
-        mimetype = "image/png"
+        mimetype = mimetype or "application/octet-stream"
     )
 
 @app.route("/extras/mask", methods = ("POST",))

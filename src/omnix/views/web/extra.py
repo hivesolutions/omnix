@@ -91,6 +91,64 @@ def do_media_extras():
     try: media_file.save(file_path)
     finally: media_file.close()
 
+    try:
+        # creates a new temporary directory that is going to be used
+        # in the extraction of the media zip file
+        temp_path = tempfile.mkdtemp()
+        try:
+            # creates the zip file reference with the current file path
+            # and then extracts the complete set of contents to the "target"
+            # temporary path closing the zip file afterwards
+            zip = zipfile.ZipFile(file_path)
+            try: zip.extractall(temp_path)
+            finally: zip.close()
+
+            # iterates over the complete set of names in the temporary path
+            # to try to upload the media to the target data source, note that
+            # only the media files are considered and the base name of them
+            # are going to be validation for existence in the data source
+            for name in os.listdir(temp_path):
+                # splits the file name into base name and extension and validates
+                # the extension, so that only media files are considered
+                base, extension = os.path.splitext(name)
+                if not extension.lower() in (".png", ".jpg", ".jpeg"):
+                    quorum.info("Skipping, '%s' not a valid media file" % name)
+                    continue
+
+                # converts the base value of the file name into an intiger value
+                # that is going to be used as the object id of the entity
+                object_id = int(base)
+
+                # prints a logging message about the upload of media file that
+                # is going to be performed for the current merchandise
+                quorum.debug("Adding media file for entity '%d'" % object_id)
+
+                # creates the target temporary media path from the temporary directory
+                # path and then "read" the complete set of contents from it closing the
+                # file afterwards (no more reading allowed)
+                media_path = os.path.join(temp_path, name)
+                media_file = open(media_path, "rb")
+                try: contents = media_file.read()
+                finally: media_file.close()
+
+                # sets/updates the media for the associated root entity using the
+                # data extracted from the file and the information in its name
+                api.set_media_entity(
+                    object_id,
+                    contents,
+                    engine = "fs",
+                    thumbnails = True
+                )
+        finally:
+            # removes the temporary path as it's no longer going to be
+            # required for the operation (errors are ignored)
+            shutil.rmtree(temp_path, ignore_errors = True)
+    finally:
+        # closes the temporary file descriptor and removes the temporary
+        # file (avoiding any memory leaks)
+        os.close(fd)
+        os.remove(file_path)
+
     # redirects the user back to the media list page with a success
     # message indicating that everything went as expected
     return flask.redirect(

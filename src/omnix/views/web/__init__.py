@@ -47,8 +47,8 @@ from .base import index, signin, login, do_login, logout, about, reset, flush_bi
 from .customer import list_customers, list_customers_json, show_customers
 from .employee import list_employees, list_employees_json, show_employee, sales_employee,\
     mail_employee, show_employees, sales_employees, mail_employees
-from .extra import list_extras, images_extras, do_images_extras, prices_extras, do_prices_extras,\
-    template_extras, do_template_extras, do_mask_extras
+from .extra import list_extras, media_extras, do_media_extras, images_extras, do_images_extras,\
+    prices_extras, do_prices_extras, template_extras, do_template_extras, do_mask_extras
 from .report import list_reports, sales_reports
 from .store import list_stores, list_stores_json, show_stores, sales_stores
 from .supplier import list_suppliers, list_suppliers_json, show_suppliers

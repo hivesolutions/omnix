@@ -57,6 +57,49 @@ def list_extras():
         link = "extras"
     )
 
+@app.route("/extras/media", methods = ("GET",))
+@quorum.ensure("foundation.root_entity.set_media")
+def media_extras():
+    return flask.render_template(
+        "extra/media.html.tpl",
+        link = "extras"
+    )
+
+@app.route("/extras/media", methods = ("POST",))
+@quorum.ensure("inventory.transactional_merchandise.update")
+def do_media_extras():
+    # retrieves the reference to the (omni) api object that
+    # is going to be used for the operations of updating of
+    # the merchandise in bulk (multiple operations at a time)
+    api = util.get_api()
+
+    # tries to retrieve the media file from the current
+    # form in case it's not available renders the current
+    # template with an error message
+    media_file = quorum.get_field("media_file", None)
+    if media_file == None or not media_file.filename:
+        return flask.render_template(
+            "extra/media.html.tpl",
+            link = "extras",
+            error = "No file defined"
+        )
+
+    # creates a temporary file path for the storage of the file
+    # and then saves it into that directory, closing the same
+    # file afterwards, as it has been properly saved
+    fd, file_path = tempfile.mkstemp()
+    try: media_file.save(file_path)
+    finally: media_file.close()
+
+    # redirects the user back to the media list page with a success
+    # message indicating that everything went as expected
+    return flask.redirect(
+        flask.url_for(
+            "media_extras",
+            message = "Media file processed with success"
+        )
+    )
+
 @app.route("/extras/images", methods = ("GET",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def images_extras():

@@ -115,13 +115,19 @@ def do_media_extras():
                     quorum.info("Skipping, '%s' not a valid media file" % name)
                     continue
 
-                # converts the base value of the file name into an intiger value
-                # that is going to be used as the object id of the entity
-                object_id = int(base)
+                # splits the base value of the file name so that it's possible to
+                # extract the proper position of the image if that's required
+                base_s = base.rsplit("_", 1)
+                object_id = int(base_s[0])
+                if len(base_s) > 1: position = int(base_s[1])
+                else: position = 1
 
                 # prints a logging message about the upload of media file that
-                # is going to be performed for the current merchandise
-                quorum.debug("Adding media file for entity '%d'" % object_id)
+                # is going to be performed for the current entity
+                quorum.debug(
+                    "Adding media file for entity '%d' in position '%d'" %\
+                    (object_id, position)
+                )
 
                 # creates the target temporary media path from the temporary directory
                 # path and then "read" the complete set of contents from it closing the
@@ -136,6 +142,7 @@ def do_media_extras():
                 api.set_media_entity(
                     object_id,
                     contents,
+                    position = position,
                     engine = "fs",
                     thumbnails = True
                 )

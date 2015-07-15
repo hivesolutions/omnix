@@ -8,7 +8,7 @@
                 <div class="name">
                     <a href="{{ url_for('images_extras') }}">Images List</a>
                 </div>
-                <div class="description">Upload a list of images to be used in entities</div>
+                <div class="description">Upload a list of images to be used in inventory</div>
             </li>
         {% endif %}
         {% if acl("inventory.transactional_merchandise.update") %}

@@ -38,6 +38,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import os
+import imghdr
 import shutil
 import zipfile
 import tempfile
@@ -137,12 +138,18 @@ def do_media_extras():
                 try: contents = media_file.read()
                 finally: media_file.close()
 
+                # tries to guess the proper image type for the image located at the
+                # provided path and the uses this value to construct the mime type
+                image_type = imghdr.what(media_path)
+                mime_type = "image/" + image_type if image_type else "image/unknown"
+
                 # sets/updates the media for the associated root entity using the
                 # data extracted from the file and the information in its name
                 api.set_media_entity(
                     object_id,
                     contents,
                     position = position,
+                    mime_type = mime_type,
                     engine = "fs",
                     thumbnails = True
                 )

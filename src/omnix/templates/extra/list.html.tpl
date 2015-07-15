@@ -3,6 +3,14 @@
 {% block name %}Extras{% endblock %}
 {% block content %}
     <ul>
+        {% if acl("foundation.root_entity.set_media") %}
+            <li>
+                <div class="name">
+                    <a href="{{ url_for('media_extras') }}">Media List</a>
+                </div>
+                <div class="description">Upload a list of media to be used in entities</div>
+            </li>
+        {% endif %}
         {% if acl("inventory.transactional_merchandise.update") %}
             <li>
                 <div class="name">

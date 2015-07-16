@@ -137,7 +137,7 @@ def do_media_extras():
                         "start_record" : 0,
                         "number_records" : 1,
                         "filters[]" : [
-                            "company_product_code:equals:%s" % base
+                            "company_product_code:equals:%s" % base_s[0]
                         ]
                     }
 

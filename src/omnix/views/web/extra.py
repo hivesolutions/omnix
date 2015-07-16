@@ -119,9 +119,40 @@ def do_media_extras():
                 # splits the base value of the file name so that it's possible to
                 # extract the proper position of the image if that's required
                 base_s = base.rsplit("_", 1)
-                object_id = int(base_s[0])
                 if len(base_s) > 1: position = int(base_s[1])
                 else: position = 1
+
+                # tries to "cast" the base file name value as an integer and in case
+                # it's possible assumes that this value is the object identifier
+                try: object_id = int(base_s[0])
+                except: object_id = None
+
+                # in case no object id was retrieved from the base file name value
+                # a secondary strategy is used, so that the merchandise database
+                # is searched using the base string value as the company product code
+                if not object_id:
+                    # creates the keyword arguments map so that the the merchandise
+                    # with the provided company product code is retrieved
+                    kwargs = {
+                        "start_record" : 0,
+                        "number_records" : 1,
+                        "filters[]" : [
+                            "company_product_code:equals:%s" % base
+                        ]
+                    }
+
+                    # runs the list merchandise operation in order to try to find a
+                    # merchandise entity for the requested (unique) product code in
+                    # case there's at least one merchandise its object id is used
+                    try: merchandise = api.list_merchandise(**kwargs)
+                    except: merchandise = []
+                    if merchandise: object_id = merchandise[0]["object_id"]
+
+                # in case no object id was retrieved must skip the current loop
+                # with a proper information message (as expected)
+                if not object_id:
+                    quorum.info("Skipping, could not resolve object id for '%s'" % base)
+                    continue
 
                 # prints a logging message about the upload of media file that
                 # is going to be performed for the current entity

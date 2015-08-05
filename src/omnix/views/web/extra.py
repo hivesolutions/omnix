@@ -486,3 +486,16 @@ def do_mask_extras():
             message = "Mask file uploaded with success"
         )
     )
+
+@app.route("/extras/browser", methods = ("GET",))
+@quorum.ensure("foundation.root_entity.show_media")
+def browser_extras():
+    return flask.render_template(
+        "extra/browser.html.tpl",
+        link = "extras"
+    )
+
+@app.route("/extras/browser", methods = ("POST",))
+@quorum.ensure("foundation.root_entity.show_media")
+def do_browser():
+    pass

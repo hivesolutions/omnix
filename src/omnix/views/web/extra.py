@@ -495,7 +495,10 @@ def browser_extras():
         link = "extras"
     )
 
-@app.route("/extras/browser", methods = ("POST",))
+@app.route("/extras/browser", methods = ("POST",), json = True)
 @quorum.ensure("foundation.root_entity.show_media")
 def do_browser():
-    pass
+    object_id = quorum.get_field("object_id", None, cast = int)
+    api = util.get_api()
+    media = api.info_media_entity(object_id)
+    return media

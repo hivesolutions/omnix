@@ -23,5 +23,57 @@
 // __copyright__ = Copyright (c) 2008-2015 Hive Solutions Lda.
 // __license__   = GNU General Public License (GPL), Version 3
 
+(function(jQuery) {
+    jQuery.fn.uapply = function(options) {
+        // sets the jquery matched object
+        var matchedObject = this;
+
+        // retrieves the reference to the media preview object
+        // so that the proper plugin is registered
+        var mediaPreview = jQuery(".media-preview", matchedObject);
+        mediaPreview.umediapreview();
+
+        // returns the current context to the caller method so that
+        // it may be used for chained operations
+        return this;
+    };
+})(jQuery);
+
+(function(jQuery) {
+    jQuery.fn.umediapreview = function(options) {
+        var matchedObject = this;
+        var objectId = jQuery(".text-field[name=object_id]", matchedObject);
+        var previewPanel = jQuery(".preview-panel", matchedObject);
+
+        previewPanel.hide();
+
+        objectId.bind("value_change", function() {
+                    var element = jQuery(this);
+                    var form = element.parents(".form");
+                    var mediaPreview = element.parents(".media-preview");
+                    var previewPanel = jQuery(".preview-panel", mediaPreview);
+                    var mediaTarget = jQuery(".media-target", previewPanel);
+                    var url = form.attr("action");
+                    var value = element.uxvalue();
+                    jQuery.ajax({
+                                url : url,
+                                type : "POST",
+                                data : {
+                                    object_id : value
+                                },
+                                success : function(data) {
+                                    console.info(data);
+                                }
+                            });
+                });
+
+        return this;
+    };
+})(jQuery);
+
 jQuery(document).ready(function() {
-});
+            var _body = jQuery("body");
+            _body.bind("applied", function(event, base) {
+                        base.uapply();
+                    });
+        });

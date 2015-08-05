@@ -43,5 +43,13 @@
                 <div class="description">Apply an image template to a base image</div>
             </li>
         {% endif %}
+        {% if acl("foundation.root_entity.show_media") %}
+            <li>
+                <div class="name">
+                    <a href="{{ url_for('browser_extras') }}">Media Browser</a>
+                </div>
+                <div class="description">Browse throught media of each entity</div>
+            </li>
+        {% endif %}
     </ul>
 {% endblock %}

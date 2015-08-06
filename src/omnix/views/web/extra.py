@@ -587,13 +587,9 @@ def edit_media_browser(id):
 @quorum.ensure("foundation.media.update")
 def update_media_browser(id):
     api = util.get_api()
-    media = api.info_media(id)
-    return flask.render_template(
-        "extra/browser/edit_media.html.tpl",
-        link = "extras",
-        sub_link = "edit",
-        media = media,
-        errors = dict()
+    media = api.update_media(id, media)
+    return flask.redirect(
+        flask.url_for("media_browser", id = media["object_id"])
     )
 
 @app.route("/extras/browser/media/<int:id>/delete", methods = ("GET",))

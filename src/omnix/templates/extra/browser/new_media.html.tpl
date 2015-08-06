@@ -79,6 +79,6 @@
         </div>
         <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>
         //
-        <span class="button" data-submit="true">Upload</span>
+        <span class="button" data-submit="true">Create</span>
     </form>
 {% endblock %}

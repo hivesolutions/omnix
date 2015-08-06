@@ -512,7 +512,7 @@ def do_browser():
             image_url = api.get_media_url(item["secret"])
         )
         media_info.append(mitem)
-    media_info.sort(key = lambda item: (item["position"] or 0, item["dimensions"] or ""))
+    media_info.sort(key = lambda item: (item["label"] or "", item["position"] or 0, item["dimensions"] or ""))
     entity["media"] = media_info
     return entity
 
@@ -568,6 +568,32 @@ def media_browser(id):
         link = "extras",
         sub_link = "info",
         media = media
+    )
+
+@app.route("/extras/browser/media/<int:id>/edit", methods = ("GET",))
+@quorum.ensure("foundation.media.update")
+def edit_media_browser(id):
+    api = util.get_api()
+    media = api.info_media(id)
+    return flask.render_template(
+        "extra/browser/edit_media.html.tpl",
+        link = "extras",
+        sub_link = "edit",
+        media = media,
+        errors = dict()
+    )
+
+@app.route("/extras/browser/media/<int:id>/update", methods = ("POST",))
+@quorum.ensure("foundation.media.update")
+def update_media_browser(id):
+    api = util.get_api()
+    media = api.info_media(id)
+    return flask.render_template(
+        "extra/browser/edit_media.html.tpl",
+        link = "extras",
+        sub_link = "edit",
+        media = media,
+        errors = dict()
     )
 
 @app.route("/extras/browser/media/<int:id>/delete", methods = ("GET",))

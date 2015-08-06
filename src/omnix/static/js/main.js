@@ -64,14 +64,15 @@
                     object_id : value
                 },
                 success : function(data) {
-                    for (var index = 0; index < data.length; index++) {
-                        var item = data[index];
+                    var media = data.media;
+                    for (var index = 0; index < media.length; index++) {
+                        var item = media[index];
                         var imageContainer = jQuery("<div class=\"image-container\"></div>");
                         var image = jQuery("<img src=\"" + item.image_url
                                 + "\" />");
                         var title = jQuery("<h2>" + item.label + "</h2>");
-                        var subTitle = jQuery("<h3>" + (item.dimensions || "unset")
-                                + "</h3>");
+                        var subTitle = jQuery("<h3>"
+                                + (item.dimensions || "unset") + "</h3>");
                         imageContainer.append(image);
                         imageContainer.append(title);
                         imageContainer.append(subTitle);

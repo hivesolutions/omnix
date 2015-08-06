@@ -531,11 +531,11 @@ def new_media_browser(id):
 @quorum.ensure("foundation.root_entity.set_media")
 def create_media_browser(id):
     api = util.get_api()
-    engine = quorum.get_field("engine", None)
+    engine = quorum.get_field("engine", None) or None
     position = quorum.get_field("position", None, cast = int)
-    label = quorum.get_field("label", None)
+    label = quorum.get_field("label", None) or None
     visibility = quorum.get_field("visibility", None, cast = int)
-    description = quorum.get_field("description", None)
+    description = quorum.get_field("description", None) or None
     thumbnails = quorum.get_field("thumbnails", False, cast = bool)
     media_file = quorum.get_field("media_file", None)
     image_type = mimetypes.guess_type(media_file.filename)[0]

@@ -508,9 +508,14 @@ def do_browser():
             label = item["label"],
             position = item["position"],
             dimensions = item["dimensions"],
-            image_url = api.base_url + "omni/media/%s" % item["secret"]
+            image_url = api.get_media_url(item["secret"]) 
         )
         media_info.append(mitem)
     media_info.sort(key = lambda item: (item["position"] or 0, item["dimensions"] or ""))
     entity["media"] = media_info
     return entity
+
+@app.route("/extras/browser/<int:id>/media", methods = ("GET",))
+@quorum.ensure("foundation.root_entity.show_media")
+def media_browser():
+    pass

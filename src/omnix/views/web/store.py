@@ -94,6 +94,7 @@ def sales_stores(id):
 
     count = len(stats["net_price_vat"]) - 1
     count_r = range(count)
+    count_r = list(count_r)
     count_r.reverse()
     _current_day = current_day
     for index in count_r:

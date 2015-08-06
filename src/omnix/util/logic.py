@@ -50,6 +50,7 @@ def get_api(mode = omni.Api.OAUTH_MODE):
     session_id = flask.session and flask.session.get("omnix.session_id", None)
     api = omni.Api(
         base_url = config.OMNI_URL,
+        open_url = config.OMNI_URL,
         prefix = config.PREFIX,
         client_id = config.CLIENT_ID,
         client_secret = config.CLIENT_SECRET,

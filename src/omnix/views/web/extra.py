@@ -517,7 +517,7 @@ def do_browser():
     return entity
 
 @app.route("/extras/browser/media/<int:id>", methods = ("GET",))
-@quorum.ensure("foundation.root_entity.show_media")
+@quorum.ensure("foundation.media.show")
 def media_browser(id):
     api = util.get_api()
     media = api.info_media(id)
@@ -525,5 +525,15 @@ def media_browser(id):
     return flask.render_template(
         "extra/browser/media.html.tpl",
         link = "extras",
+        sub_link = "info",
         media = media
+    )
+
+@app.route("/extras/browser/media/<int:id>/delete", methods = ("GET",))
+@quorum.ensure("foundation.media.delete")
+def delete_media_browser(id):
+    api = util.get_api()
+    api.delete_media(id)
+    return flask.redirect(
+        flask.url_for("media_browser")
     )

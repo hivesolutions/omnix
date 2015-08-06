@@ -1,4 +1,4 @@
-{% extends "partials/layout.html.tpl" %}
+{% extends "partials/layout_media.html.tpl" %}
 {% block title %}Media{% endblock %}
 {% block name %}{{ media.object_id }}{% endblock %}
 {% block content %}

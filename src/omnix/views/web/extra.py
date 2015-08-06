@@ -535,6 +535,7 @@ def create_media_browser(id):
     position = quorum.get_field("position", None, cast = int)
     label = quorum.get_field("label", None)
     description = quorum.get_field("description", None)
+    thumbnails = quorum.get_field("thumbnails", False, cast = bool)
     media_file = quorum.get_field("media_file", None)
     image_type = mimetypes.guess_type(media_file.filename)[0]
     mime_type = image_type if image_type else "image/unknown"
@@ -547,6 +548,7 @@ def create_media_browser(id):
         position = position,
         label = label,
         mime_type = mime_type,
+        thumbnails = thumbnails,
         description = description
     )
     return flask.redirect(

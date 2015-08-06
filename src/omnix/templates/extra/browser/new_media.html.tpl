@@ -37,6 +37,16 @@
             <textarea class="text-area" name="description" placeholder="eg: some words about the media"
                       data-error="{{ errors.description }}">{{ media.description }}</textarea>
         </div>
+        <div class="label">
+            <label>Options</label>
+        </div>
+        <div class="input">
+            <div class="option">
+                <span class="float-left">Generate thumbnails ?</span>
+                <input class="float-right" type="checkbox" name="thumbnails" />
+                <div class="clear"></div>
+            </div>
+        </div>
         <div class="input">
              <a data-name="media_file" class="uploader">Select & Upload the media list file</a>
         </div>

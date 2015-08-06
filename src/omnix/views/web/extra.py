@@ -587,7 +587,20 @@ def edit_media_browser(id):
 @quorum.ensure("foundation.media.update")
 def update_media_browser(id):
     api = util.get_api()
-    media = api.update_media(id, media)
+    position = quorum.get_field("position", None, cast = int)
+    label = quorum.get_field("label", None) or None
+    visibility = quorum.get_field("visibility", None, cast = int)
+    description = quorum.get_field("description", None) or None
+    media_file = quorum.get_field("media_file", None)
+    image_type = mimetypes.guess_type(media_file.filename)[0]
+    media = dict(
+        position = position,
+        label = label,
+        visibility = visibility,
+        description = description
+    )
+    payload = dict(media = media)
+    media = api.update_media(id, payload)
     return flask.redirect(
         flask.url_for("media_browser", id = media["object_id"])
     )

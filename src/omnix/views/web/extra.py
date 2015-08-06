@@ -500,8 +500,9 @@ def browser_extras():
 def do_browser():
     object_id = quorum.get_field("object_id", None, cast = int)
     api = util.get_api()
+    entity = api.get_entity(object_id)
     media = api.info_media_entity(object_id)
-    result = []
+    media_info = []
     for item in media:
         mitem = dict(
             label = item["label"],
@@ -509,6 +510,7 @@ def do_browser():
             dimensions = item["dimensions"],
             image_url = api.base_url + "omni/media/%s" % item["secret"]
         )
-        result.append(mitem)
-    result.sort(key = lambda item: (item["position"] or 0, item["dimensions"] or ""))
-    return result
+        media_info.append(mitem)
+    media_info.sort(key = lambda item: (item["position"] or 0, item["dimensions"] or ""))
+    entity["media"] = media_info
+    return entity

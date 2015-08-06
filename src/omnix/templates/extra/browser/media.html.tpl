@@ -26,6 +26,18 @@
                 <td class="right label" width="50%">mime type</td>
                 <td class="left value" width="50%">{{ media.mime_type }}</td>
             </tr>
+            <tr>
+                <td class="right label" width="50%">url</td>
+                <td class="left value" width="50%">{{ media.url }}</td>
+            </tr>
+            <tr>
+                <td class="right label" width="50%">visibility</td>
+                <td class="left value" width="50%">{{ media.visibility }}</td>
+            </tr>
+            <tr>
+                <td class="right label" width="50%">description</td>
+                <td class="left value" width="50%">{{ media.description }}</td>
+            </tr>
         </tbody>
     </table>
     <img src="{{ media.image_url }}" />

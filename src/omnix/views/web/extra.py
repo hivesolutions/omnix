@@ -544,7 +544,8 @@ def create_media_browser(id):
         data,
         position = position,
         label = label,
-        mime_type = mime_type
+        mime_type = mime_type,
+        description = description
     )
     return flask.redirect(
         flask.url_for("media_browser", id = media["object_id"])

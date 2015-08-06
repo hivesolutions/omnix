@@ -5,6 +5,18 @@
     <form enctype="multipart/form-data" action="{{ url_for('create_media_browser', id = object_id) }}"
           method="post" class="form">
         <div class="label">
+            <label>Engine</label>
+        </div>
+        <div class="input">
+            <div name="engine" class="drop-field drop-field-select" value="{{ media.engine|default('db', True) }}"
+                 data-error="{{ errors.engine }}">
+                <ul class="data-source" data-type="local">
+                    <li>db</li>
+                    <li>fs</li>
+                </ul>
+            </div>
+        </div>
+        <div class="label">
             <label>Position</label>
         </div>
         <div class="input">

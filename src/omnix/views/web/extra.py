@@ -531,6 +531,7 @@ def new_media_browser(id):
 @quorum.ensure("foundation.root_entity.set_media")
 def create_media_browser(id):
     api = util.get_api()
+    engine = quorum.get_field("engine", None)
     position = quorum.get_field("position", None, cast = int)
     label = quorum.get_field("label", None)
     description = quorum.get_field("description", None)
@@ -542,6 +543,7 @@ def create_media_browser(id):
     media = api.set_media_entity(
         id,
         data,
+        engine = engine,
         position = position,
         label = label,
         mime_type = mime_type,

@@ -83,6 +83,7 @@ SCOPE = (
     "foundation.employee.list",
     "foundation.employee.show",
     "foundation.employee.show.self",
+    "foundation.root_entity.show",
     "foundation.root_entity.show_media",
     "foundation.root_entity.set_media",
     "foundation.supplier_company.list",

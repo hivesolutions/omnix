@@ -40,5 +40,5 @@
             </tr>
         </tbody>
     </table>
-    <img src="{{ media.image_url }}" />
+    <img class="media-image" src="{{ media.image_url }}" />
 {% endblock %}

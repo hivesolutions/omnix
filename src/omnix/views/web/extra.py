@@ -593,6 +593,7 @@ def update_media_browser(id):
     description = quorum.get_field("description", None) or None
     media_file = quorum.get_field("media_file", None)
     image_type = mimetypes.guess_type(media_file.filename)[0]
+    mime_type = image_type if image_type else "image/unknown"
     media = dict(
         position = position,
         label = label,
@@ -600,6 +601,11 @@ def update_media_browser(id):
         description = description
     )
     payload = dict(media = media)
+    if media_file:
+        try: data = media_file.stream.read()
+        finally: media_file.close()
+        media["mime_type"] = mime_type
+        payload["data"] = data
     media = api.update_media(id, payload)
     return flask.redirect(
         flask.url_for("media_browser", id = media["object_id"])

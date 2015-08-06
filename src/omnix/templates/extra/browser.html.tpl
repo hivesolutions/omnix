@@ -13,6 +13,18 @@
             </div>
             <div class="preview-panel">
                 <div class="label">
+                    <label>Class</label>
+                </div>
+                <div class="input">
+                    <input class="text-field" name="class" data-disabled="1" />
+                </div>
+                <div class="label">
+                    <label>Representation</label>
+                </div>
+                <div class="input">
+                    <input class="text-field" name="representation" data-disabled="1" />
+                </div>
+                <div class="label">
                     <label>Media</label>
                 </div>
                 <div class="media-target"></div>

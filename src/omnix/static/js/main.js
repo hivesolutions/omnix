@@ -53,6 +53,9 @@
             var mediaPreview = element.parents(".media-preview");
             var previewPanel = jQuery(".preview-panel", mediaPreview);
             var mediaTarget = jQuery(".media-target", previewPanel);
+            var classInput = jQuery("input[name=class]", mediaPreview);
+            var representationInput = jQuery("input[name=representation]",
+                    mediaPreview);
             var url = form.attr("action");
             var value = element.uxvalue();
             previewPanel.hide();
@@ -78,6 +81,8 @@
                         imageContainer.append(subTitle);
                         mediaTarget.append(imageContainer);
                     }
+                    classInput.val(data._class);
+                    representationInput.val(data.representation);
                     previewPanel.show();
                 }
             });

@@ -48,24 +48,39 @@
         previewPanel.hide();
 
         objectId.bind("value_change", function() {
-                    var element = jQuery(this);
-                    var form = element.parents(".form");
-                    var mediaPreview = element.parents(".media-preview");
-                    var previewPanel = jQuery(".preview-panel", mediaPreview);
-                    var mediaTarget = jQuery(".media-target", previewPanel);
-                    var url = form.attr("action");
-                    var value = element.uxvalue();
-                    jQuery.ajax({
-                                url : url,
-                                type : "POST",
-                                data : {
-                                    object_id : value
-                                },
-                                success : function(data) {
-                                    console.info(data);
-                                }
-                            });
-                });
+            var element = jQuery(this);
+            var form = element.parents(".form");
+            var mediaPreview = element.parents(".media-preview");
+            var previewPanel = jQuery(".preview-panel", mediaPreview);
+            var mediaTarget = jQuery(".media-target", previewPanel);
+            var url = form.attr("action");
+            var value = element.uxvalue();
+            previewPanel.hide();
+            mediaTarget.empty();
+            jQuery.ajax({
+                url : url,
+                type : "post",
+                data : {
+                    object_id : value
+                },
+                success : function(data) {
+                    for (var index = 0; index < data.length; index++) {
+                        var item = data[index];
+                        var imageContainer = jQuery("<div class=\"image-container\"></div>");
+                        var image = jQuery("<img src=\"" + item.image_url
+                                + "\" />");
+                        var title = jQuery("<h2>" + item.label + "</h2>");
+                        var subTitle = jQuery("<h3>" + (item.dimensions || "unset")
+                                + "</h3>");
+                        imageContainer.append(image);
+                        imageContainer.append(title);
+                        imageContainer.append(subTitle);
+                        mediaTarget.append(imageContainer);
+                    }
+                    previewPanel.show();
+                }
+            });
+        });
 
         return this;
     };

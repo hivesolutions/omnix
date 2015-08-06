@@ -501,4 +501,14 @@ def do_browser():
     object_id = quorum.get_field("object_id", None, cast = int)
     api = util.get_api()
     media = api.info_media_entity(object_id)
-    return media
+    result = []
+    for item in media:
+        mitem = dict(
+            label = item["label"],
+            position = item["position"],
+            dimensions = item["dimensions"],
+            image_url = api.base_url + "omni/media/%s" % item["secret"]
+        )
+        result.append(mitem)
+    result.sort(key = lambda item: (item["position"] or 0, item["dimensions"] or ""))
+    return result

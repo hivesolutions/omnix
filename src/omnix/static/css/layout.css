@@ -117,3 +117,24 @@
 .button.login.disabled {
     background-position: left -114px;
 }
+
+.preview-panel > .media-target > .image-container {
+    display: inline-block;
+    margin: 12px 12px 12px 12px;
+    max-width: 540px;
+    text-align: center;
+}
+
+.preview-panel > .media-target > .image-container > img {
+    max-width: 540px;
+}
+
+.preview-panel > .media-target > .image-container > h2 {
+    font-size: 14px;
+    margin: 4px 0px 4px 0px;
+}
+
+.preview-panel > .media-target > .image-container > h3 {
+    font-size: 12px;
+    margin: 0px 0px 0px 0px;
+}

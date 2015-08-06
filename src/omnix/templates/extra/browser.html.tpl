@@ -2,7 +2,7 @@
 {% block title %}Media Browser{% endblock %}
 {% block name %}Media Browser{% endblock %}
 {% block content %}
-    <form action="{{ url_for('do_browser') }}" method="get" class="form">
+    <form action="{{ url_for('do_browser') }}" method="get">
         <div class="media-preview">
             <div class="label">
                 <label>Object ID</label>

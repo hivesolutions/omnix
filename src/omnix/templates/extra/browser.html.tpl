@@ -30,7 +30,7 @@
                 </div>
                 <div class="media-target"></div>
                 <div class="operations-target">
-                	<span class="button" data-reference="{{ url_for('new_media_browser', id = 0) }}">Add Media</span>
+                    <span class="button" data-reference="{{ url_for('new_media_browser', id = 0) }}">Add Media</span>
                 </div>
             </div>
         </div>

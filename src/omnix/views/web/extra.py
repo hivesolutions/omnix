@@ -531,9 +531,21 @@ def new_media_browser(id):
 @quorum.ensure("foundation.root_entity.set_media")
 def create_media_browser(id):
     api = util.get_api()
-    object = quorum.get_object()
+    position = quorum.get_field("position", None, cast = int)
+    label = quorum.get_field("label", None)
+    description = quorum.get_field("description", None)
     media_file = quorum.get_field("media_file", None)
-    media = api.set_media_entity(id, **object)
+    image_type = mimetypes.guess_type(media_file.filename)[0]
+    mime_type = image_type if image_type else "image/unknown"
+    try: data = media_file.stream.read()
+    finally: media_file.close()
+    media = api.set_media_entity(
+        id,
+        data,
+        position = position,
+        label = label,
+        mime_type = mime_type
+    )
     return flask.redirect(
         flask.url_for("media_browser", id = media["object_id"])
     )

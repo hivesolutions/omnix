@@ -3,24 +3,24 @@
 {% block name %}New Media{% endblock %}
 {% block content %}
     <form enctype="multipart/form-data" action="{{ url_for('create_media_browser', id = object_id) }}"
-    	  method="post" class="form">
+          method="post" class="form">
         <div class="label">
-		    <label>Position</label>
-		</div>
+            <label>Position</label>
+        </div>
         <div class="input">
             <input class="text-field" name="position" placeholder="eg: 1, 2, 3, etc." value="{{ media.position }}"
                    data-error="{{ errors.position }}" />
         </div>
         <div class="label">
-		    <label>Label</label>
-		</div>
+            <label>Label</label>
+        </div>
         <div class="input">
             <input class="text-field" name="label" placeholder="eg: main_header" value="{{ media.label }}"
                    data-error="{{ errors.label }}" />
         </div>
         <div class="label">
-		    <label>Description</label>
-		</div>
+            <label>Description</label>
+        </div>
         <div class="input">
             <textarea class="text-area" name="description" placeholder="eg: some words about the media"
                       data-error="{{ errors.description }}">{{ media.description }}</textarea>

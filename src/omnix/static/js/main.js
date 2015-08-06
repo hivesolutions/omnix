@@ -57,6 +57,7 @@
             var representationInput = jQuery("input[name=representation]",
                     mediaPreview);
             var url = form.attr("action");
+            var mediaUrl = form.attr("data-media");
             var value = element.uxvalue();
             previewPanel.hide();
             mediaTarget.empty();
@@ -70,15 +71,18 @@
                     var media = data.media;
                     for (var index = 0; index < media.length; index++) {
                         var item = media[index];
+                        var itemUrl = mediaUrl + String(item.object_id);
                         var imageContainer = jQuery("<div class=\"image-container\"></div>");
+                        var imageLink = jQuery("<a href=\"" + itemUrl + "\"></a>");
                         var image = jQuery("<img src=\"" + item.image_url
                                 + "\" />");
                         var title = jQuery("<h2>" + item.label + "</h2>");
                         var subTitle = jQuery("<h3>"
                                 + (item.dimensions || "unset") + "</h3>");
-                        imageContainer.append(image);
-                        imageContainer.append(title);
-                        imageContainer.append(subTitle);
+                        imageLink.append(image);
+                        imageLink.append(title);
+                        imageLink.append(subTitle);
+                        imageContainer.append(imageLink);
                         mediaTarget.append(imageContainer);
                     }
                     classInput.val(data._class);

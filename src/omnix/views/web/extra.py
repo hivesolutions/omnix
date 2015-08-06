@@ -509,7 +509,7 @@ def do_browser():
             label = item["label"],
             position = item["position"],
             dimensions = item["dimensions"],
-            image_url = api.get_media_url(item["secret"]) 
+            image_url = api.get_media_url(item["secret"])
         )
         media_info.append(mitem)
     media_info.sort(key = lambda item: (item["position"] or 0, item["dimensions"] or ""))

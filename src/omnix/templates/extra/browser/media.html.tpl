@@ -6,7 +6,7 @@
     <div class="separator-horizontal"></div>
     <table>
         <tbody>
-        	<tr>
+            <tr>
                 <td class="right label" width="50%">engine</td>
                 <td class="left value" width="50%">{{ media.engine }}</td>
             </tr>

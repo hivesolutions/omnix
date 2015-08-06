@@ -62,7 +62,7 @@
         </div>
         <div class="input">
             <textarea class="text-area" name="description" placeholder="eg: some words about the media"
-                      data-error="{{ errors.description }}">{{ media.description }}</textarea>
+                      data-error="{{ errors.description }}">{{ media.description|default('', True) }}</textarea>
         </div>
         <div class="label">
             <label>Options</label>
@@ -75,7 +75,7 @@
             </div>
         </div>
         <div class="input">
-             <a data-name="media_file" class="uploader">Select & Upload the media list file</a>
+             <a data-name="media_file" class="uploader">Select & Upload the media file</a>
         </div>
         <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>
         //

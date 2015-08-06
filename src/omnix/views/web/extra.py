@@ -505,6 +505,7 @@ def do_browser():
     media_info = []
     for item in media:
         mitem = dict(
+            object_id = item["object_id"],
             label = item["label"],
             position = item["position"],
             dimensions = item["dimensions"],
@@ -515,7 +516,14 @@ def do_browser():
     entity["media"] = media_info
     return entity
 
-@app.route("/extras/browser/<int:id>/media", methods = ("GET",))
+@app.route("/extras/browser/media/<int:id>", methods = ("GET",))
 @quorum.ensure("foundation.root_entity.show_media")
-def media_browser():
-    pass
+def media_browser(id):
+    api = util.get_api()
+    media = api.info_media(id)
+    media["image_url"] = api.get_media_url(media["secret"])
+    return flask.render_template(
+        "extra/browser/media.html.tpl",
+        link = "extras",
+        media = media
+    )

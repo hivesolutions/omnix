@@ -1,19 +1,15 @@
-{% extends "partials/layout.html.tpl" %}
-{% block title %}New Media{% endblock %}
-{% block name %}New Media{% endblock %}
+{% extends "partials/layout_media.html.tpl" %}
+{% block title %}Media{% endblock %}
+{% block name %}{{ media.object_id }}{% endblock %}
 {% block content %}
-    <form enctype="multipart/form-data" action="{{ url_for('create_media_browser', id = object_id) }}"
+    <form enctype="multipart/form-data" action="{{ url_for('update_media_browser', id = media.object_id) }}"
           method="post" class="form">
         <div class="label">
             <label>Engine</label>
         </div>
         <div class="input">
-            <div name="engine" class="drop-field drop-field-select" value="{{ media.engine|default('db', True) }}"
-                 data-error="{{ errors.engine }}">
-                <ul class="data-source" data-type="local">
-                    <li>db</li>
-                    <li>fs</li>
-                </ul>
+            <div class="drop-field drop-field-select" value="{{ media.engine|default('db', True) }}"
+                 data-error="{{ errors.engine }}"  data-disabled="1">
             </div>
         </div>
         <div class="label">
@@ -62,20 +58,10 @@
         </div>
         <div class="input">
             <textarea class="text-area" name="description" placeholder="eg: some words about the media"
-                      data-error="{{ errors.description }}">{{ media.description }}</textarea>
-        </div>
-        <div class="label">
-            <label>Options</label>
+                      data-error="{{ errors.description }}">{{ media.description|default('', True) }}</textarea>
         </div>
         <div class="input">
-            <div class="option">
-                <span class="float-left">Generate thumbnails ?</span>
-                <input class="float-right" type="checkbox" name="thumbnails" />
-                <div class="clear"></div>
-            </div>
-        </div>
-        <div class="input">
-             <a data-name="media_file" class="uploader">Select & Upload the media list file</a>
+             <a data-name="media_file" class="uploader">Select & Upload the media file</a>
         </div>
         <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>
         //

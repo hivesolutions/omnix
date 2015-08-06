@@ -8,6 +8,12 @@
             <a href="{{ url_for('media_browser', id = media.object_id) }}">info</a>
         {% endif %}
         //
+        {% if sub_link == "edit" %}
+            <a href="{{ url_for('edit_media_browser', id = media.object_id) }}" class="active">edit</a>
+        {% else %}
+            <a href="{{ url_for('edit_media_browser', id = media.object_id) }}">edit</a>
+        {% endif %}
+        //
         {% if sub_link == "delete" %}
             <a href="{{ url_for('delete_media_browser', id = media.object_id) }}" class="active warning link-confirm"
                data-message="Do you really want to delete {{ media.object_id }}  ?">delete</a>

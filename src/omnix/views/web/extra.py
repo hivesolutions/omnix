@@ -512,7 +512,7 @@ def do_browser():
             image_url = api.get_media_url(item["secret"])
         )
         media_info.append(mitem)
-    media_info.sort(key = lambda item: (item["label"] or "", item["position"] or 0, item["dimensions"] or ""))
+    media_info.sort(key = _media_sorter)
     entity["media"] = media_info
     return entity
 
@@ -603,4 +603,11 @@ def delete_media_browser(id):
     api.delete_media(id)
     return flask.redirect(
         flask.url_for("browser_extras")
+    )
+
+def _media_sorter(item):
+    return (
+        item["label"] or "",
+        item["position"] or 0,
+        item["dimensions"] or ""
     )

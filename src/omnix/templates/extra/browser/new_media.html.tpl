@@ -8,7 +8,7 @@
             <label>Engine</label>
         </div>
         <div class="input">
-            <div name="engine" class="drop-field drop-field-select" value="{{ media.engine|default('db', True) }}"
+            <div name="engine" class="drop-field drop-field-select focus" value="{{ media.engine|default('db', True) }}"
                  data-error="{{ errors.engine }}">
                 <ul class="data-source" data-type="local">
                     <li>db</li>

@@ -516,6 +516,28 @@ def do_browser():
     entity["media"] = media_info
     return entity
 
+@app.route("/extras/browser/new_media/<int:id>", methods = ("GET",))
+@quorum.ensure("foundation.root_entity.set_media")
+def new_media_browser(id):
+    return flask.render_template(
+        "extra/browser/new_media.html.tpl",
+        link = "extras",
+        object_id = id,
+        media = dict(),
+        errors = dict()
+    )
+
+@app.route("/extras/browser/new_media/<int:id>", methods = ("POST",))
+@quorum.ensure("foundation.root_entity.set_media")
+def create_media_browser(id):
+    api = util.get_api()
+    object = quorum.get_object()
+    media_file = quorum.get_field("media_file", None)
+    media = api.set_media_entity(id, **object)
+    return flask.redirect(
+        flask.url_for("media_browser", id = media["object_id"])
+    )
+
 @app.route("/extras/browser/media/<int:id>", methods = ("GET",))
 @quorum.ensure("foundation.media.show")
 def media_browser(id):

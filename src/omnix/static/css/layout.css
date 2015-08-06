@@ -118,6 +118,10 @@
     background-position: left -114px;
 }
 
+.preview-panel > .media-target {
+	margin: 0px 0px 14px 0px;
+}
+
 .preview-panel > .media-target > .image-container {
     display: inline-block;
     margin: 12px 12px 12px 12px;

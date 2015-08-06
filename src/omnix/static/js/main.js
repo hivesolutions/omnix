@@ -53,11 +53,14 @@
             var mediaPreview = element.parents(".media-preview");
             var previewPanel = jQuery(".preview-panel", mediaPreview);
             var mediaTarget = jQuery(".media-target", previewPanel);
+            var operationsTarget = jQuery(".operations-target", previewPanel);
+            var button = jQuery(".button", operationsTarget);
             var classInput = jQuery("input[name=class]", mediaPreview);
             var representationInput = jQuery("input[name=representation]",
                     mediaPreview);
             var url = form.attr("action");
             var mediaUrl = form.attr("data-media");
+            var newUrl = button.attr("data-reference");
             var value = element.uxvalue();
             previewPanel.hide();
             mediaTarget.empty();
@@ -86,6 +89,7 @@
                         mediaTarget.append(imageContainer);
                         imageContainer.uxapply();
                     }
+                    button.attr("data-link", newUrl + value);
                     classInput.val(data._class);
                     representationInput.val(data.representation);
                     previewPanel.show();

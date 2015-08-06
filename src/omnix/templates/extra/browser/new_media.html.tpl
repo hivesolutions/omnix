@@ -31,6 +31,33 @@
                    data-error="{{ errors.label }}" />
         </div>
         <div class="label">
+            <label>Visibility</label>
+        </div>
+        <div class="input">
+            <div class="drop-field drop-field-select" data-error="{{ errors.engine }}">
+                <input name="visibility" type="hidden" class="hidden-field"
+                       value="{{ media.visibility|default('3', True) }}" />
+                <ul class="data-source" data-type="local">
+                    <li>
+                        <span name="name">Public</span>
+                        <span name="value">1</span>
+                    </li>
+                    <li>
+                        <span name="name">Global</span>
+                        <span name="value">2</span>
+                    </li>
+                    <li>
+                        <span name="name">Constrained</span>
+                        <span name="value">3</span>
+                    </li>
+                    <li>
+                        <span name="name">Private</span>
+                        <span name="value">4</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="label">
             <label>Description</label>
         </div>
         <div class="input">

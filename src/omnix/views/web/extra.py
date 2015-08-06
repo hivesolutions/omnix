@@ -534,6 +534,7 @@ def create_media_browser(id):
     engine = quorum.get_field("engine", None)
     position = quorum.get_field("position", None, cast = int)
     label = quorum.get_field("label", None)
+    visibility = quorum.get_field("visibility", None, cast = int)
     description = quorum.get_field("description", None)
     thumbnails = quorum.get_field("thumbnails", False, cast = bool)
     media_file = quorum.get_field("media_file", None)
@@ -548,8 +549,9 @@ def create_media_browser(id):
         position = position,
         label = label,
         mime_type = mime_type,
-        thumbnails = thumbnails,
-        description = description
+        visibility = visibility,
+        description = description,
+        thumbnails = thumbnails
     )
     return flask.redirect(
         flask.url_for("media_browser", id = media["object_id"])

@@ -535,5 +535,5 @@ def delete_media_browser(id):
     api = util.get_api()
     api.delete_media(id)
     return flask.redirect(
-        flask.url_for("media_browser")
+        flask.url_for("browser_extras")
     )

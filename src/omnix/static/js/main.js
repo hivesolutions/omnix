@@ -84,6 +84,7 @@
                         imageLink.append(subTitle);
                         imageContainer.append(imageLink);
                         mediaTarget.append(imageContainer);
+                        imageContainer.uxapply();
                     }
                     classInput.val(data._class);
                     representationInput.val(data.representation);

@@ -49,7 +49,7 @@
 
         objectId.bind("value_change", function() {
             var element = jQuery(this);
-            var form = element.parents(".form");
+            var form = element.parents("form");
             var mediaPreview = element.parents(".media-preview");
             var previewPanel = jQuery(".preview-panel", mediaPreview);
             var mediaTarget = jQuery(".media-target", previewPanel);

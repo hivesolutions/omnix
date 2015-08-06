@@ -79,6 +79,7 @@ SCOPE = (
     "base.user",
     "base.admin",
     "foundation.media.show",
+    "foundation.media.delete",
     "foundation.store.list",
     "foundation.store.show",
     "foundation.employee.list",

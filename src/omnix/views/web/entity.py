@@ -82,7 +82,7 @@ def edit_entities(id):
         metadata,
         ensure_ascii = False,
         indent = 4,
-        separators = (", ", ": "),
+        separators = (",", " : "),
         sort_keys = True
     )
     return flask.render_template(

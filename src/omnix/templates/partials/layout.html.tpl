@@ -58,6 +58,15 @@
                                 {% endif %}
                             </li>
                         {% endif %}
+                        {% if acl("foundation.media.list") %}
+                            <li>
+                                {% if link == "media" %}
+                                    <a href="{{ url_for('list_media') }}" class="active">media</a>
+                                {% else %}
+                                    <a href="{{ url_for('list_media') }}">media</a>
+                                {% endif %}
+                            </li>
+                        {% endif %}
                         {% if acl("base.admin") %}
                             <li>
                                 {% if link == "reports" %}

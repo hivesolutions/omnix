@@ -1,4 +1,4 @@
-{% extends "partials/layout.html.tpl" %}
+{% extends "partials/layout_entity.html.tpl" %}
 {% block title %}Entity{% endblock %}
 {% block name %}{{ entity.object_id }}{% endblock %}
 {% block content %}

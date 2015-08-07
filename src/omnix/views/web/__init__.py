@@ -49,7 +49,7 @@ from .base import index, signin, login, do_login, logout, about, reset, flush_bi
 from .customer import list_customers, list_customers_json, show_customers
 from .employee import list_employees, list_employees_json, show_employee, sales_employee,\
     mail_employee, show_employees, sales_employees, mail_employees
-from .entity import list_entities, list_entities_json, show_entities
+from .entity import list_entities, list_entities_json, show_entities, edit_entities
 from .extra import list_extras, media_extras, do_media_extras, images_extras, do_images_extras,\
     prices_extras, do_prices_extras, template_extras, do_template_extras, do_mask_extras,\
     browser_extras, do_browser, new_media_browser, create_media_browser

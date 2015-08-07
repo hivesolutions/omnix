@@ -69,3 +69,16 @@ def show_entities(id):
         sub_link = "info",
         entity = entity
     )
+
+@app.route("/entities/<int:id>/edit", methods = ("GET",))
+@quorum.ensure("foundation.root_entity.update")
+def edit_entities(id):
+    api = util.get_api()
+    entity = api.get_entity(id)
+    return flask.render_template(
+        "entity/edit.html.tpl",
+        link = "entities",
+        sub_link = "edit",
+        entity = entity,
+        errors = dict()
+    )

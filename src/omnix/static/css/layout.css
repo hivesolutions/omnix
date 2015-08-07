@@ -154,8 +154,8 @@
 }
 
 body textarea.text-json {
-	font-family: Consolas, Monaco, "Andale Mono", monospace;
-	font-style: normal;
-	font-size: 12px;
-	line-height: 16px;
+    font-family: Consolas, Monaco, "Andale Mono", monospace;
+    font-size: 12px;
+    font-style: normal;
+    line-height: 16px;
 }

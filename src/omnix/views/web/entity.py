@@ -77,14 +77,14 @@ def show_entities(id):
 def edit_entities(id):
     api = util.get_api()
     entity = api.get_entity(id)
-    metadata = entity.get("metadata", {}) or {}
+    metadata = entity.get("metadata", None)
     entity["metadata_s"] = json.dumps(
         metadata,
         ensure_ascii = False,
         indent = 4,
         separators = (",", " : "),
         sort_keys = True
-    )
+    ) if not metadata == None else None
     return flask.render_template(
         "entity/edit.html.tpl",
         link = "entities",
@@ -99,6 +99,7 @@ def update_entities(id):
     models = util.get_models()
     api = util.get_api()
     object = quorum.get_object()
+    for name, value in object.items(): object[name] = None if value == "" else value
     entity = models.Entity.new(model = object, build = False, fill = False)
     api.update_entity(id, payload = dict(root_entity = entity.model))
     return flask.redirect(

@@ -15,7 +15,7 @@
         </div>
         <div class="input">
             <textarea class="text-area" name="metadata" placeholder="eg: JSON conformant string"
-                      data-error="{{ errors.metadata }}">{{ entity.metadata|default('', True) }}</textarea>
+                      data-error="{{ errors.metadata }}">{{ entity.metadata_s|default('', True) }}</textarea>
         </div>
         <span class="button" data-link="{{ url_for('show_entities', id = entity.object_id) }}">Cancel</span>
         //

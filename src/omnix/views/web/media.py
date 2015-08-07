@@ -111,7 +111,7 @@ def update_media(id):
         payload["data"] = data
     media = api.update_media(id, payload)
     return flask.redirect(
-        flask.url_for("media_browser", id = media["object_id"])
+        flask.url_for("show_media", id = media["object_id"])
     )
 
 @app.route("/media/<int:id>/delete", methods = ("GET",))
@@ -120,5 +120,5 @@ def delete_media(id):
     api = util.get_api()
     api.delete_media(id)
     return flask.redirect(
-        flask.url_for("browser_extras")
+        flask.url_for("list_media")
     )

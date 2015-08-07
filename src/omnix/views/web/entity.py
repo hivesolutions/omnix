@@ -82,3 +82,10 @@ def edit_entities(id):
         entity = entity,
         errors = dict()
     )
+
+@app.route("/entities/<int:id>/update", methods = ("POST",))
+@quorum.ensure("foundation.root_entity.update")
+def update_entities(id):
+    return flask.redirect(
+        flask.url_for("show_entity", id = entity["object_id"])
+    )

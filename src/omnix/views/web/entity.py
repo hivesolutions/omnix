@@ -86,6 +86,11 @@ def edit_entities(id):
 @app.route("/entities/<int:id>/update", methods = ("POST",))
 @quorum.ensure("foundation.root_entity.update")
 def update_entities(id):
+    models = util.get_models()
+    api = util.get_api()
+    object = quorum.get_object()
+    entity = models.Entity.new(model = object, build = False, fill = False)
+    api.update_entity(id, payload = dict(root_entity = entity.model))
     return flask.redirect(
-        flask.url_for("show_entity", id = entity["object_id"])
+        flask.url_for("show_entities", id = id)
     )

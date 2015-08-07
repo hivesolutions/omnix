@@ -557,69 +557,6 @@ def create_media_browser(id):
         flask.url_for("media_browser", id = media["object_id"])
     )
 
-@app.route("/extras/browser/media/<int:id>", methods = ("GET",))
-@quorum.ensure("foundation.media.show")
-def media_browser(id):
-    api = util.get_api()
-    media = api.info_media(id)
-    media["image_url"] = api.get_media_url(media["secret"])
-    return flask.render_template(
-        "extra/browser/media.html.tpl",
-        link = "extras",
-        sub_link = "info",
-        media = media
-    )
-
-@app.route("/extras/browser/media/<int:id>/edit", methods = ("GET",))
-@quorum.ensure("foundation.media.update")
-def edit_media_browser(id):
-    api = util.get_api()
-    media = api.info_media(id)
-    return flask.render_template(
-        "extra/browser/edit_media.html.tpl",
-        link = "extras",
-        sub_link = "edit",
-        media = media,
-        errors = dict()
-    )
-
-@app.route("/extras/browser/media/<int:id>/update", methods = ("POST",))
-@quorum.ensure("foundation.media.update")
-def update_media_browser(id):
-    api = util.get_api()
-    position = quorum.get_field("position", None, cast = int)
-    label = quorum.get_field("label", None) or None
-    visibility = quorum.get_field("visibility", None, cast = int)
-    description = quorum.get_field("description", None) or None
-    media_file = quorum.get_field("media_file", None)
-    image_type = mimetypes.guess_type(media_file.filename)[0]
-    mime_type = image_type if image_type else "image/unknown"
-    media = dict(
-        position = position,
-        label = label,
-        visibility = visibility,
-        description = description
-    )
-    payload = dict(media = media)
-    if media_file:
-        try: data = media_file.stream.read()
-        finally: media_file.close()
-        media["mime_type"] = mime_type
-        payload["data"] = data
-    media = api.update_media(id, payload)
-    return flask.redirect(
-        flask.url_for("media_browser", id = media["object_id"])
-    )
-
-@app.route("/extras/browser/media/<int:id>/delete", methods = ("GET",))
-@quorum.ensure("foundation.media.delete")
-def delete_media_browser(id):
-    api = util.get_api()
-    api.delete_media(id)
-    return flask.redirect(
-        flask.url_for("browser_extras")
-    )
-
 def _media_sorter(item):
     return (
         item["label"] or "",

@@ -38,6 +38,7 @@ from . import base
 from . import customer
 from . import employee
 from . import extra
+from . import media
 from . import report
 from . import store
 from . import supplier
@@ -49,8 +50,9 @@ from .employee import list_employees, list_employees_json, show_employee, sales_
     mail_employee, show_employees, sales_employees, mail_employees
 from .extra import list_extras, media_extras, do_media_extras, images_extras, do_images_extras,\
     prices_extras, do_prices_extras, template_extras, do_template_extras, do_mask_extras,\
-    browser_extras, do_browser, new_media_browser, create_media_browser, media_browser, \
-    edit_media_browser, update_media_browser, delete_media_browser
+    browser_extras, do_browser, new_media_browser, create_media_browser
+from .media import list_media, list_media_json, show_media, edit_media, update_media,\
+    delete_media
 from .report import list_reports, sales_reports
 from .store import list_stores, list_stores_json, show_stores, sales_stores
 from .supplier import list_suppliers, list_suppliers_json, show_suppliers

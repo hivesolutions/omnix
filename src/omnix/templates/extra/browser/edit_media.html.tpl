@@ -63,7 +63,7 @@
         <div class="input">
              <a data-name="media_file" class="uploader">Select & Upload the media file</a>
         </div>
-        <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>
+        <span class="button" data-link="{{ url_for('media_browser', id = media.object_id) }}">Cancel</span>
         //
         <span class="button" data-submit="true">Update</span>
     </form>

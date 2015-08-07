@@ -45,6 +45,9 @@ import quorum
 
 from . import config
 
+def get_models():
+    return omni.models
+
 def get_api(mode = omni.Api.OAUTH_MODE):
     access_token = flask.session and flask.session.get("omnix.access_token", None)
     session_id = flask.session and flask.session.get("omnix.session_id", None)

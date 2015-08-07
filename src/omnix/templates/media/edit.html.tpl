@@ -2,7 +2,7 @@
 {% block title %}Media{% endblock %}
 {% block name %}{{ media.object_id }}{% endblock %}
 {% block content %}
-    <form enctype="multipart/form-data" action="{{ url_for('update_media_browser', id = media.object_id) }}"
+    <form enctype="multipart/form-data" action="{{ url_for('update_media', id = media.object_id) }}"
           method="post" class="form">
         <div class="label">
             <label>Engine</label>
@@ -63,7 +63,7 @@
         <div class="input">
              <a data-name="media_file" class="uploader">Select & Upload the media file</a>
         </div>
-        <span class="button" data-link="{{ url_for('media_browser', id = media.object_id) }}">Cancel</span>
+        <span class="button" data-link="{{ url_for('show_media', id = media.object_id) }}">Cancel</span>
         //
         <span class="button" data-submit="true">Update</span>
     </form>

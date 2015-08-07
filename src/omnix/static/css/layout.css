@@ -152,3 +152,10 @@
 .media-image {
     max-width: 620px;
 }
+
+body textarea.text-json {
+	font-family: Consolas, Monaco, "Andale Mono", monospace;
+	font-style: normal;
+	font-size: 12px;
+	line-height: 16px;
+}

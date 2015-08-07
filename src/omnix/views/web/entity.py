@@ -80,10 +80,11 @@ def edit_entities(id):
     metadata = entity.get("metadata", {}) or {}
     entity["metadata_s"] = json.dumps(
         metadata,
-        sort_keys = True,
+        ensure_ascii = False,
         indent = 4,
-        separators = (", ", ": ")
-    ) 
+        separators = (", ", ": "),
+        sort_keys = True
+    )
     return flask.render_template(
         "entity/edit.html.tpl",
         link = "entities",

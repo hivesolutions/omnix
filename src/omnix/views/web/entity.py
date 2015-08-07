@@ -37,6 +37,8 @@ __copyright__ = "Copyright (c) 2008-2015 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
+import json
+
 from omnix import util
 
 from omnix.main import app
@@ -75,6 +77,13 @@ def show_entities(id):
 def edit_entities(id):
     api = util.get_api()
     entity = api.get_entity(id)
+    metadata = entity.get("metadata", {}) or {}
+    entity["metadata_s"] = json.dumps(
+        metadata,
+        sort_keys = True,
+        indent = 4,
+        separators = (", ", ": ")
+    ) 
     return flask.render_template(
         "entity/edit.html.tpl",
         link = "entities",

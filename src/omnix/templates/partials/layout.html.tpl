@@ -67,6 +67,15 @@
                                 {% endif %}
                             </li>
                         {% endif %}
+                        {% if acl("foundation.root_entity.list") %}
+                            <li>
+                                {% if link == "entities" %}
+                                    <a href="{{ url_for('list_entities') }}" class="active">entities</a>
+                                {% else %}
+                                    <a href="{{ url_for('list_entities') }}">entities</a>
+                                {% endif %}
+                            </li>
+                        {% endif %}
                         {% if acl("base.admin") %}
                             <li>
                                 {% if link == "reports" %}

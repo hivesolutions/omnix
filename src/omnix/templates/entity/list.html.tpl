@@ -2,7 +2,7 @@
 {% block title %}Entities{% endblock %}
 {% block name %}Entities{% endblock %}
 {% block content %}
-    <ul class="filter" data-infinite="true" data-original_value="Search Media">
+    <ul class="filter" data-infinite="true" data-original_value="Search Entities">
         <div class="data-source" data-url="{{ url_for('list_entities_json') }}" data-type="json" data-timeout="0"></div>
         <li class="template clear">
             <div class="name"><a href="{{ url_for('show_entities', id = 0) }}%[object_id]">%[object_id]</a></div>

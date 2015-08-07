@@ -51,7 +51,8 @@ from .config import LOCAL_PREFIX, REMOTE_PREFIX, LOCAL_URL, REMOTE_URL, REDIRECT
     AT_SUBMIT_TYPES, REMOTE, BASE_URL, SENDER_EMAIL, USERNAME, PASSWORD, SCHEDULE,\
     COMMISSION_RATE, COMMISSION_DAY, IMAGE_RESIZE, LOCALE, OMNI_URL, PREFIX
 from .image import mask_image
-from .logic import get_api, ensure_api, on_auth, start_session, reset_session, get_tokens
+from .logic import get_models, get_api, ensure_api, on_auth, start_session, reset_session,\
+    get_tokens
 
 from .scheduling import load as load_scheduling
 from .slave import run as run_slave

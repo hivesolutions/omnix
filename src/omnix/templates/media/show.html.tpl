@@ -9,7 +9,7 @@
             <tr>
                 <td class="right label" width="50%">object id</td>
                 <td class="left value" width="50%">
-                	<a href="{{ url_for('show_entities', id = media.object_id) }}">{{ media.object_id }}</a>
+                    <a href="{{ url_for('show_entities', id = media.object_id) }}">{{ media.object_id }}</a>
                 </td>
             </tr>
             <tr>

@@ -1,11 +1,17 @@
 {% extends "partials/layout_media.html.tpl" %}
 {% block title %}Media{% endblock %}
-{% block name %}{{ media.object_id }}{% endblock %}
+{% block name %}{{ media.label }}{% endblock %}
 {% block content %}
-    <div class="quote">{{ media.object_id }}</div>
+    <div class="quote">{{ media.label }}</div>
     <div class="separator-horizontal"></div>
     <table>
         <tbody>
+            <tr>
+                <td class="right label" width="50%">object id</td>
+                <td class="left value" width="50%">
+                	<a href="{{ url_for('show_entities', id = media.object_id) }}">{{ media.object_id }}</a>
+                </td>
+            </tr>
             <tr>
                 <td class="right label" width="50%">engine</td>
                 <td class="left value" width="50%">{{ media.engine }}</td>
@@ -13,10 +19,6 @@
             <tr>
                 <td class="right label" width="50%">position</td>
                 <td class="left value" width="50%">{{ media.position }}</td>
-            </tr>
-            <tr>
-                <td class="right label" width="50%">label</td>
-                <td class="left value" width="50%">{{ media.label }}</td>
             </tr>
             <tr>
                 <td class="right label" width="50%">dimensions</td>

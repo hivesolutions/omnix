@@ -38,6 +38,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import os
+import csv
 import imghdr
 import shutil
 import zipfile
@@ -394,13 +395,62 @@ def do_prices_extras():
 def inventory_extras():
     return flask.render_template(
         "extra/inventory.html.tpl",
-        link = "inventory"
+        link = "extras"
     )
 
 @app.route("/extras/inventory", methods = ("POST",))
 @quorum.ensure("inventory.stock_adjustment.create")
 def do_inventory_extras():
-    pass
+    # tries to retrieve the inventory file from the current
+    # form in case it's not available renders the current
+    # template with an error message
+    inventory_file = quorum.get_field("inventory_file", None)
+    if inventory_file == None or not inventory_file.filename:
+        return flask.render_template(
+            "extra/inventory.html.tpl",
+            link = "extras",
+            error = "No file defined"
+        )
+
+    # creates a temporary file path for the storage of the file
+    # and then saves it into that directory
+    fd, file_path = tempfile.mkstemp()
+    inventory_file.save(file_path)
+
+    # creates the file object that is going to be used in the
+    # reading of the csv file (underlying object)
+    file = open(file_path, "rb")
+
+    try:
+        csv_reader = csv.reader(
+            file,
+            delimiter = ";",
+            quoting = csv.QUOTE_NONE
+        )
+        _header = csv_reader.next()
+        for line in csv_reader:
+            code, quantity, _date, _time = line
+            code = code.strip()
+            code = int(code)
+            quantity = quantity.strip()
+            quantity = int(quantity)
+            print(code)
+            print(quantity)
+    finally:
+        # closes the underlying file, the temporary file descriptor and
+        # removes the temporary file (avoiding any memory leaks)
+        file.close()
+        os.close(fd)
+        os.remove(file_path)
+
+    # redirects the user back to the inventory list page with a success
+    # message indicating that everything went ok
+    return flask.redirect(
+        flask.url_for(
+            "prices_extras",
+            message = "Inventory file processed with success"
+        )
+    )
 
 @app.route("/extras/ctt", methods = ("GET",))
 @quorum.ensure("sales.sale_order.list")

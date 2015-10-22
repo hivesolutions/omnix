@@ -401,6 +401,10 @@ def inventory_extras():
 @app.route("/extras/inventory", methods = ("POST",))
 @quorum.ensure("inventory.stock_adjustment.create")
 def do_inventory_extras():
+    # retrieves the reference to the api object that is going
+    # to be used for the updating of prices operation
+    api = util.get_api()
+    
     # tries to retrieve the inventory file from the current
     # form in case it's not available renders the current
     # template with an error message
@@ -419,7 +423,7 @@ def do_inventory_extras():
 
     # creates the file object that is going to be used in the
     # reading of the csv file (underlying object)
-    file = open(file_path, "rb")
+    file = open(file_path, "r")
 
     try:
         csv_reader = csv.reader(
@@ -427,13 +431,35 @@ def do_inventory_extras():
             delimiter = ";",
             quoting = csv.QUOTE_NONE
         )
-        _header = csv_reader.next()
+        csv_reader = iter(csv_reader)
+        _header = next(csv_reader)
         for line in csv_reader:
             code, quantity, _date, _time = line
+
             code = code.strip()
             code = int(code)
             quantity = quantity.strip()
             quantity = int(quantity)
+            
+            kwargs = {
+                "start_record" : 0,
+                "number_records" : 1,
+                "filters[]" : [
+                    "company_product_code:equals:%d" % code
+                ]
+            }
+
+            # runs the list merchandise operation in order to try to find a
+            # merchandise entity for the requested (unique) product code in
+            # case there's at least one merchandise its object id is used
+            
+            
+            
+            try: merchandise = api.list_merchandise(**kwargs)
+            except: merchandise = []
+            if merchandise: object_id = merchandise[0]["object_id"]
+            
+            
             print(code)
             print(quantity)
     finally:

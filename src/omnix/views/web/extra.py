@@ -404,7 +404,7 @@ def do_inventory_extras():
     # retrieves the reference to the api object that is going
     # to be used for the updating of prices operation
     api = util.get_api()
-    
+
     # tries to retrieve the inventory file from the current
     # form in case it's not available renders the current
     # template with an error message
@@ -423,11 +423,18 @@ def do_inventory_extras():
 
     # creates the file object that is going to be used in the
     # reading of the csv file (underlying object)
-    file = open(file_path, "r")
+    file = open(file_path, "rb")
+    try: data = file.read()
+    finally: file.close()
+
+    # decodes the received data using the default encoding and
+    # then creates the proper string buffer to hold it
+    data = data.decode("utf-8")
+    buffer = quorum.legacy.StringIO(data)
 
     try:
         csv_reader = csv.reader(
-            file,
+            buffer,
             delimiter = ";",
             quoting = csv.QUOTE_NONE
         )
@@ -440,7 +447,7 @@ def do_inventory_extras():
             code = int(code)
             quantity = quantity.strip()
             quantity = int(quantity)
-            
+
             kwargs = {
                 "start_record" : 0,
                 "number_records" : 1,
@@ -452,20 +459,22 @@ def do_inventory_extras():
             # runs the list merchandise operation in order to try to find a
             # merchandise entity for the requested (unique) product code in
             # case there's at least one merchandise its object id is used
-            
-            
-            
-            try: merchandise = api.list_merchandise(**kwargs)
-            except: merchandise = []
-            if merchandise: object_id = merchandise[0]["object_id"]
-            
-            
+
+
+
+            #try: merchandise = api.list_merchandise(**kwargs)
+            #except: merchandise = []
+            #if merchandise: object_id = merchandise[0]["object_id"]
+
+
             print(code)
             print(quantity)
+
+            print(_date)
+            print(_time)
     finally:
-        # closes the underlying file, the temporary file descriptor and
-        # removes the temporary file (avoiding any memory leaks)
-        file.close()
+        # closes the temporary file descriptor and removes the temporary
+        # file (avoiding any memory leaks)
         os.close(fd)
         os.remove(file_path)
 
@@ -473,7 +482,7 @@ def do_inventory_extras():
     # message indicating that everything went ok
     return flask.redirect(
         flask.url_for(
-            "prices_extras",
+            "inventory_extras",
             message = "Inventory file processed with success"
         )
     )

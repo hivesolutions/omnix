@@ -51,8 +51,9 @@ from .employee import list_employees, list_employees_json, show_employee, sales_
     mail_employee, show_employees, sales_employees, mail_employees
 from .entity import list_entities, list_entities_json, show_entities, edit_entities
 from .extra import list_extras, media_extras, do_media_extras, images_extras, do_images_extras,\
-    prices_extras, do_prices_extras, template_extras, do_template_extras, do_mask_extras,\
-    browser_extras, do_browser, new_media_browser, create_media_browser
+    prices_extras, do_prices_extras, inventory_extras, do_inventory_extras, template_extras,\
+    do_template_extras, do_mask_extras, browser_extras, do_browser, new_media_browser,\
+    create_media_browser
 from .media import list_media, list_media_json, show_media, edit_media, update_media,\
     delete_media
 from .report import list_reports, sales_reports

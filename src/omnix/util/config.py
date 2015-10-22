@@ -106,6 +106,7 @@ SCOPE = (
     "documents.signed_document.submit_invoice_at",
     "analytics.sale_snapshot.list",
     "analytics.employee_snapshot.list",
+    "inventory.stock_adjustment.create",
     "inventory.transactional_merchandise.list",
     "inventory.transactional_merchandise.update"
 )

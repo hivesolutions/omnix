@@ -389,6 +389,19 @@ def do_prices_extras():
         )
     )
 
+@app.route("/extras/inventory", methods = ("GET",))
+@quorum.ensure("inventory.stock_adjustment.create")
+def inventory_extras():
+    return flask.render_template(
+        "extra/inventory.html.tpl",
+        link = "inventory"
+    )
+
+@app.route("/extras/inventory", methods = ("POST",))
+@quorum.ensure("inventory.stock_adjustment.create")
+def do_inventory_extras():
+    pass
+
 @app.route("/extras/ctt", methods = ("GET",))
 @quorum.ensure("sales.sale_order.list")
 def ctt_extras():

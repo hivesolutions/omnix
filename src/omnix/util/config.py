@@ -135,6 +135,8 @@ that this range of values should be changed with care """
 REMOTE = quorum.conf("REMOTE", False)
 BASE_URL = quorum.conf("BASE_URL", "http://localhost:8181")
 REDIRECT_URL = quorum.conf("REDIRECT_URL", REDIRECT_URL)
+CLIENT_ID = quorum.conf("OMNIX_CLIENT_ID", CLIENT_ID)
+CLIENT_SECRET = quorum.conf("OMNIX_CLIENT_SECRET", CLIENT_SECRET)
 SENDER_EMAIL = quorum.conf("SENDER_EMAIL", "Omnix <no-reply@omnix.com>")
 USERNAME = quorum.conf("OMNIX_USERNAME", None)
 PASSWORD = quorum.conf("OMNIX_PASSWORD", None)
@@ -149,3 +151,5 @@ PREFIX = REMOTE_PREFIX if REMOTE else LOCAL_PREFIX
 
 OMNI_URL = quorum.conf("OMNI_URL", OMNI_URL)
 PREFIX = quorum.conf("OMNI_PREFIX", PREFIX)
+
+print(CLIENT_ID)

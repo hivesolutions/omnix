@@ -460,12 +460,9 @@ def do_inventory_extras():
             # merchandise entity for the requested (unique) product code in
             # case there's at least one merchandise its object id is used
 
-
-
             #try: merchandise = api.list_merchandise(**kwargs)
             #except: merchandise = []
             #if merchandise: object_id = merchandise[0]["object_id"]
-
 
             print(code)
             print(quantity)

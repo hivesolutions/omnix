@@ -391,7 +391,11 @@ def do_prices_extras():
     )
 
 @app.route("/extras/inventory", methods = ("GET",))
-@quorum.ensure("inventory.stock_adjustment.create")
+@quorum.ensure((
+    "inventory.stock_adjustment.create",
+    "inventory.transactional_merchandise.list",
+    "foundation.store.list"
+))
 def inventory_extras():
     return flask.render_template(
         "extra/inventory.html.tpl",

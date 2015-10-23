@@ -437,10 +437,12 @@ def do_inventory_extras():
     stores_map = dict()
     merchandise_map = dict()
 
-    status = dict()
+    # creates the map that is going to hold the complete state
+    # to be used in the process of the various adjustments (context)
+    state = dict()
 
     def get_adjustment():
-        return status.get("adjustment", None)
+        return state.get("adjustment", None)
 
     def new_adjustment(target_id):
         flush_adjustment()
@@ -450,12 +452,12 @@ def do_inventory_extras():
             ),
             stock_adjustment_lines = []
         )
-        status["adjustment"] = adjustment
+        state["adjustment"] = adjustment
         return adjustment
 
     def flush_adjustment():
         adjustment = get_adjustment()
-        status["adjustment"] = None
+        state["adjustment"] = None
         if not adjustment: return
         payload = dict(stock_adjustment = adjustment)
         stock_adjustment = api.create_stock_adjustment(payload)
@@ -530,13 +532,19 @@ def do_inventory_extras():
         return object_id
 
     try:
+        # creates the csv reader for the buffer and then creates the
+        # iterator object from the associated reader to read lines
         csv_reader = csv.reader(
             buffer,
             delimiter = ";",
             quoting = csv.QUOTE_NONE
         )
         csv_reader = iter(csv_reader)
+
+        # iterates over the complete set of lines in the csv file in
+        # order to process them accordingly (as expected)
         for line in csv_reader:
+            # unpacks the line
             code, quantity, _date, _time = line
 
             code = code.strip()

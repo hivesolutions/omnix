@@ -432,6 +432,95 @@ def do_inventory_extras():
     data = data.decode("utf-8")
     buffer = quorum.legacy.StringIO(data)
 
+    # creates the maps that are going to be used to cache the
+    # resolution processes for both the stores and the merchandise
+    stores_map = dict()
+    merchandise_map = dict()
+
+    adjustment = None
+
+    def flush_adjustment():
+        if not adjustment: return
+        payload = dict(stock_adjustment = adjustment)
+        stock_adjustment = api.create_stock_adjustment(payload)
+        store_id = adjustment["adjustment_target"]["object_id"]
+        stock_adjustment_id = stock_adjustment["object_id"]
+        quorum.debug(
+            "Created stock adjustment '%d' for store '%d'" %\
+            (stock_adjustment_id, store_id)
+        )
+        return stock_adjustment
+
+    def new_adjustment(target_id):
+        flush_adjustment()
+        adjustment = dict(
+            adjustment_target = dict(
+                object_id = target_id
+            ),
+            stock_adjustment_lines = []
+        )
+
+    def add_adjustment_line(merchandise_id, quantity = 1):
+        if not adjustment: raise quorum.OperationalError(
+            "No adjustment in context"
+        )
+        lines = adjustment["stock_adjustment_lines"]
+        line = dict(
+            stock_on_hand_delta = quantity,
+            merchandise = dict(
+                object_id = merchandise_id
+            )
+        )
+        lines.append(line)
+
+    def get_store_id(store_code):
+        object_id = stores_map.get(store_code, None)
+        if object_id: return object_id
+
+        kwargs = {
+            "start_record" : 0,
+            "number_records" : 1,
+            "filters[]" : [
+                "store_code:equals:%s" % code
+            ]
+        }
+
+        try: stores = api.list_stores(**kwargs)
+        except: stores = []
+        if stores: object_id = stores[0]["object_id"]
+
+        stores_map[store_code] = object_id
+        return object_id
+
+    def get_merchandise_id(company_product_code):
+        # tries to retrieve the object id of the merchandise from the
+        # cache and in case it succeeds returns it immediately
+        object_id = merchandise_map.get(company_product_code, None)
+        if object_id: return object_id
+
+        # creates the map containing the (filter) keyword arguments that
+        # are going to be send to the list merchandise operation
+        kwargs = {
+            "start_record" : 0,
+            "number_records" : 1,
+            "filters[]" : [
+                "company_product_code:equals:%s" % code
+            ]
+        }
+
+        # runs the list merchandise operation in order to try to find a
+        # merchandise entity for the requested (unique) product code in
+        # case there's at least one merchandise its object id is used
+        try: merchandise = api.list_merchandise(**kwargs)
+        except: merchandise = []
+        if merchandise: object_id = merchandise[0]["object_id"]
+
+        # updates the (cache) map for the merchandise with the reference
+        # new object id to company product code reference and then returns
+        # the object id of the merchandise to the caller method
+        merchandise_map[company_product_code] = object_id
+        return object_id
+
     try:
         csv_reader = csv.reader(
             buffer,
@@ -439,36 +528,23 @@ def do_inventory_extras():
             quoting = csv.QUOTE_NONE
         )
         csv_reader = iter(csv_reader)
-        _header = next(csv_reader)
         for line in csv_reader:
             code, quantity, _date, _time = line
 
             code = code.strip()
-            code = int(code)
             quantity = quantity.strip()
             quantity = int(quantity)
 
-            kwargs = {
-                "start_record" : 0,
-                "number_records" : 1,
-                "filters[]" : [
-                    "company_product_code:equals:%d" % code
-                ]
-            }
+            is_store = len(code) < 4
+            if is_store: store_id = get_store_id(code)
+            else: merchandise_id = get_merchandise_id(code)
 
-            # runs the list merchandise operation in order to try to find a
-            # merchandise entity for the requested (unique) product code in
-            # case there's at least one merchandise its object id is used
-
-            #try: merchandise = api.list_merchandise(**kwargs)
-            #except: merchandise = []
-            #if merchandise: object_id = merchandise[0]["object_id"]
-
-            print(code)
-            print(quantity)
-
-            print(_date)
-            print(_time)
+            if is_store:
+                if store_id: new_adjustment(store_id)
+                else: flush_adjustment()
+            elif merchandise_id:
+                try: add_adjustment_line(merchandise_id)
+                except: pass
     finally:
         # closes the temporary file descriptor and removes the temporary
         # file (avoiding any memory leaks)

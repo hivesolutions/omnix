@@ -437,9 +437,25 @@ def do_inventory_extras():
     stores_map = dict()
     merchandise_map = dict()
 
-    adjustment = None
+    status = dict()
+
+    def get_adjustment():
+        return status.get("adjustment", None)
+
+    def new_adjustment(target_id):
+        flush_adjustment()
+        adjustment = dict(
+            adjustment_target = dict(
+                object_id = target_id
+            ),
+            stock_adjustment_lines = []
+        )
+        status["adjustment"] = adjustment
+        return adjustment
 
     def flush_adjustment():
+        adjustment = get_adjustment()
+        status["adjustment"] = None
         if not adjustment: return
         payload = dict(stock_adjustment = adjustment)
         stock_adjustment = api.create_stock_adjustment(payload)
@@ -451,16 +467,8 @@ def do_inventory_extras():
         )
         return stock_adjustment
 
-    def new_adjustment(target_id):
-        flush_adjustment()
-        adjustment = dict(
-            adjustment_target = dict(
-                object_id = target_id
-            ),
-            stock_adjustment_lines = []
-        )
-
-    def add_adjustment_line(merchandise_id, quantity = 1):
+    def add_adjustment_line(merchandise_id, quantity = -1):
+        adjustment = get_adjustment()
         if not adjustment: raise quorum.OperationalError(
             "No adjustment in context"
         )

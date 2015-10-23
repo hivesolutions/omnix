@@ -550,6 +550,7 @@ def do_inventory_extras():
             code = code.strip()
             quantity = quantity.strip()
             quantity = int(quantity)
+            quantity = quantity * -1
 
             is_store = len(code) < 4
             if is_store: store_id = get_store_id(code)
@@ -559,7 +560,10 @@ def do_inventory_extras():
                 if store_id: new_adjustment(store_id)
                 else: flush_adjustment()
             elif merchandise_id:
-                try: add_adjustment_line(merchandise_id)
+                try: add_adjustment_line(
+                    merchandise_id,
+                    quantity = quantity
+                )
                 except: pass
     finally:
         # closes the temporary file descriptor and removes the temporary

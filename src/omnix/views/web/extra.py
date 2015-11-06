@@ -495,7 +495,7 @@ def do_inventory_extras():
             "start_record" : 0,
             "number_records" : 1,
             "filters[]" : [
-                "store_code:equals:%s" % code
+                "store_code:equals:%s" % store_code
             ]
         }
 
@@ -518,7 +518,7 @@ def do_inventory_extras():
             "start_record" : 0,
             "number_records" : 1,
             "filters[]" : [
-                "company_product_code:equals:%s" % code
+                "company_product_code:equals:%s" % company_product_code
             ]
         }
 
@@ -535,40 +535,33 @@ def do_inventory_extras():
         merchandise_map[company_product_code] = object_id
         return object_id
 
+    def callback(line):
+        code, quantity, _date, _time = line
+
+        code = code.strip()
+        quantity = quantity.strip()
+        quantity = int(quantity)
+        quantity = quantity * -1
+
+        is_store = len(code) < 4
+        if is_store: store_id = get_store_id(code)
+        else: merchandise_id = get_merchandise_id(code)
+
+        if is_store:
+            if store_id: new_adjustment(store_id)
+            else: flush_adjustment()
+        elif merchandise_id:
+            try: add_adjustment_line(
+                merchandise_id,
+                quantity = quantity
+            )
+            except: pass
+
     try:
-        # creates the csv reader for the buffer and then creates the
-        # iterator object from the associated reader to read lines
-        csv_reader = csv.reader(
-            buffer,
-            delimiter = ";",
-            quoting = csv.QUOTE_NONE
-        )
-        csv_reader = iter(csv_reader)
-
-        # iterates over the complete set of lines in the csv file in
-        # order to process them accordingly (as expected)
-        for line in csv_reader:
-            # unpacks the line
-            code, quantity, _date, _time = line
-
-            code = code.strip()
-            quantity = quantity.strip()
-            quantity = int(quantity)
-            quantity = quantity * -1
-
-            is_store = len(code) < 4
-            if is_store: store_id = get_store_id(code)
-            else: merchandise_id = get_merchandise_id(code)
-
-            if is_store:
-                if store_id: new_adjustment(store_id)
-                else: flush_adjustment()
-            elif merchandise_id:
-                try: add_adjustment_line(
-                    merchandise_id,
-                    quantity = quantity
-                )
-                except: pass
+        # start the csv import operation that is going to import the
+        # various lines of the csv in the buffer and for each of them
+        # call the function passed as callback
+        util.csv_import(buffer, callback, delimiter = ";")
     finally:
         # closes the temporary file descriptor and removes the temporary
         # file (avoiding any memory leaks)

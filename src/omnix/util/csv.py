@@ -19,6 +19,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Hive Omnix System. If not, see <http://www.gnu.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,28 +37,24 @@ __copyright__ = "Copyright (c) 2008-2015 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-from . import business
-from . import config
-from . import ctt
-from . import csv
-from . import image
-from . import logic
-from . import scheduling
-from . import slave
-from . import supervisor
+import csv
 
-from .business import mail_birthday_all, mail_activity_all, mail_birthday, mail_activity,\
-    get_date, get_top, get_sales
-from .ctt import encode_ctt
-from .csv import csv_file, csv_import
-from .config import LOCAL_PREFIX, REMOTE_PREFIX, LOCAL_URL, REMOTE_URL, REDIRECT_URL,\
-    CLIENT_ID, CLIENT_SECRET, FIRST_DAY, SCOPE, AT_SALE_TYPES, AT_TRANSPORT_TYPES,\
-    AT_SUBMIT_TYPES, REMOTE, BASE_URL, SENDER_EMAIL, USERNAME, PASSWORD, SCHEDULE,\
-    COMMISSION_RATE, COMMISSION_DAY, IMAGE_RESIZE, LOCALE, OMNI_URL, PREFIX
-from .image import mask_image
-from .logic import get_models, get_api, ensure_api, on_auth, start_session, reset_session,\
-    get_tokens
+import quorum
 
-from .scheduling import load as load_scheduling
-from .slave import run as run_slave
-from .supervisor import run as run_supervisor
+def csv_file(file, callback, delimiter = ",", strict = False):
+    _file_name, mime_type, data = file
+    is_csv = mime_type in ("text/csv", "application/vnd.ms-excel")
+    if not is_csv and strict:
+        raise quorum.OperationalError("Invalid mime type '%s'" % mime_type)
+    data = data.decode("utf-8")
+    buffer = quorum.legacy.StringIO(data)
+    return csv_import(buffer, callback, delimiter = delimiter)
+
+def csv_import(buffer, callback, delimiter = ","):
+    csv_reader = csv.reader(
+        buffer,
+        delimiter = delimiter,
+        quoting = csv.QUOTE_NONE
+    )
+    _header = next(csv_reader)
+    for line in csv_reader: callback(line)

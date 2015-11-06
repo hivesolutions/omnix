@@ -565,6 +565,7 @@ def do_inventory_extras():
         # various lines of the csv in the buffer and for each of them
         # call the function passed as callback
         util.csv_import(buffer, callback, delimiter = ";")
+        flush_adjustment()
     finally:
         # closes the temporary file descriptor and removes the temporary
         # file (avoiding any memory leaks)
@@ -655,7 +656,10 @@ def do_transfers_extras():
     def new_transfer(target_id):
         flush_transfer()
         transfer = dict(
-            transfer_target = dict(
+            origin = dict(
+                object_id = origin
+            ),
+            destination = dict(
                 object_id = target_id
             ),
             transfer_lines = []
@@ -669,7 +673,7 @@ def do_transfers_extras():
         if not transfer: return
         payload = dict(transfer = transfer)
         transfer = api.create_transfer(payload)
-        store_id = transfer["transfer_target"]["object_id"]
+        store_id = transfer["destination"]["object_id"]
         transfer_id = transfer["object_id"]
         quorum.debug(
             "Created stock transfer '%d' for store '%d'" %\
@@ -677,14 +681,14 @@ def do_transfers_extras():
         )
         return transfer
 
-    def add_transfer_line(merchandise_id, quantity = -1):
+    def add_transfer_line(merchandise_id, quantity = 1):
         transfer = get_transfer()
         if not transfer: raise quorum.OperationalError(
             "No transfer in context"
         )
         lines = transfer["transfer_lines"]
         line = dict(
-            stock_on_hand_delta = quantity,
+            quantity = quantity,
             merchandise = dict(
                 object_id = merchandise_id
             )
@@ -745,7 +749,6 @@ def do_transfers_extras():
         code = code.strip()
         quantity = quantity.strip()
         quantity = int(quantity)
-        quantity = quantity * -1
 
         is_store = len(code) < 4
         if is_store: store_id = get_store_id(code)
@@ -766,6 +769,7 @@ def do_transfers_extras():
         # various lines of the csv in the buffer and for each of them
         # call the function passed as callback
         util.csv_import(buffer, callback, delimiter = ";")
+        flush_transfer()
     finally:
         # closes the temporary file descriptor and removes the temporary
         # file (avoiding any memory leaks)

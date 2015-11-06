@@ -41,20 +41,31 @@ import csv
 
 import quorum
 
-def csv_file(file, callback, delimiter = ",", strict = False):
+def csv_file(
+    file,
+    callback,
+    header = False,
+    delimiter = ",",
+    strict = False
+):
     _file_name, mime_type, data = file
     is_csv = mime_type in ("text/csv", "application/vnd.ms-excel")
     if not is_csv and strict:
         raise quorum.OperationalError("Invalid mime type '%s'" % mime_type)
     data = data.decode("utf-8")
     buffer = quorum.legacy.StringIO(data)
-    return csv_import(buffer, callback, delimiter = delimiter)
+    return csv_import(
+        buffer,
+        callback,
+        header = header,
+        delimiter = delimiter
+    )
 
-def csv_import(buffer, callback, delimiter = ","):
+def csv_import(buffer, callback, header = False, delimiter = ","):
     csv_reader = csv.reader(
         buffer,
         delimiter = delimiter,
         quoting = csv.QUOTE_NONE
     )
-    _header = next(csv_reader)
+    if header: _header = next(csv_reader)
     for line in csv_reader: callback(line)

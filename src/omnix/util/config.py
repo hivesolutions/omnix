@@ -107,6 +107,7 @@ SCOPE = (
     "analytics.sale_snapshot.list",
     "analytics.employee_snapshot.list",
     "inventory.stock_adjustment.create",
+    "inventory.transfer.create",
     "inventory.transactional_merchandise.list",
     "inventory.transactional_merchandise.update"
 )

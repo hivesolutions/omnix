@@ -38,7 +38,6 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import os
-import csv
 import imghdr
 import shutil
 import zipfile
@@ -403,7 +402,11 @@ def inventory_extras():
     )
 
 @app.route("/extras/inventory", methods = ("POST",))
-@quorum.ensure("inventory.stock_adjustment.create")
+@quorum.ensure((
+    "inventory.stock_adjustment.create",
+    "inventory.transactional_merchandise.list",
+    "foundation.store.list"
+))
 def do_inventory_extras():
     # retrieves the reference to the api object that is going
     # to be used for the updating of prices operation
@@ -574,6 +577,197 @@ def do_inventory_extras():
         flask.url_for(
             "inventory_extras",
             message = "Inventory file processed with success"
+        )
+    )
+
+@app.route("/extras/transfers", methods = ("GET",))
+@quorum.ensure((
+    "inventory.transfer.create",
+    "inventory.transactional_merchandise.list",
+    "foundation.store.list"
+))
+def transfers_extras():
+    return flask.render_template(
+        "extra/transfers.html.tpl",
+        link = "extras"
+    )
+
+@app.route("/extras/transfers", methods = ("POST",))
+@quorum.ensure((
+    "inventory.transfer.create",
+    "inventory.transactional_merchandise.list",
+    "foundation.store.list"
+))
+def do_transfers_extras():
+    # retrieves the reference to the api object that is going
+    # to be used for the updating of prices operation
+    api = util.get_api()
+
+    # tries to retrieve the transfers file from the current
+    # form in case it's not available renders the current
+    # template with an error message
+    transfers_file = quorum.get_field("transfers_file", None)
+    if transfers_file == None or not transfers_file.filename:
+        return flask.render_template(
+            "extra/transfers.html.tpl",
+            link = "extras",
+            error = "No file defined"
+        )
+
+    # creates a temporary file path for the storage of the file
+    # and then saves it into that directory
+    fd, file_path = tempfile.mkstemp()
+    transfers_file.save(file_path)
+
+    # creates the file object that is going to be used in the
+    # reading of the csv file (underlying object)
+    file = open(file_path, "rb")
+    try: data = file.read()
+    finally: file.close()
+
+    # decodes the received data using the default encoding and
+    # then creates the proper string buffer to hold it
+    data = data.decode("utf-8")
+    buffer = quorum.legacy.StringIO(data)
+
+    # creates the maps that are going to be used to cache the
+    # resolution processes for both the stores and the merchandise
+    stores_map = dict()
+    merchandise_map = dict()
+
+    # creates the map that is going to hold the complete state
+    # to be used in the process of the various adjustments (context)
+    state = dict()
+
+    def get_adjustment():
+        return state.get("adjustment", None)
+
+    def new_adjustment(target_id):
+        flush_adjustment()
+        adjustment = dict(
+            adjustment_target = dict(
+                object_id = target_id
+            ),
+            stock_adjustment_lines = []
+        )
+        state["adjustment"] = adjustment
+        return adjustment
+
+    def flush_adjustment():
+        adjustment = get_adjustment()
+        state["adjustment"] = None
+        if not adjustment: return
+        payload = dict(stock_adjustment = adjustment)
+        stock_adjustment = api.create_stock_adjustment(payload)
+        store_id = adjustment["adjustment_target"]["object_id"]
+        stock_adjustment_id = stock_adjustment["object_id"]
+        quorum.debug(
+            "Created stock adjustment '%d' for store '%d'" %\
+            (stock_adjustment_id, store_id)
+        )
+        return stock_adjustment
+
+    def add_adjustment_line(merchandise_id, quantity = -1):
+        adjustment = get_adjustment()
+        if not adjustment: raise quorum.OperationalError(
+            "No adjustment in context"
+        )
+        lines = adjustment["stock_adjustment_lines"]
+        line = dict(
+            stock_on_hand_delta = quantity,
+            merchandise = dict(
+                object_id = merchandise_id
+            )
+        )
+        lines.append(line)
+
+    def get_store_id(store_code):
+        object_id = stores_map.get(store_code, None)
+        if object_id: return object_id
+
+        kwargs = {
+            "start_record" : 0,
+            "number_records" : 1,
+            "filters[]" : [
+                "store_code:equals:%s" % store_code
+            ]
+        }
+
+        try: stores = api.list_stores(**kwargs)
+        except: stores = []
+        if stores: object_id = stores[0]["object_id"]
+
+        stores_map[store_code] = object_id
+        return object_id
+
+    def get_merchandise_id(company_product_code):
+        # tries to retrieve the object id of the merchandise from the
+        # cache and in case it succeeds returns it immediately
+        object_id = merchandise_map.get(company_product_code, None)
+        if object_id: return object_id
+
+        # creates the map containing the (filter) keyword arguments that
+        # are going to be send to the list merchandise operation
+        kwargs = {
+            "start_record" : 0,
+            "number_records" : 1,
+            "filters[]" : [
+                "company_product_code:equals:%s" % company_product_code
+            ]
+        }
+
+        # runs the list merchandise operation in order to try to find a
+        # merchandise entity for the requested (unique) product code in
+        # case there's at least one merchandise its object id is used
+        try: merchandise = api.list_merchandise(**kwargs)
+        except: merchandise = []
+        if merchandise: object_id = merchandise[0]["object_id"]
+
+        # updates the (cache) map for the merchandise with the reference
+        # new object id to company product code reference and then returns
+        # the object id of the merchandise to the caller method
+        merchandise_map[company_product_code] = object_id
+        return object_id
+
+    def callback(line):
+        code, quantity, _date, _time = line
+
+        code = code.strip()
+        quantity = quantity.strip()
+        quantity = int(quantity)
+        quantity = quantity * -1
+
+        is_store = len(code) < 4
+        if is_store: store_id = get_store_id(code)
+        else: merchandise_id = get_merchandise_id(code)
+
+        if is_store:
+            if store_id: new_adjustment(store_id)
+            else: flush_adjustment()
+        elif merchandise_id:
+            try: add_adjustment_line(
+                merchandise_id,
+                quantity = quantity
+            )
+            except: pass
+
+    try:
+        # start the csv import operation that is going to import the
+        # various lines of the csv in the buffer and for each of them
+        # call the function passed as callback
+        util.csv_import(buffer, callback, delimiter = ";")
+    finally:
+        # closes the temporary file descriptor and removes the temporary
+        # file (avoiding any memory leaks)
+        os.close(fd)
+        os.remove(file_path)
+
+    # redirects the user back to the transfers list page with a success
+    # message indicating that everything went ok
+    return flask.redirect(
+        flask.url_for(
+            "transfers_extras",
+            message = "Transfers file processed with success"
         )
     )
 

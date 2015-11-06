@@ -39,6 +39,18 @@
                 <div class="description">Import list of inventory items to the current data source</div>
             </li>
         {% endif %}
+        {% if acl((
+               "inventory.transfer.create",
+               "inventory.transactional_merchandise.list",
+               "foundation.store.list"
+           )) %}
+            <li>
+                <div class="name">
+                    <a href="{{ url_for('transfers_extras') }}">Transfers List</a>
+                </div>
+                <div class="description">Import list of transfers to the current data source</div>
+            </li>
+        {% endif %}
         {% if acl("sales.sale_order.list") %}
             <li>
                 <div class="name">

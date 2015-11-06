@@ -653,7 +653,7 @@ def do_transfers_extras():
     def get_transfer():
         return state.get("transfer", None)
 
-    def new_transfer(target_id):
+    def new_transfer(target_id, workflow_state = 6):
         flush_transfer()
         transfer = dict(
             origin = dict(
@@ -662,7 +662,10 @@ def do_transfers_extras():
             destination = dict(
                 object_id = target_id
             ),
-            transfer_lines = []
+            transfer_lines = [],
+            _parameters = dict(
+                target_workflow_state = workflow_state
+            )
         )
         state["transfer"] = transfer
         return transfer
@@ -673,11 +676,9 @@ def do_transfers_extras():
         if not transfer: return
         payload = dict(transfer = transfer)
         transfer = api.create_transfer(payload)
-        store_id = transfer["destination"]["object_id"]
         transfer_id = transfer["object_id"]
         quorum.debug(
-            "Created stock transfer '%d' for store '%d'" %\
-            (transfer_id, store_id)
+            "Created stock transfer '%d'" (transfer_id)
         )
         return transfer
 

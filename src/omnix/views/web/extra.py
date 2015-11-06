@@ -603,6 +603,16 @@ def do_transfers_extras():
     # to be used for the updating of prices operation
     api = util.get_api()
 
+    # tries to retrieve the origin value from the provided set
+    # of fields and in case it's not defined re-renders the template
+    origin = quorum.get_field("origin", None, cast = int)
+    if not origin:
+        return flask.render_template(
+            "extra/transfers.html.tpl",
+            link = "extras",
+            error = "No origin defined"
+        )
+
     # tries to retrieve the transfers file from the current
     # form in case it's not available renders the current
     # template with an error message
@@ -636,43 +646,43 @@ def do_transfers_extras():
     merchandise_map = dict()
 
     # creates the map that is going to hold the complete state
-    # to be used in the process of the various adjustments (context)
+    # to be used in the process of the various transfers (context)
     state = dict()
 
-    def get_adjustment():
-        return state.get("adjustment", None)
+    def get_transfer():
+        return state.get("transfer", None)
 
-    def new_adjustment(target_id):
-        flush_adjustment()
-        adjustment = dict(
-            adjustment_target = dict(
+    def new_transfer(target_id):
+        flush_transfer()
+        transfer = dict(
+            transfer_target = dict(
                 object_id = target_id
             ),
-            stock_adjustment_lines = []
+            transfer_lines = []
         )
-        state["adjustment"] = adjustment
-        return adjustment
+        state["transfer"] = transfer
+        return transfer
 
-    def flush_adjustment():
-        adjustment = get_adjustment()
-        state["adjustment"] = None
-        if not adjustment: return
-        payload = dict(stock_adjustment = adjustment)
-        stock_adjustment = api.create_stock_adjustment(payload)
-        store_id = adjustment["adjustment_target"]["object_id"]
-        stock_adjustment_id = stock_adjustment["object_id"]
+    def flush_transfer():
+        transfer = get_transfer()
+        state["transfer"] = None
+        if not transfer: return
+        payload = dict(transfer = transfer)
+        transfer = api.create_transfer(payload)
+        store_id = transfer["transfer_target"]["object_id"]
+        transfer_id = transfer["object_id"]
         quorum.debug(
-            "Created stock adjustment '%d' for store '%d'" %\
-            (stock_adjustment_id, store_id)
+            "Created stock transfer '%d' for store '%d'" %\
+            (transfer_id, store_id)
         )
-        return stock_adjustment
+        return transfer
 
-    def add_adjustment_line(merchandise_id, quantity = -1):
-        adjustment = get_adjustment()
-        if not adjustment: raise quorum.OperationalError(
-            "No adjustment in context"
+    def add_transfer_line(merchandise_id, quantity = -1):
+        transfer = get_transfer()
+        if not transfer: raise quorum.OperationalError(
+            "No transfer in context"
         )
-        lines = adjustment["stock_adjustment_lines"]
+        lines = transfer["transfer_lines"]
         line = dict(
             stock_on_hand_delta = quantity,
             merchandise = dict(
@@ -742,10 +752,10 @@ def do_transfers_extras():
         else: merchandise_id = get_merchandise_id(code)
 
         if is_store:
-            if store_id: new_adjustment(store_id)
-            else: flush_adjustment()
+            if store_id: new_transfer(store_id)
+            else: flush_transfer()
         elif merchandise_id:
-            try: add_adjustment_line(
+            try: add_transfer_line(
                 merchandise_id,
                 quantity = quantity
             )

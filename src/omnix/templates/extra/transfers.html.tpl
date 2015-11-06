@@ -13,9 +13,9 @@
         {{ error }}
     </div>
     <form enctype="multipart/form-data" action="{{ url_for('do_transfers_extras') }}" method="post" class="form small">
-    	<div class="input">
+        <div class="input">
             <div class="drop-field" data-original_value="Origin" data-value_attribute="object_id">
-            	<input type="hidden" class="hidden-field" name="origin" /> 
+                <input type="hidden" class="hidden-field" name="origin" />
                 <div class="data-source" data-url="{{ url_for('list_stores_json') }}" data-type="json"></div>
             </div>
         </div>

@@ -678,7 +678,7 @@ def do_transfers_extras():
         transfer = api.create_transfer(payload)
         transfer_id = transfer["object_id"]
         quorum.debug(
-            "Created stock transfer '%d'" (transfer_id)
+            "Created stock transfer '%d'" % transfer_id
         )
         return transfer
 

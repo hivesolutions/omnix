@@ -7,6 +7,7 @@ ENV LEVEL INFO
 ENV SERVER netius
 ENV HOST 0.0.0.0
 ENV PORT 8080
+ENV MONGOHQ_URL mongodb://localhost:27017
 ENV PYTHONPATH /src
 
 ADD requirements.txt /

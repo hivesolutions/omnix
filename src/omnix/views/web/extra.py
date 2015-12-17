@@ -368,7 +368,8 @@ def do_prices_extras():
         # to the provided set of keys (to create the correct structures)
         items = quorum.xlsx_to_map(
             file_path,
-            keys = ("company_product_code", "retail_price")
+            keys = ("company_product_code", "retail_price"),
+            types = (quorum.legacy.UNICODE, None)
         )
     finally:
         # closes the temporary file descriptor and removes the temporary
@@ -425,7 +426,8 @@ def do_costs_extras():
         # to the provided set of keys (to create the correct structures)
         items = quorum.xlsx_to_map(
             file_path,
-            keys = ("company_product_code", "cost")
+            keys = ("company_product_code", "cost"),
+            types = (quorum.legacy.UNICODE, None)
         )
     finally:
         # closes the temporary file descriptor and removes the temporary

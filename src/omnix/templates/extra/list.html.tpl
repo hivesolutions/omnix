@@ -27,6 +27,14 @@
                 <div class="description">Import list of prices to the current data source</div>
             </li>
         {% endif %}
+        {% if acl("inventory.transactional_merchandise.update") %}
+            <li>
+                <div class="name">
+                    <a href="{{ url_for('costs_extras') }}">Costs List</a>
+                </div>
+                <div class="description">Import list of costs to the current data source</div>
+            </li>
+        {% endif %}
         {% if acl((
                "inventory.stock_adjustment.create",
                "inventory.transactional_merchandise.list",

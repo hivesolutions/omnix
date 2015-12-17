@@ -389,6 +389,63 @@ def do_prices_extras():
         )
     )
 
+@app.route("/extras/costs", methods = ("GET",))
+@quorum.ensure("inventory.transactional_merchandise.update")
+def costs_extras():
+    return flask.render_template(
+        "extra/costs.html.tpl",
+        link = "extras"
+    )
+
+@app.route("/extras/costs", methods = ("POST",))
+@quorum.ensure("inventory.transactional_merchandise.update")
+def do_costs_extras():
+    # retrieves the reference to the api object that is going
+    # to be used for the updating of costs operation
+    api = util.get_api()
+
+    # tries to retrieve the costs file from the current
+    # form in case it's not available renders the current
+    # template with an error message
+    costs_file = quorum.get_field("costs_file", None)
+    if costs_file == None or not costs_file.filename:
+        return flask.render_template(
+            "extra/costs.html.tpl",
+            link = "extras",
+            error = "No file defined"
+        )
+
+    # creates a temporary file path for the storage of the file
+    # and then saves it into that directory
+    fd, file_path = tempfile.mkstemp()
+    costs_file.save(file_path)
+
+    try:
+        # parses the temporary file containing the spreadsheet according
+        # to the provided set of keys (to create the correct structures)
+        items = quorum.xlsx_to_map(
+            file_path,
+            keys = ("company_product_code", "cost")
+        )
+    finally:
+        # closes the temporary file descriptor and removes the temporary
+        # file (avoiding any memory leaks)
+        os.close(fd)
+        os.remove(file_path)
+
+    # uses the "resolved" items structure in the put operation to
+    # the omni api so that the costs for them get updated
+    api.costs_merchandise(items)
+
+    # redirects the user back to the costs list page with a success
+    # message indicating that everything went ok
+    return flask.redirect(
+        flask.url_for(
+            "costs_extras",
+            message = "Costs file processed with success"
+        )
+    )
+
 @app.route("/extras/inventory", methods = ("GET",))
 @quorum.ensure((
     "inventory.stock_adjustment.create",

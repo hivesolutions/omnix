@@ -60,6 +60,11 @@ MESSAGE_RETRIES = 3
 """ The number of retries to be used for the message
 before it's considered discarded """
 
+NUMBER_RECORDS = 100
+""" The maximum number of records that is going to be
+retrieved and set for submission, this value influences
+the performance, mostly under heavy load situations """
+
 class Supervisor(threading.Thread):
 
     session_id = None
@@ -108,7 +113,7 @@ class Supervisor(threading.Thread):
             "session_id" : self.session_id,
             "filter_string" : "",
             "start_record" : 0,
-            "number_records" : 1000,
+            "number_records" : NUMBER_RECORDS,
             "sort" : "issue_date:ascending",
             "filters[]" : [
                 "issue_date:greater:1356998400",

@@ -57,7 +57,7 @@
             var button = jQuery(".button", operationsTarget);
             var classInput = jQuery("input[name=class]", mediaPreview);
             var representationInput = jQuery("input[name=representation]",
-                    mediaPreview);
+                mediaPreview);
             var url = form.attr("action");
             var mediaUrl = form.attr("data-media");
             var newUrl = button.attr("data-reference");
@@ -65,23 +65,22 @@
             previewPanel.hide();
             mediaTarget.empty();
             jQuery.ajax({
-                url : url,
-                type : "post",
-                data : {
-                    object_id : value
+                url: url,
+                type: "post",
+                data: {
+                    object_id: value
                 },
-                success : function(data) {
+                success: function(data) {
                     var media = data.media;
                     for (var index = 0; index < media.length; index++) {
                         var item = media[index];
                         var itemUrl = mediaUrl + String(item.object_id);
                         var imageContainer = jQuery("<div class=\"image-container\"></div>");
                         var imageLink = jQuery("<a href=\"" + itemUrl + "\"></a>");
-                        var image = jQuery("<img src=\"" + item.image_url
-                                + "\" />");
+                        var image = jQuery("<img src=\"" + item.image_url + "\" />");
                         var title = jQuery("<h2>" + item.label + "</h2>");
-                        var subTitle = jQuery("<h3>"
-                                + (item.dimensions || "unset") + "</h3>");
+                        var subTitle = jQuery("<h3>" + (item.dimensions || "unset") +
+                            "</h3>");
                         imageLink.append(image);
                         imageLink.append(title);
                         imageLink.append(subTitle);
@@ -102,8 +101,8 @@
 })(jQuery);
 
 jQuery(document).ready(function() {
-            var _body = jQuery("body");
-            _body.bind("applied", function(event, base) {
-                        base.uapply();
-                    });
-        });
+    var _body = jQuery("body");
+    _body.bind("applied", function(event, base) {
+        base.uapply();
+    });
+});

@@ -17,7 +17,7 @@
                     </div>
                 {% endif %}
                 <div class="content">
-                    {{ h1(self.title() ) }}
+                    {{ h1(self.title()) }}
                     {% block content %}{% endblock %}
                 </div>
                 <div class="footer" style="font-size:10px;line-height:16px;text-align:right;margin-top: 48px;">

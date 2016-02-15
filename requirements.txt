@@ -6,4 +6,4 @@ pymongo
 redis
 xlrd
 omni_api
-pip install git+https://github.com/pika/pika.git@9575db62417adbd3480b43a686b080b138a07c98
+git+https://github.com/pika/pika.git@9575db62417adbd3480b43a686b080b138a07c98

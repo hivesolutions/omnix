@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM hivesolutions/alpine_dev:latest
 MAINTAINER Hive Solutions
 
 EXPOSE 8080
@@ -15,7 +15,7 @@ ENV PYTHONPATH /src
 ADD requirements.txt /
 ADD src /src
 
-RUN apt-get update && apt-get install -y -q python python-setuptools python-dev python-pip libpng12-dev libjpeg-turbo8-dev
-RUN pip install -r /requirements.txt && pip install --upgrade netius
+RUN apk update && apk add libpng-dev libjpeg-turbo-dev
+RUN pip3 install -r /requirements.txt && pip3 install --upgrade netius
 
-CMD ["/usr/bin/python", "/src/omnix/main.py"]
+CMD ["/usr/bin/python3", "/src/omnix/main.py"]

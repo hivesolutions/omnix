@@ -1000,7 +1000,7 @@ def create_media_browser(id):
     mime_type = image_type if image_type else "image/unknown"
     try: data = media_file.stream.read()
     finally: media_file.close()
-    media = api.set_media_entity(
+    api.set_media_entity(
         id,
         data,
         engine = engine,
@@ -1012,7 +1012,7 @@ def create_media_browser(id):
         thumbnails = thumbnails
     )
     return flask.redirect(
-        flask.url_for("browser_extras", id = media["object_id"])
+        flask.url_for("browser_extras", id = id)
     )
 
 def _media_sorter(item):

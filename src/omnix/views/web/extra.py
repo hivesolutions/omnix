@@ -946,9 +946,11 @@ def do_mask_extras():
 @app.route("/extras/browser", methods = ("GET",))
 @quorum.ensure("foundation.root_entity.show_media")
 def browser_extras():
+    object_id = quorum.get_field("id", None, cast = int)
     return flask.render_template(
         "extra/browser.html.tpl",
-        link = "extras"
+        link = "extras",
+        object_id = object_id
     )
 
 @app.route("/extras/browser", methods = ("POST",), json = True)
@@ -1010,7 +1012,7 @@ def create_media_browser(id):
         thumbnails = thumbnails
     )
     return flask.redirect(
-        flask.url_for("media_browser", id = media["object_id"])
+        flask.url_for("browser_extras", id = media["object_id"])
     )
 
 def _media_sorter(item):

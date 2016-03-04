@@ -47,23 +47,25 @@
 
         previewPanel.hide();
 
-        objectId.bind("value_change", function() {
-            var element = jQuery(this);
+        var update = function(element) {
             var form = element.parents("form");
-            var mediaPreview = element.parents(".media-preview");
-            var previewPanel = jQuery(".preview-panel", mediaPreview);
+            var previewPanel = jQuery(".preview-panel", element);
             var mediaTarget = jQuery(".media-target", previewPanel);
             var operationsTarget = jQuery(".operations-target", previewPanel);
             var button = jQuery(".button", operationsTarget);
-            var classInput = jQuery("input[name=class]", mediaPreview);
+            var objectId = jQuery(".text-field[name=object_id]", element);
+            var classInput = jQuery("input[name=class]", element);
             var representationInput = jQuery("input[name=representation]",
-                mediaPreview);
+                element);
             var url = form.attr("action");
             var mediaUrl = form.attr("data-media");
             var newUrl = button.attr("data-reference");
-            var value = element.uxvalue();
+            var value = objectId.uxvalue();
             previewPanel.hide();
             mediaTarget.empty();
+            if (!value) {
+                return;
+            }
             jQuery.ajax({
                 url: url,
                 type: "post",
@@ -79,8 +81,7 @@
                         var imageLink = jQuery("<a href=\"" + itemUrl + "\"></a>");
                         var image = jQuery("<img src=\"" + item.image_url + "\" />");
                         var title = jQuery("<h2>" + item.label + "</h2>");
-                        var subTitle = jQuery("<h3>" + (item.dimensions || "unset") +
-                            "</h3>");
+                        var subTitle = jQuery("<h3>" + (item.dimensions || "unset") + "</h3>");
                         imageLink.append(image);
                         imageLink.append(title);
                         imageLink.append(subTitle);
@@ -94,6 +95,17 @@
                     previewPanel.show();
                 }
             });
+        };
+
+        objectId.bind("value_change", function() {
+            var element = jQuery(this);
+            var mediaPreview = element.parents(".media-preview");
+            update(mediaPreview);
+        });
+
+        matchedObject.each(function(index, element) {
+            var _element = jQuery(this);
+            update(_element);
         });
 
         return this;

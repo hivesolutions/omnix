@@ -10,7 +10,7 @@
             </div>
             <div class="input">
                 <input class="text-field focus" name="object_id" placeholder="eg: 123123"
-                       data-type="natural" />
+                       data-type="natural" value="{{ object_id|default('', True) }}" />
             </div>
             <div class="preview-panel">
                 <div class="label">

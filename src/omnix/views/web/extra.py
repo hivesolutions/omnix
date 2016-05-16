@@ -439,7 +439,7 @@ def do_metadata_extras():
         # creates the model structure to be updated and then runs the
         # proper execution of the metadata import
         model = dict(metadata = metadata)
-        if name: model[name] = name
+        if name: model["name"] = name
         api.update_entity(object_id, payload = dict(root_entity = model))
 
     try:

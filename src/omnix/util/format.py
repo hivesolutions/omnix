@@ -46,13 +46,14 @@ def csv_file(
     callback,
     header = False,
     delimiter = ",",
-    strict = False
+    strict = False,
+    encoding = "utf-8"
 ):
     _file_name, mime_type, data = file
     is_csv = mime_type in ("text/csv", "application/vnd.ms-excel")
     if not is_csv and strict:
         raise quorum.OperationalError("Invalid mime type '%s'" % mime_type)
-    data = data.decode("utf-8")
+    data = data.decode(encoding)
     buffer = quorum.legacy.StringIO(data)
     return csv_import(
         buffer,
@@ -61,11 +62,20 @@ def csv_file(
         delimiter = delimiter
     )
 
-def csv_import(buffer, callback, header = False, delimiter = ","):
+def csv_import(
+    buffer,
+    callback,
+    header = False,
+    delimiter = ",",
+    quoting = False,
+    encoding = "utf-8"
+):
     csv_reader = csv.reader(
         buffer,
         delimiter = delimiter,
-        quoting = csv.QUOTE_NONE
+        quoting = csv.QUOTE_MINIMAL if quoting else csv.QUOTE_NONE
     )
     if header: _header = next(csv_reader)
-    for line in csv_reader: callback(line)
+    for line in csv_reader:
+        line = [value.decode(encoding) for value in line]
+        callback(line)

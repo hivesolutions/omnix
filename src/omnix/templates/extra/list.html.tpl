@@ -19,6 +19,14 @@
                 <div class="description">Upload a list of images to be used in inventory</div>
             </li>
         {% endif %}
+        {% if acl("foundation.root_entity.update") %}
+            <li>
+                <div class="name">
+                    <a href="{{ url_for('metadata_extras') }}">Metadata List</a>
+                </div>
+                <div class="description">Upload a list of metadata information about entities</div>
+            </li>
+        {% endif %}
         {% if acl("inventory.transactional_merchandise.update") %}
             <li>
                 <div class="name">

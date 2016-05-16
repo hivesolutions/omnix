@@ -332,6 +332,135 @@ def do_images_extras():
         )
     )
 
+@app.route("/extras/metadata", methods = ("GET",))
+@quorum.ensure("foundation.root_entity.update")
+def metadata_extras():
+    return flask.render_template(
+        "extra/metadata.html.tpl",
+        link = "extras"
+    )
+
+@app.route("/extras/metadata", methods = ("POST",))
+@quorum.ensure("foundation.root_entity.update")
+def do_metadata_extras():
+    # retrieves the reference to the api object that is going
+    # to be used for the updating of prices operation
+    api = util.get_api()
+
+    # tries to retrieve the metadata file from the current
+    # form in case it's not available renders the current
+    # template with an error message
+    metadata_file = quorum.get_field("metadata_file", None)
+    if metadata_file == None or not metadata_file.filename:
+        return flask.render_template(
+            "extra/metadata.html.tpl",
+            link = "extras",
+            error = "No file defined"
+        )
+
+    # creates a temporary file path for the storage of the file
+    # and then saves it into that directory
+    fd, file_path = tempfile.mkstemp()
+    metadata_file.save(file_path)
+
+    # creates the file object that is going to be used in the
+    # reading of the csv file (underlying object)
+    file = open(file_path, "rb")
+    try: data = file.read()
+    finally: file.close()
+
+    # constructs the bytes based buffer object from the data that
+    # has just been loaded from the file
+    buffer = quorum.legacy.BytesIO(data)
+
+    def callback(line):
+        # unpacks the current "metadata" line into its components as
+        # expected by the specification
+        base,\
+        name,\
+        _retail_price,\
+        characteristics,\
+        metal,\
+        category,\
+        collection = line
+
+        # normalizes the various values that have been extracted from the line
+        # so they are properly represented for importing
+        characteristics = [value.strip() for value in characteristics.split(";")]
+        metal = metal or None
+        category = category or None
+        collection = collection or None
+
+        # tries to "cast" the base value as an integer and in case
+        # it's possible assumes that this value is the object identifier
+        try: object_id = int(base)
+        except: object_id = None
+
+        # in case no object id was retrieved from the base name value
+        # a secondary strategy is used, so that the merchandise database
+        # is searched using the base string value as the company product code
+        if not object_id:
+            # creates the keyword arguments map so that the the merchandise
+            # with the provided company product code is retrieved
+            kwargs = {
+                "start_record" : 0,
+                "number_records" : 1,
+                "filters[]" : [
+                    "company_product_code:equals:%s" % base
+                ]
+            }
+
+            # runs the list merchandise operation in order to try to find a
+            # merchandise entity for the requested (unique) product code in
+            # case there's at least one merchandise its object id is used
+            try: merchandise = api.list_merchandise(**kwargs)
+            except: merchandise = []
+            if merchandise: object_id = merchandise[0]["object_id"]
+
+        # in case no object id was retrieved must skip the current loop
+        # with a proper information message (as expected)
+        if not object_id:
+            quorum.info("Skipping, could not resolve object id for '%s'" % base)
+            return
+
+        # prints a logging message about the updating of the metadata for
+        # the entity with the current object id
+        quorum.debug("Setting metadata for entity '%d'" % object_id)
+
+        # constructs the dictionary that is going to represent the metadata
+        # for the entity that is going to be updated
+        metadata = dict(
+            characteristics = characteristics,
+            metal = metal,
+            category = category,
+            collection = collection
+        )
+
+        # creates the model structure to be updated and then runs the
+        # proper execution of the metadata import
+        model = dict(name = name, metadata = metadata)
+        api.update_entity(object_id, payload = dict(root_entity = model))
+
+    try:
+        # start the csv import operation that is going to import the
+        # various lines of the csv in the buffer and for each of them
+        # call the function passed as callback
+        util.csv_import(buffer, callback, delimiter = ",", quoting = True)
+    finally:
+        # closes the temporary file descriptor and removes the temporary
+        # file (avoiding any memory leaks)
+        os.close(fd)
+        os.remove(file_path)
+
+    # redirects the user back to the metadata list page with a success
+    # message indicating that everything went ok
+    return flask.redirect(
+        flask.url_for(
+            "metadata_extras",
+            message = "Metadata file processed with success"
+        )
+    )
+
 @app.route("/extras/prices", methods = ("GET",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def prices_extras():
@@ -493,10 +622,9 @@ def do_inventory_extras():
     try: data = file.read()
     finally: file.close()
 
-    # decodes the received data using the default encoding and
-    # then creates the proper string buffer to hold it
-    data = data.decode("utf-8")
-    buffer = quorum.legacy.StringIO(data)
+    # constructs the bytes based buffer object from the data that
+    # has just been loaded from the file
+    buffer = quorum.legacy.BytesIO(data)
 
     # creates the maps that are going to be used to cache the
     # resolution processes for both the stores and the merchandise
@@ -695,10 +823,9 @@ def do_transfers_extras():
     try: data = file.read()
     finally: file.close()
 
-    # decodes the received data using the default encoding and
-    # then creates the proper string buffer to hold it
-    data = data.decode("utf-8")
-    buffer = quorum.legacy.StringIO(data)
+    # constructs the bytes based buffer object from the data that
+    # has just been loaded from the file
+    buffer = quorum.legacy.BytesIO(data)
 
     # creates the maps that are going to be used to cache the
     # resolution processes for both the stores and the merchandise

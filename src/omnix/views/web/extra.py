@@ -380,14 +380,14 @@ def do_metadata_extras():
         name,\
         _retail_price,\
         characteristics,\
-        metal,\
+        material,\
         category,\
         collection = line
 
         # normalizes the various values that have been extracted from the line
         # so they are properly represented for importing
         characteristics = [value.strip() for value in characteristics.split(";")]
-        metal = metal or None
+        material = material or None
         category = category or None
         collection = collection or None
 
@@ -431,7 +431,7 @@ def do_metadata_extras():
         # for the entity that is going to be updated
         metadata = dict(
             characteristics = characteristics,
-            metal = metal,
+            material = material,
             category = category,
             collection = collection
         )

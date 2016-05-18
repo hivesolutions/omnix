@@ -382,7 +382,8 @@ def do_metadata_extras():
         characteristics,\
         material,\
         category,\
-        collection = line
+        collection,\
+        description = line
 
         # normalizes the various values that have been extracted from the line
         # so they are properly represented for importing
@@ -440,6 +441,7 @@ def do_metadata_extras():
         # proper execution of the metadata import
         model = dict(metadata = metadata)
         if name: model["name"] = name
+        if description: model["description"] = description
         api.update_entity(object_id, payload = dict(root_entity = model))
 
     try:

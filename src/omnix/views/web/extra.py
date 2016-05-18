@@ -383,7 +383,7 @@ def do_metadata_extras():
         material,\
         category,\
         collection,\
-        description = line
+        description = line[:8]
 
         # normalizes the various values that have been extracted from the line
         # so they are properly represented for importing
@@ -729,7 +729,7 @@ def do_inventory_extras():
         return object_id
 
     def callback(line):
-        code, quantity, _date, _time = line
+        code, quantity, _date, _time = line[:4]
 
         code = code.strip()
         quantity = quantity.strip()
@@ -934,7 +934,7 @@ def do_transfers_extras():
         return object_id
 
     def callback(line):
-        code, quantity, _date, _time = line
+        code, quantity, _date, _time = line[:4]
 
         code = code.strip()
         quantity = quantity.strip()

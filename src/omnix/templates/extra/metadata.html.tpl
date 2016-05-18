@@ -16,7 +16,7 @@
         <div class="input">
              <a data-name="metadata_file" class="uploader">Select & Upload the metadata list file</a>
         </div>
-        <span class="button" data-link="{{ url_for('metadata_extras') }}">Cancel</span>
+        <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>
         //
         <span class="button" data-submit="true">Upload</span>
     </form>

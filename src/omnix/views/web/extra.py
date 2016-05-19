@@ -392,6 +392,14 @@ def do_metadata_extras():
         category = category or None
         collection = collection or None
 
+        # verifies and strips the various possible string values so that they
+        # represent a valid not trailed value
+        if name: name = name.strip()
+        if description: description = description.strip()
+        if material: material = material.strip()
+        if category: category = category.strip()
+        if collection: collection = collection.strip()
+
         # tries to "cast" the base value as an integer and in case
         # it's possible assumes that this value is the object identifier
         try: object_id = int(base)

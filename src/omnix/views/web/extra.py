@@ -383,7 +383,8 @@ def do_metadata_extras():
         material,\
         category,\
         collection,\
-        description = line[:8]
+        description,\
+        order = line[:9]
 
         # normalizes the various values that have been extracted from the line
         # so they are properly represented for importing
@@ -391,6 +392,7 @@ def do_metadata_extras():
         material = material or None
         category = category or None
         collection = collection or None
+        order = int(order) if order else None
 
         # verifies and strips the various possible string values so that they
         # represent a valid not trailed value
@@ -442,7 +444,8 @@ def do_metadata_extras():
             characteristics = characteristics,
             material = material,
             category = category,
-            collection = collection
+            collection = collection,
+            order = order
         )
 
         # creates the model structure to be updated and then runs the

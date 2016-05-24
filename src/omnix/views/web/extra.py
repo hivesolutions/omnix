@@ -392,7 +392,7 @@ def do_metadata_extras():
         material = material or None
         category = category or None
         collection = collection or None
-        order = int(order) if order else None
+        order = order or None
 
         # verifies and strips the various possible string values so that they
         # represent a valid not trailed value
@@ -401,6 +401,7 @@ def do_metadata_extras():
         if material: material = material.strip()
         if category: category = category.strip()
         if collection: collection = collection.strip()
+        if order: order = int(order.strip())
 
         # tries to "cast" the base value as an integer and in case
         # it's possible assumes that this value is the object identifier
@@ -459,7 +460,13 @@ def do_metadata_extras():
         # start the csv import operation that is going to import the
         # various lines of the csv in the buffer and for each of them
         # call the function passed as callback
-        util.csv_import(buffer, callback, delimiter = ",", quoting = True)
+        util.csv_import(
+            buffer,
+            callback,
+            header = True,
+            delimiter = ",",
+            quoting = True
+        )
     finally:
         # closes the temporary file descriptor and removes the temporary
         # file (avoiding any memory leaks)

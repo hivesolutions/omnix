@@ -24,7 +24,7 @@
             </tr>
             <tr>
                 <td class="right label" width="50%">metadata</td>
-                <td class="left value" width="50%">{{ entity.metadata_s|default("N/A", True) }}</td>
+                <td class="left value" width="50%">{{ entity.metadata_s|default("N/A", True)|nl_to_br|sp_to_nbsp }}</td>
             </tr>
         </tbody>
     </table>

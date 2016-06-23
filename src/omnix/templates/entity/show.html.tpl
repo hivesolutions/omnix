@@ -16,15 +16,15 @@
             </tr>
             <tr>
                 <td class="right label" width="50%">representation</td>
-                <td class="left value" width="50%">{{ entity.representation|default("n/a", True) }}</td>
+                <td class="left value" width="50%">{{ entity.representation|default("N/A", True) }}</td>
             </tr>
             <tr>
                 <td class="right label" width="50%">description</td>
-                <td class="left value" width="50%">{{ entity.description|default("n/a", True) }}</td>
+                <td class="left value" width="50%">{{ entity.description|default("N/A", True) }}</td>
             </tr>
             <tr>
                 <td class="right label" width="50%">metadata</td>
-                <td class="left value" width="50%">{{ entity.metadata_s|default("n/a", True)|n }}</td>
+                <td class="left value" width="50%">{{ entity.metadata_s|default("N/A", True)|n }}</td>
             </tr>
         </tbody>
     </table>

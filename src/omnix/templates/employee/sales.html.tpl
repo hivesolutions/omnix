@@ -35,7 +35,7 @@
             {% for operation in operations %}
                 <tr>
                     <td class="left">{{ operation.date_f }}</td>
-                    {% if operation._class == 'SaleTransaction' %}
+                    {% if operation._class == "SaleTransaction" %}
                         <td class="left">
                             <a href="{{ session['omnix.base_url'] }}sam/sales/{{ operation.object_id }}">{{ operation.identifier }}</a>
                         </td>
@@ -44,7 +44,7 @@
                             <a href="{{ session['omnix.base_url'] }}sam/returns/{{ operation.object_id }}">{{ operation.identifier }}</a>
                         </td>
                     {% endif %}
-                    {% if operation._class == 'SaleTransaction' %}
+                    {% if operation._class == "SaleTransaction" %}
                         <td class="right">{{ "%.2f" % (operation.price.value * commission_rate) }} €</td>
                         <td class="right">{{ "%.2f" % operation.price.value }} / {{ "%.2f" % operation.price_vat }} €</td>
                     {% else %}

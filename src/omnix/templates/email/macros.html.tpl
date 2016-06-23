@@ -7,7 +7,7 @@
 {%- endmacro %}
 
 {% macro link(href, contents, base = True, simple = False) -%}
-    {% if base %}{% set href = base_url|default('', True) + href %}{% endif %}
+    {% if base %}{% set href = base_url|default("", True) + href %}{% endif %}
     {% if simple %}
         <a href="{{ href }}">{{ contents }}</a>
     {% else %}

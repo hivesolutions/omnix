@@ -62,7 +62,7 @@
         </div>
         <div class="input">
             <textarea class="text-area" name="description" placeholder="eg: some words about the media"
-                      data-error="{{ errors.description }}">{{ media.description|default('', True) }}</textarea>
+                      data-error="{{ errors.description }}">{{ media.description|default("", True) }}</textarea>
         </div>
         <div class="label">
             <label>Options</label>

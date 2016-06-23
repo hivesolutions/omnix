@@ -58,7 +58,7 @@
         </div>
         <div class="input">
             <textarea class="text-area" name="description" placeholder="eg: some words about the media"
-                      data-error="{{ errors.description }}">{{ media.description|default('', True) }}</textarea>
+                      data-error="{{ errors.description }}">{{ media.description|default("", True) }}</textarea>
         </div>
         <div class="input">
              <a data-name="media_file" class="uploader">Select & Upload the media file</a>

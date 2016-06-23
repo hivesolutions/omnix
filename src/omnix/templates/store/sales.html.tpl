@@ -2,7 +2,7 @@
 {% block title %}Stores{% endblock %}
 {% block name %}{{ store.name }}{% endblock %}
 {% block content %}
-    <div class="quote">{{ current.date.strftime('%b %d, %Y') }}</div>
+    <div class="quote">{{ current.date.strftime("%b %d, %Y") }}</div>
     <div class="separator-horizontal"></div>
     <table class="table table-resume">
         <tbody>
@@ -13,7 +13,7 @@
                 </td>
                 <td>
                     <span class="label">Today's Amount</span><br />
-                    <span class="value {{ current.amount_direction }}">{{ '%0.2f' % current.net_price_vat }} €</span>
+                    <span class="value {{ current.amount_direction }}">{{ "%0.2f" % current.net_price_vat }} €</span>
                 </td>
             </tr>
         </tbody>
@@ -29,9 +29,9 @@
         <tbody>
             {% for day in days %}
                 <tr>
-                    <td class="left">{{ day.date.strftime('%b %d, %Y') }}</td>
+                    <td class="left">{{ day.date.strftime("%b %d, %Y") }}</td>
                     <td class="right">{{ day.net_number_sales }}</td>
-                    <td class="right">{{ '%0.2f' % day.net_price_vat }} €</td>
+                    <td class="right">{{ "%0.2f" % day.net_price_vat }} €</td>
                 </tr>
             {% endfor %}
         </tbody>

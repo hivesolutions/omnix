@@ -65,6 +65,8 @@ def list_entities_json():
 def show_entities(id):
     api = util.get_api()
     entity = api.get_entity(id)
+    metadata = entity.get("metadata", None)
+    entity["metadata_s"] = _metadata_s(metadata)
     return flask.render_template(
         "entity/show.html.tpl",
         link = "entities",
@@ -78,13 +80,7 @@ def edit_entities(id):
     api = util.get_api()
     entity = api.get_entity(id)
     metadata = entity.get("metadata", None)
-    entity["metadata_s"] = json.dumps(
-        metadata,
-        ensure_ascii = False,
-        indent = 4,
-        separators = (",", " : "),
-        sort_keys = True
-    ) if not metadata == None else None
+    entity["metadata_s"] = _metadata_s(metadata)
     return flask.render_template(
         "entity/edit.html.tpl",
         link = "entities",
@@ -105,3 +101,12 @@ def update_entities(id):
     return flask.redirect(
         flask.url_for("show_entities", id = id)
     )
+
+def _metadata_s(metadata):
+    return json.dumps(
+        metadata,
+        ensure_ascii = False,
+        indent = 4,
+        separators = (",", " : "),
+        sort_keys = True
+    ) if not metadata == None else None

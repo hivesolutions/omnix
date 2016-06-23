@@ -389,18 +389,15 @@ def do_metadata_extras():
         # normalizes the various values that have been extracted from the line
         # so they are properly represented for importing
         characteristics = [value.strip() for value in characteristics.split(";")]
-        material = material or None
-        category = category or None
-        collection = collection or None
+        material = [value.strip() for value in material.split(";")]
+        category =  [value.strip() for value in category.split(";")]
+        collection = [value.strip() for value in collection.split(";")]
         order = order or None
 
         # verifies and strips the various possible string values so that they
         # represent a valid not trailed value
         if name: name = name.strip()
         if description: description = description.strip()
-        if material: material = material.strip()
-        if category: category = category.strip()
-        if collection: collection = collection.strip()
         if order: order = int(order.strip())
 
         # tries to "cast" the base value as an integer and in case

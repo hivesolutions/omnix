@@ -22,10 +22,6 @@
                 <td class="right label" width="50%">description</td>
                 <td class="left value" width="50%">{{ entity.description|default("n/a", True) }}</td>
             </tr>
-            <tr>
-                <td class="right label" width="50%">metadata</td>
-                <td class="left value" width="50%">{{ entity.metadata|default("n/a", True) }}</td>
-            </tr>
         </tbody>
     </table>
 {% endblock %}

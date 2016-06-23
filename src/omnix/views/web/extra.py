@@ -383,8 +383,9 @@ def do_metadata_extras():
         material,\
         category,\
         collection,\
+        brand,\
         description,\
-        order = line[:9]
+        order = line[:10]
 
         # normalizes the various values that have been extracted from the line
         # so they are properly represented for importing
@@ -392,11 +393,13 @@ def do_metadata_extras():
         material = [value.strip() for value in material.split(";")]
         category =  [value.strip() for value in category.split(";")]
         collection = [value.strip() for value in collection.split(";")]
+        brand = brand or None
         order = order or None
 
         # verifies and strips the various possible string values so that they
         # represent a valid not trailed value
         if name: name = name.strip()
+        if brand: brand = brand.strip()
         if description: description = description.strip()
         if order: order = int(order.strip())
 
@@ -449,6 +452,7 @@ def do_metadata_extras():
             material = material,
             category = category,
             collection = collection,
+            brand = brand,
             order = order
         )
 

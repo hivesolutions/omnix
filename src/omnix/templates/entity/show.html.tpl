@@ -7,6 +7,14 @@
     <table>
         <tbody>
             <tr>
+                <td class="right label" width="50%">created</td>
+                <td class="left value" width="50%">{{ entity.create_date }}</td>
+            </tr>
+            <tr>
+                <td class="right label" width="50%">modified</td>
+                <td class="left value" width="50%">{{ entity.modify_date }}</td>
+            </tr>
+            <tr>
                 <td class="right label" width="50%">class</td>
                 <td class="left value" width="50%">{{ entity._class }}</td>
             </tr>

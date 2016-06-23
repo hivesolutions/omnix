@@ -439,9 +439,15 @@ def do_metadata_extras():
         # the entity with the current object id
         quorum.debug("Setting metadata for entity '%d'" % object_id)
 
-        # constructs the dictionary that is going to represent the metadata
-        # for the entity that is going to be updated
-        metadata = dict(
+        # retrieves the reference to the entity so that it's possible to
+        # retrieve the currently defined metadata for it (to be updated)
+        entity = api.get_entity(object_id)
+        metadata = entity.get("metadata", {})
+
+        # updates the metadata dictionary with the new values that are going
+        # to be used for the updating of the entity, note that the previous
+        # metadata values are leveraged and not overwritten with this strategy
+        metadata.update(
             characteristics = characteristics,
             material = material,
             category = category,

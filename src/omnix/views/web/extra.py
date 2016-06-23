@@ -389,10 +389,10 @@ def do_metadata_extras():
 
         # normalizes the various values that have been extracted from the line
         # so they are properly represented for importing
-        characteristics = [value.strip() for value in characteristics.split(";")]
-        material = [value.strip() for value in material.split(";")]
-        category =  [value.strip() for value in category.split(";")]
-        collection = [value.strip() for value in collection.split(";")]
+        characteristics = [value.strip() for value in characteristics.split(";") if value.strip()]
+        material = [value.strip() for value in material.split(";") if value.strip()]
+        category =  [value.strip() for value in category.split(";") if value.strip()]
+        collection = [value.strip() for value in collection.split(";") if value.strip()]
         brand = brand or None
         order = order or None
 

@@ -70,6 +70,11 @@ def csv_import(
     quoting = False,
     encoding = "utf-8"
 ):
+    is_unicode = quorum.legacy.PYTHON_3
+    if is_unicode:
+        data = buffer.read()
+        data = data.decode(encoding)
+        buffer = quorum.legacy.StringIO(data)
     csv_reader = csv.reader(
         buffer,
         delimiter = delimiter,
@@ -77,5 +82,5 @@ def csv_import(
     )
     if header: _header = next(csv_reader)
     for line in csv_reader:
-        line = [value.decode(encoding) for value in line]
+        if not is_unicode: line = [value.decode(encoding) for value in line]
         callback(line)

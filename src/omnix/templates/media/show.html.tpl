@@ -38,7 +38,7 @@
             </tr>
             <tr>
                 <td class="right label" width="50%">description</td>
-                <td class="left value" width="50%">{{ media.description }}</td>
+                <td class="left value" width="50%">{{ media.description|default("N/A", True) }}</td>
             </tr>
         </tbody>
     </table>

@@ -358,6 +358,16 @@ def do_metadata_extras():
             error = "No file defined"
         )
 
+    # retrieves the value of the custom field that control if
+    # the importing will be performed using a dynamic approach
+    # meaning that no static values will be retrieved and instead
+    # the header will be used for dynamic retrieval
+    custom = quorum.get_field("custom", False, cast = bool)
+
+    # check if the csv file to uploaded is separated by the comma
+    # character or if instead it used the semicolon
+    comma = quorum.get_field("comma", False, cast = bool)
+
     # creates a temporary file path for the storage of the file
     # and then saves it into that directory
     fd, file_path = tempfile.mkstemp()
@@ -373,35 +383,69 @@ def do_metadata_extras():
     # has just been loaded from the file
     buffer = quorum.legacy.BytesIO(data)
 
-    def callback(line):
-        # unpacks the current "metadata" line into its components as
-        # expected by the specification
-        base,\
-        name,\
-        _retail_price,\
-        characteristics,\
-        material,\
-        category,\
-        collection,\
-        brand,\
-        description,\
-        order = line[:10]
+    def callback(line, header = None):
+        if custom:
+            # creates a zip of tuples with the header to line value association
+            # and uses them to build a proper dictionary
+            zipped = zip(header, line)
+            update = dict(zipped)
 
-        # normalizes the various values that have been extracted from the line
-        # so they are properly represented for importing
-        characteristics = [value.strip() for value in characteristics.split(";") if value.strip()]
-        material = [value.strip() for value in material.split(";") if value.strip()]
-        category =  [value.strip() for value in category.split(";") if value.strip()]
-        collection = [value.strip() for value in collection.split(";") if value.strip()]
-        brand = brand or None
-        order = order or None
+            # iterates over the complete set of items in the map of values
+            # and update the update map with the sanitized value
+            for name, value in update.items():
+                update[name] = value.strip()
 
-        # verifies and strips the various possible string values so that they
-        # represent a valid not trailed value
-        if name: name = name.strip()
-        if brand: brand = brand.strip()
-        if description: description = description.strip()
-        if order: order = int(order.strip())
+            # tries to retrieve the base identifier of the entity
+            # this value is going to be used as the basis for identification
+            base = update.pop("code", None)
+            base = update.pop("company_product_code", base)
+            base = update.pop("object_id", base)
+            base = update.pop("base", base)
+
+            # tries to retrieve some of the base entity values
+            # if their found they are properly poped out
+            name = update.pop("name", None)
+            description = update.pop("description", None)
+        else:
+            # unpacks the current "metadata" line into its components as
+            # expected by the specification
+            base,\
+            name,\
+            _retail_price,\
+            characteristics,\
+            material,\
+            category,\
+            collection,\
+            brand,\
+            description,\
+            order = line[:10]
+
+            # normalizes the various values that have been extracted from the line
+            # so they are properly represented for importing
+            characteristics = [value.strip() for value in characteristics.split(";") if value.strip()]
+            material = [value.strip() for value in material.split(";") if value.strip()]
+            category = [value.strip() for value in category.split(";") if value.strip()]
+            collection = [value.strip() for value in collection.split(";") if value.strip()]
+            brand = brand or None
+            order = order or None
+
+            # verifies and strips the various possible string values so that they
+            # represent a valid not trailed value
+            if name: name = name.strip()
+            if brand: brand = brand.strip()
+            if description: description = description.strip()
+            if order: order = int(order.strip())
+
+            # creates the update dictionary that is going to be used in the updating
+            # of the "product" metadata
+            update = dict(
+                characteristics = characteristics,
+                material = material,
+                category = category,
+                collection = collection,
+                brand = brand,
+                order = order
+            )
 
         # tries to "cast" the base value as an integer and in case
         # it's possible assumes that this value is the object identifier
@@ -447,14 +491,7 @@ def do_metadata_extras():
         # updates the metadata dictionary with the new values that are going
         # to be used for the updating of the entity, note that the previous
         # metadata values are leveraged and not overwritten with this strategy
-        metadata.update(
-            characteristics = characteristics,
-            material = material,
-            category = category,
-            collection = collection,
-            brand = brand,
-            order = order
-        )
+        metadata.update(update)
 
         # creates the model structure to be updated and then runs the
         # proper execution of the metadata import
@@ -471,7 +508,7 @@ def do_metadata_extras():
             buffer,
             callback,
             header = True,
-            delimiter = ",",
+            delimiter = "," if comma else ";",
             quoting = True
         )
     finally:
@@ -753,7 +790,7 @@ def do_inventory_extras():
         merchandise_map[company_product_code] = object_id
         return object_id
 
-    def callback(line):
+    def callback(line, header = None):
         code, quantity, _date, _time = line[:4]
 
         code = code.strip()
@@ -958,7 +995,7 @@ def do_transfers_extras():
         merchandise_map[company_product_code] = object_id
         return object_id
 
-    def callback(line):
+    def callback(line, header = None):
         code, quantity, _date, _time = line[:4]
 
         code = code.strip()

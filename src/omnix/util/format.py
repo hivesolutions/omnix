@@ -81,6 +81,11 @@ def csv_import(
         quoting = csv.QUOTE_MINIMAL if quoting else csv.QUOTE_NONE
     )
     if header: _header = next(csv_reader)
+    else: _header = []
     for line in csv_reader:
         if not is_unicode: line = [value.decode(encoding) for value in line]
-        callback(line)
+        callback(line, header = _header)
+
+def csv_value(name, line, header):
+    values = zip(line, header)
+    return values[name]

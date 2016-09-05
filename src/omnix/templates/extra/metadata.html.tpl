@@ -14,6 +14,18 @@
     </div>
     <form enctype="multipart/form-data" action="{{ url_for('do_metadata_extras') }}" method="post" class="form small">
         <div class="input">
+            <div class="option">
+                <span class="float-left">Custom metadata ?</span>
+                <input class="float-right" type="checkbox" name="custom" />
+                <div class="clear"></div>
+            </div>
+            <div class="option">
+                <span class="float-left">Use "," instead of ";" for separator ?</span>
+                <input class="float-right" type="checkbox" name="comma" />
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="input">
              <a data-name="metadata_file" class="uploader">Select & Upload the metadata list file</a>
         </div>
         <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>

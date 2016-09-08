@@ -486,7 +486,7 @@ def do_metadata_extras():
         # retrieves the reference to the entity so that it's possible to
         # retrieve the currently defined metadata for it (to be updated)
         entity = api.get_entity(object_id)
-        metadata = entity.get("metadata", {})
+        metadata = entity.get("metadata", {}) or {}
 
         # updates the metadata dictionary with the new values that are going
         # to be used for the updating of the entity, note that the previous

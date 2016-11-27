@@ -175,7 +175,13 @@ class Supervisor(threading.Thread):
                     "Exception while executing - %s" % quorum.legacy.UNICODE(exception),
                     log_trace = True
                 )
-            self.connection.sleep(LOOP_TIMEOUT)
+
+            try: self.connection.sleep(LOOP_TIMEOUT)
+            except BaseException as exception:
+                quorum.error(
+                    "Exception while sleeping - %s" % quorum.legacy.UNICODE(exception),
+                    log_trace = True
+                )
 
     def run(self):
         self.auth()

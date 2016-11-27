@@ -100,7 +100,7 @@ class Slave(threading.Thread):
                     log_trace = True
                 )
 
-            time.sleep(LOOP_TIMEOUT)
+            self.connection.sleep(LOOP_TIMEOUT)
 
     def disconnect(self):
         if not config.REMOTE: return

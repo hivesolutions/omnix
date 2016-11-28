@@ -176,7 +176,9 @@ class Supervisor(threading.Thread):
                     log_trace = True
                 )
 
-            try: self.connection.sleep(LOOP_TIMEOUT)
+            try:
+                if self.connection: self.connection.sleep(LOOP_TIMEOUT)
+                else: time.sleep(LOOP_TIMEOUT)
             except BaseException as exception:
                 quorum.error(
                     "Exception while sleeping - %s" % quorum.legacy.UNICODE(exception),

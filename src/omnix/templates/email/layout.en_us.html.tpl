@@ -21,7 +21,7 @@
                     {% block content %}{% endblock %}
                 </div>
                 <div class="footer" style="font-size:10px;line-height:16px;text-align:right;margin-top: 48px;">
-                    &copy; 2008-2016 Hive Solutions &middot; All rights reserved<br/>
+                    &copy; 2008-2017 Hive Solutions &middot; All rights reserved<br/>
                     You are receiving this email because you are an Omni member.
                 </div>
             </div>

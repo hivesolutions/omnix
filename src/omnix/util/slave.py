@@ -88,7 +88,7 @@ class Slave(threading.Thread):
         while True:
             try:
                 quorum.debug("Starting loop cycle in slave ...")
-                self.connection = quorum.get_rabbit(force = True)
+                self.connection = quorum.get_amqp(force = True)
                 self.channel = self.connection.channel()
                 self.channel.queue_declare(queue = queue, durable = True)
                 self.channel.basic_qos(prefetch_count = 1)

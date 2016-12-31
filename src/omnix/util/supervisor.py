@@ -91,7 +91,7 @@ class Supervisor(threading.Thread):
     def connect(self, queue = "default"):
         if not config.REMOTE: return
 
-        self.connection = quorum.get_rabbit(force = True)
+        self.connection = quorum.get_amqp(force = True)
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue = queue, durable = True)
 
@@ -132,7 +132,7 @@ class Supervisor(threading.Thread):
 
         # iterates over all the valid documents that have been found
         # as not submitted and creates a task for their submission
-        # then adds the task to the rabbit queue to be processed
+        # then adds the task to the amqp queue to be processed
         for document in valid_documents:
             try:
                 # tries to run the basic publish operation, this operation
@@ -143,7 +143,7 @@ class Supervisor(threading.Thread):
                     exchange = "",
                     routing_key = "omnix",
                     body = json.dumps(document),
-                    properties = quorum.properties_rabbit(
+                    properties = quorum.properties_amqp(
                         delivery_mode = 2,
                         priority = MESSAGE_RETRIES,
                         expiration = str(MESSAGE_TIMEOUT * 1000),
@@ -159,7 +159,7 @@ class Supervisor(threading.Thread):
                     log_trace = True
                 )
 
-                # re-tries to connect with the rabbit channels using the currently
+                # re-tries to connect with the amqp channels using the currently
                 # pre-defined queue system, this is a fallback of the error
                 self.connect(queue = "omnix")
 

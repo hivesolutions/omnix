@@ -180,9 +180,8 @@ class Slave(threading.Thread):
         quorum.debug("Marked as acknowledged in message queue")
 
     def run(self):
-        queue = quorum.conf("OMNIX_QUEUE", "omnix")
         self.auth()
-        self.connect(queue = queue)
+        self.connect(queue = config.QUEUE)
         self.disconnect()
 
     def _resolve_method(self, type):

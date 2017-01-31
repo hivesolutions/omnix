@@ -159,9 +159,13 @@ class Supervisor(threading.Thread):
                     log_trace = True
                 )
 
+                # retrieves the proper name of the queue that is going to be used
+                # for the sending of the messages (this is critical to avoid duplicates)
+                queue = quorum.conf("OMNIX_QUEUE", "omnix")
+
                 # re-tries to connect with the amqp channels using the currently
                 # pre-defined queue system, this is a fallback of the error
-                self.connect(queue = "omnix")
+                self.connect(queue = queue)
 
         # prints an information message about the new documents that
         # have been queued for submission by the "slaves"
@@ -186,8 +190,9 @@ class Supervisor(threading.Thread):
                 )
 
     def run(self):
+        queue = quorum.conf("OMNIX_QUEUE", "omnix")
         self.auth()
-        self.connect(queue = "omnix")
+        self.connect(queue = queue)
         try: self.loop()
         finally: self.disconnect()
 

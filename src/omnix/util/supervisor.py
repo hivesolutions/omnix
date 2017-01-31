@@ -141,7 +141,7 @@ class Supervisor(threading.Thread):
                 # there's an exception raised under this operation
                 self.channel.basic_publish(
                     exchange = "",
-                    routing_key = "omnix",
+                    routing_key = config.QUEUE,
                     body = json.dumps(document),
                     properties = quorum.properties_amqp(
                         delivery_mode = 2,

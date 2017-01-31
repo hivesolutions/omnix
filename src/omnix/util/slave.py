@@ -165,7 +165,7 @@ class Slave(threading.Thread):
             if retries >= 0:
                 self.channel.basic_publish(
                     exchange = "",
-                    routing_key = "omnix",
+                    routing_key = config.QUEUE,
                     body = body,
                     properties = properties
                 )

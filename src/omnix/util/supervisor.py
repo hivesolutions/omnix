@@ -104,8 +104,12 @@ class Supervisor(threading.Thread):
                 self.channel = self.connection.channel()
                 self.channel.queue_declare(queue = queue, durable = True)
                 self.queue = queue
-            except:
+            except BaseException as exception:
                 if not retry: raise
+                quorum.error(
+                    "Exception while connecting - %s" % quorum.legacy.UNICODE(exception),
+                    log_trace = True
+                )
                 time.sleep(RETRY_TIMEOUT)
 
     def disconnect(self):

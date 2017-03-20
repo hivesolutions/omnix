@@ -106,13 +106,15 @@ class Supervisor(threading.Thread):
 
         self.connection.close()
 
-    def reconnect(self):
+    def reconnect(self, safe = True):
         if not config.REMOTE: return
         if not self.connection.is_closed(): return
 
         quorum.info("Re-connecting to the AMQP system")
 
-        self.connect(queue = self.queue)
+        try: self.connect(queue = self.queue)
+        except BaseException:
+            if not safe: raise
 
     def execute(self):
         # in case the current instance is not configured according to
@@ -207,9 +209,9 @@ class Supervisor(threading.Thread):
                     log_trace = True
                 )
 
-                # re-raising the exception as this is considered a critical one, this
-                # should stop the iteration loop and run the disconnect operation
-                raise
+                # re-tries to connect with the amqp channels using the currently
+                # pre-defined queue system, this is a fallback of the error
+                self.reconnect()
 
     def run(self):
         self.auth()

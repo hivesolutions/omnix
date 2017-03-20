@@ -99,7 +99,6 @@ class Slave(threading.Thread):
                     "Exception while executing - %s" % quorum.legacy.UNICODE(exception),
                     log_trace = True
                 )
-                raise
 
             time.sleep(LOOP_TIMEOUT)
 

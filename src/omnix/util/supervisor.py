@@ -70,6 +70,7 @@ class Supervisor(threading.Thread):
     session_id = None
     connection = None
     channel = None
+    queue = None
 
     def __init__(self):
         threading.Thread.__init__(self)
@@ -94,11 +95,18 @@ class Supervisor(threading.Thread):
         self.connection = quorum.get_amqp(force = True)
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue = queue, durable = True)
+        self.queue = queue
 
     def disconnect(self):
         if not config.REMOTE: return
 
         self.connection.close()
+
+    def reconnect(self):
+        if not config.REMOTE: return
+        if not self.connection.is_closed(): return
+
+        self.connect(queue = self.queue)
 
     def execute(self):
         # in case the current instance is not configured according to
@@ -161,7 +169,7 @@ class Supervisor(threading.Thread):
 
                 # re-tries to connect with the amqp channels using the currently
                 # pre-defined queue system, this is a fallback of the error
-                self.connect(queue = config.QUEUE)
+                self.reconnect()
 
         # prints an information message about the new documents that
         # have been queued for submission by the "slaves"
@@ -171,19 +179,31 @@ class Supervisor(threading.Thread):
         while True:
             try: self.execute()
             except BaseException as exception:
+                # prints an error message about the exception that has just occurred
+                # so that it's possible to act on it
                 quorum.error(
                     "Exception while executing - %s" % quorum.legacy.UNICODE(exception),
                     log_trace = True
                 )
 
+                # re-tries to connect with the amqp channels using the currently
+                # pre-defined queue system, this is a fallback of the error
+                self.reconnect()
+
             try:
                 if self.connection: self.connection.sleep(LOOP_TIMEOUT)
                 else: time.sleep(LOOP_TIMEOUT)
             except BaseException as exception:
+                # prints an error message about the exception that has just occurred
+                # so that it's possible to act on it
                 quorum.error(
                     "Exception while sleeping - %s" % quorum.legacy.UNICODE(exception),
                     log_trace = True
                 )
+
+                # re-tries to connect with the amqp channels using the currently
+                # pre-defined queue system, this is a fallback of the error
+                self.reconnect()
 
     def run(self):
         self.auth()

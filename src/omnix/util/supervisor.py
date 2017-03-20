@@ -108,7 +108,7 @@ class Supervisor(threading.Thread):
 
     def reconnect(self, safe = True):
         if not config.REMOTE: return
-        if not self.connection.is_closed(): return
+        if not self.connection.is_closed: return
 
         quorum.info("Re-connecting to the AMQP system")
 

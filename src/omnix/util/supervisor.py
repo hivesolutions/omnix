@@ -92,6 +92,8 @@ class Supervisor(threading.Thread):
     def connect(self, queue = "default"):
         if not config.REMOTE: return
 
+        quorum.info("Connecting to the AMQP system")
+
         self.connection = quorum.get_amqp(force = True)
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue = queue, durable = True)
@@ -100,11 +102,15 @@ class Supervisor(threading.Thread):
     def disconnect(self):
         if not config.REMOTE: return
 
+        quorum.info("Disconnected from the AMQP system")
+
         self.connection.close()
 
     def reconnect(self):
         if not config.REMOTE: return
         if not self.connection.is_closed(): return
+
+        quorum.info("Re-connecting to the AMQP system")
 
         self.connect(queue = self.queue)
 

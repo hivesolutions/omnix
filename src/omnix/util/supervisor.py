@@ -104,6 +104,7 @@ class Supervisor(threading.Thread):
                 self.channel = self.connection.channel()
                 self.channel.queue_declare(queue = queue, durable = True)
                 self.queue = queue
+                break
             except BaseException as exception:
                 if not retry: raise
                 quorum.error(

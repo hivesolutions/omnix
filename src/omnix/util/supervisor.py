@@ -200,16 +200,16 @@ class Supervisor(threading.Thread):
                 if self.connection: self.connection.sleep(LOOP_TIMEOUT)
                 else: time.sleep(LOOP_TIMEOUT)
             except BaseException as exception:
-                # prints an error message about the exception that has just occurred
+                # prints a critical message about the exception that has just occurred
                 # so that it's possible to act on it
-                quorum.error(
+                quorum.critical(
                     "Exception while sleeping - %s" % quorum.legacy.UNICODE(exception),
                     log_trace = True
                 )
 
-                # re-tries to connect with the amqp channels using the currently
-                # pre-defined queue system, this is a fallback of the error
-                self.reconnect()
+                # re-raising the exception as this is considered a critical one, this
+                # should stop the iteration loop and run the disconnect operation
+                raise
 
     def run(self):
         self.auth()

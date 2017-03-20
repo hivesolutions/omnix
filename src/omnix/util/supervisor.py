@@ -120,15 +120,13 @@ class Supervisor(threading.Thread):
 
         self.connection.close()
 
-    def reconnect(self, safe = True, retry = True):
+    def reconnect(self, retry = True):
         if not config.REMOTE: return
         if not self.connection.is_closed: return
 
         quorum.info("Re-connecting to the AMQP system")
 
-        try: self.connect(queue = self.queue, retry = retry)
-        except BaseException:
-            if not safe: raise
+        self.connect(queue = self.queue, retry = retry)
 
     def execute(self):
         # in case the current instance is not configured according to

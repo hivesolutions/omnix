@@ -111,7 +111,7 @@ class Supervisor(threading.Thread):
                     "Exception while connecting - %s" % quorum.legacy.UNICODE(exception),
                     log_trace = True
                 )
-                quorum.info("Sleeping %d seconds before retry" % RETRY_TIMEOUT)
+                quorum.info("Sleeping %d seconds before connect retry" % RETRY_TIMEOUT)
                 time.sleep(RETRY_TIMEOUT)
 
     def disconnect(self):

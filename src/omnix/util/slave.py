@@ -48,16 +48,20 @@ import quorum
 from . import logic
 from . import config
 
-MESSAGE_TIMEOUT = 120
-""" The amount of seconds before a message is
-considered out dated and is discarded from the
-queue even without processing """
-
 LOOP_TIMEOUT = 120
 """ The time to be used in between reading new
 messages from the omni service, this will only be
 used in case there's a problem in the client
 connection with the queueing service """
+
+MESSAGE_TIMEOUT = 120
+""" The amount of seconds before a message is
+considered out dated and is discarded from the
+queue even without processing """
+
+RETRY_TIMEOUT = 30
+""" The timeout to be used in between the retries
+of the operations, as expected """
 
 class Slave(threading.Thread):
 
@@ -100,7 +104,9 @@ class Slave(threading.Thread):
                     log_trace = True
                 )
 
-            time.sleep(LOOP_TIMEOUT)
+            quorum.info("Sleeping %d seconds before consume retry" % RETRY_TIMEOUT)
+
+            time.sleep(RETRY_TIMEOUT)
 
     def disconnect(self):
         if not config.REMOTE: return

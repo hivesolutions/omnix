@@ -56,6 +56,10 @@ MESSAGE_TIMEOUT = 120
 considered out dated and is discarded from the
 queue even without processing """
 
+RETRY_TIMEOUT = 30
+""" The timeout to be used in between the retries
+of the operations, as expected """
+
 MESSAGE_RETRIES = 3
 """ The number of retries to be used for the message
 before it's considered discarded """
@@ -89,15 +93,20 @@ class Supervisor(threading.Thread):
 
         self.api = logic.get_api(mode = omni.Api.DIRECT_MODE)
 
-    def connect(self, queue = "default"):
+    def connect(self, queue = "default", retry = True):
         if not config.REMOTE: return
 
         quorum.info("Connecting to the AMQP system")
 
-        self.connection = quorum.get_amqp(force = True)
-        self.channel = self.connection.channel()
-        self.channel.queue_declare(queue = queue, durable = True)
-        self.queue = queue
+        while True:
+            try:
+                self.connection = quorum.get_amqp(force = True)
+                self.channel = self.connection.channel()
+                self.channel.queue_declare(queue = queue, durable = True)
+                self.queue = queue
+            except:
+                if not retry: raise
+                time.sleep(RETRY_TIMEOUT)
 
     def disconnect(self):
         if not config.REMOTE: return
@@ -106,13 +115,13 @@ class Supervisor(threading.Thread):
 
         self.connection.close()
 
-    def reconnect(self, safe = True):
+    def reconnect(self, safe = True, retry = True):
         if not config.REMOTE: return
         if not self.connection.is_closed: return
 
         quorum.info("Re-connecting to the AMQP system")
 
-        try: self.connect(queue = self.queue)
+        try: self.connect(queue = self.queue, retry = retry)
         except BaseException:
             if not safe: raise
 

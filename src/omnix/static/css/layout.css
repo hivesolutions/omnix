@@ -98,6 +98,7 @@ __license__   = Apache License, Version 2.0
     background: transparent url(../images/login.png) no-repeat left 0px;
     display: inline-block;
     height: 38px;
+    padding-bottom: 0px;
     width: 204px;
 }
 

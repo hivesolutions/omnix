@@ -62,7 +62,7 @@
                         </ul>
                     </div>
                 </div>
-                 <a data-name="mask_file" class="uploader">Select & Upload the template image</a>
+                <a data-name="mask_file" class="uploader">Select & Upload the template image</a>
             </div>
             <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>
             //

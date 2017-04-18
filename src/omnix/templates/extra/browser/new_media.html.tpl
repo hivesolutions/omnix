@@ -74,7 +74,7 @@
                 <div class="clear"></div>
             </div>
         </div>
-        <div class="input">
+        <div class="input single">
              <a data-name="media_file" class="uploader">Select & Upload the media file</a>
         </div>
         <span class="button" data-link="{{ url_for('browser_extras') }}">Cancel</span>

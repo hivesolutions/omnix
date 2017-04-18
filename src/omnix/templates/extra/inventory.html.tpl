@@ -13,7 +13,7 @@
         {{ error }}
     </div>
     <form enctype="multipart/form-data" action="{{ url_for('do_inventory_extras') }}" method="post" class="form small">
-        <div class="input">
+        <div class="input single">
              <a data-name="inventory_file" class="uploader">Select & Upload the inventory list file</a>
         </div>
         <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>

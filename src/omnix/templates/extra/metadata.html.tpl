@@ -25,7 +25,7 @@
                 <div class="clear"></div>
             </div>
         </div>
-        <div class="input">
+        <div class="input single">
              <a data-name="metadata_file" class="uploader">Select & Upload the metadata list file</a>
         </div>
         <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>

@@ -19,7 +19,7 @@
                 <div class="data-source" data-url="{{ url_for('list_stores_json') }}" data-type="json"></div>
             </div>
         </div>
-        <div class="input">
+        <div class="input single">
              <a data-name="transfers_file" class="uploader">Select & Upload the transfers list file</a>
         </div>
         <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>

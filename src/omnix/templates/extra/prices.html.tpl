@@ -12,7 +12,7 @@
     <div class="quote error">
         {{ error }}
     </div>
-    <form enctype="multipart/form-data" action="{{ url_for('do_prices_extras') }}" method="post" class="form small">
+    <form enctype="multipart/form-data" action="{{ url_for('do_prices_extras') }}" method="post" class="form tiny">
         <div class="input single">
              <a data-name="prices_file" class="uploader">Select & Upload the price list file</a>
         </div>

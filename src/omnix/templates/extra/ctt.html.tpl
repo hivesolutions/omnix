@@ -15,7 +15,7 @@
     <div class="quote error">
         {{ error }}
     </div>
-    <form action="{{ url_for('do_ctt_extras') }}" method="post" class="form small">
+    <form action="{{ url_for('do_ctt_extras') }}" method="post" class="form tiny">
         <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>
         //
         <span class="button" data-submit="true">Generate</span>

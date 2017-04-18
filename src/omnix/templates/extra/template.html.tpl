@@ -12,7 +12,7 @@
         <div class="quote error">
             {{ error }}
         </div>
-        <form enctype="multipart/form-data" action="{{ url_for('do_template_extras') }}" method="post" class="form small">
+        <form enctype="multipart/form-data" action="{{ url_for('do_template_extras') }}" method="post" class="form tiny">
             <div class="input">
                 <div name="mask_name" class="drop-field drop-field-select" value="Color Label">
                     <ul class="data-source" data-type="local">
@@ -51,7 +51,7 @@
         <div class="quote error">
             {{ error }}
         </div>
-        <form enctype="multipart/form-data" action="{{ url_for('do_mask_extras') }}" method="post" class="form small">
+        <form enctype="multipart/form-data" action="{{ url_for('do_mask_extras') }}" method="post" class="form tiny">
             <div class="input">
                 <div name="mask_name" class="drop-field drop-field-select" value="Color Label">
                     <ul class="data-source" data-type="local">

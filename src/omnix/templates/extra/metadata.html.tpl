@@ -12,7 +12,7 @@
     <div class="quote error">
         {{ error }}
     </div>
-    <form enctype="multipart/form-data" action="{{ url_for('do_metadata_extras') }}" method="post" class="form small">
+    <form enctype="multipart/form-data" action="{{ url_for('do_metadata_extras') }}" method="post" class="form tiny">
         <div class="input">
             <div class="option">
                 <span class="float-left">Custom metadata ?</span>

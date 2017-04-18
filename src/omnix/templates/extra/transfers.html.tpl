@@ -12,7 +12,7 @@
     <div class="quote error">
         {{ error }}
     </div>
-    <form enctype="multipart/form-data" action="{{ url_for('do_transfers_extras') }}" method="post" class="form small">
+    <form enctype="multipart/form-data" action="{{ url_for('do_transfers_extras') }}" method="post" class="form tiny">
         <div class="input">
             <div class="drop-field" data-original_value="Origin" data-value_attribute="object_id">
                 <input type="hidden" class="hidden-field" name="origin" />

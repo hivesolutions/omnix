@@ -9,9 +9,9 @@
             possible</strong> to avoid unwanted results.
         </div>
         <div class="separator-horizontal"></div>
-        <div class="quote error">
-            {{ error }}
-        </div>
+        {% if error %}
+            <div class="quote error">{{ error }}</div>
+        {% endif %}
         <form enctype="multipart/form-data" action="{{ url_for('do_template_extras') }}" method="post" class="form tiny">
             <div class="input">
                 <div name="mask_name" class="drop-field drop-field-select" value="Color Label">
@@ -48,9 +48,9 @@
             <strong>best quality possible</strong> to avoid unwanted results.
         </div>
         <div class="separator-horizontal"></div>
-        <div class="quote error">
-            {{ error }}
-        </div>
+        {% if error %}
+            <div class="quote error">{{ error }}</div>
+        {% endif %}
         <form enctype="multipart/form-data" action="{{ url_for('do_mask_extras') }}" method="post" class="form tiny">
             <div class="input">
                 <div name="mask_name" class="drop-field drop-field-select" value="Color Label">

@@ -12,9 +12,9 @@
         <strong>This operation may take some time</strong>, please be patient.
     </div>
     <div class="separator-horizontal"></div>
-    <div class="quote error">
-        {{ error }}
-    </div>
+    {% if error %}
+        <div class="quote error">{{ error }}</div>
+    {% endif %}
     <form action="{{ url_for('do_ctt_extras') }}" method="post" class="form tiny">
         <span class="button" data-link="{{ url_for('list_extras') }}">Cancel</span>
         //

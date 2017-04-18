@@ -9,9 +9,9 @@
         Remember this is a <strong>dangerous operation</strong>.
     </div>
     <div class="separator-horizontal"></div>
-    <div class="quote error">
-        {{ error }}
-    </div>
+    {% if error %}
+        <div class="quote error">{{ error }}</div>
+    {% endif %}
     <form enctype="multipart/form-data" action="{{ url_for('do_inventory_extras') }}" method="post" class="form tiny">
         <div class="input single">
              <a data-name="inventory_file" class="uploader">Select & Upload the inventory list file</a>

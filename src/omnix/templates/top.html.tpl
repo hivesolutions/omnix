@@ -8,12 +8,14 @@
         <tbody>
             <tr>
                 {% for index in range(3) %}
-                    <td>
-                        <span class="label strong">{{ index + 1 }}º</span><br />
-                        <a href="{{ session['omnix.base_url'] }}adm/employees/{{ top_employees[index].object_id }}">{{ top_employees[index].employee }}</a><br />
-                        <span class="label strong">{{ "%0.2f" % top_employees[index].amount_price_vat }} €</span><br />
-                        <span class="label strong">{{ "%d" % top_employees[index].number_sales }} x</span>
-                    </td>
+                    {% if len(top_employees) > index %}
+                        <td>
+                            <span class="label strong">{{ index + 1 }}º</span><br />
+                            <a href="{{ session['omnix.base_url'] }}adm/employees/{{ top_employees[index].object_id }}">{{ top_employees[index].employee }}</a><br />
+                            <span class="label strong">{{ "%0.2f" % top_employees[index].amount_price_vat }} €</span><br />
+                            <span class="label strong">{{ "%d" % top_employees[index].number_sales }} x</span>
+                        </td>
+                    {% endif %}
                 {% endfor %}
             </tr>
         </tbody>
@@ -29,12 +31,14 @@
         </thead>
         <tbody>
             {% for index in range(3, 10) %}
-                <tr>
-                    <td class="left">{{ index + 1 }}º</td>
-                    <td class="left"><a href="{{ session['omnix.base_url'] }}adm/employees/{{ top_employees[index].object_id }}">{{ top_employees[index].employee }}</a></td>
-                    <td class="right">{{ "%d" % top_employees[index].number_sales }} x</td>
-                    <td class="right">{{ "%0.2f" % top_employees[index].amount_price_vat }} €</td>
-                </tr>
+                {% if len(top_employees) > index %}
+                    <tr>
+                        <td class="left">{{ index + 1 }}º</td>
+                        <td class="left"><a href="{{ session['omnix.base_url'] }}adm/employees/{{ top_employees[index].object_id }}">{{ top_employees[index].employee }}</a></td>
+                        <td class="right">{{ "%d" % top_employees[index].number_sales }} x</td>
+                        <td class="right">{{ "%0.2f" % top_employees[index].amount_price_vat }} €</td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>

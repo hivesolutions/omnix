@@ -8,7 +8,7 @@
         <tbody>
             <tr>
                 {% for index in range(3) %}
-                    {% if len(top_employees) > index %}
+                    {% if top_employees|length > index %}
                         <td>
                             <span class="label strong">{{ index + 1 }}º</span><br />
                             <a href="{{ session['omnix.base_url'] }}adm/employees/{{ top_employees[index].object_id }}">{{ top_employees[index].employee }}</a><br />
@@ -31,7 +31,7 @@
         </thead>
         <tbody>
             {% for index in range(3, 10) %}
-                {% if len(top_employees) > index %}
+                {% if top_employees|length > index %}
                     <tr>
                         <td class="left">{{ index + 1 }}º</td>
                         <td class="left"><a href="{{ session['omnix.base_url'] }}adm/employees/{{ top_employees[index].object_id }}">{{ top_employees[index].employee }}</a></td>

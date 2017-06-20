@@ -6,7 +6,7 @@
         <title>Omnix</title>
     {% endblock %}
 </head>
-<body class="ux">
+<body class="ux flat">
     <div id="overlay" class="overlay"></div>
     <div id="header">
         {% block header %}

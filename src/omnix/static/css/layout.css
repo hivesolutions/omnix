@@ -135,8 +135,8 @@ __license__   = Apache License, Version 2.0
 }
 
 .preview-panel > .media-target > .image-container > a {
-    padding-bottom: 0px;
     border-bottom: none;
+    padding-bottom: 0px;
 }
 
 .preview-panel > .media-target > .image-container > a > img {

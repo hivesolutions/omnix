@@ -50,6 +50,7 @@ def load():
     if not config.SCHEDULE: return
     quorum.debug("Loading scheduling tasks ...")
     load_mail()
+    load_slack()
 
 def load_mail():
     if not config.REMOTE: return
@@ -62,6 +63,10 @@ def load_mail():
     quorum.debug("Scheduled initial daily birthday mail task for %s" % day_date)
     quorum.debug("Scheduled initial weekly activity mail task for %s" % week_date)
     quorum.debug("Scheduled initial monthly activity previous task for %s" % month_date)
+
+def load_slack():
+    #@todo implement the sceduling for slack
+    pass
 
 def birthday_mail(month = None, day = None):
     api = logic.get_api(mode = omni.Api.DIRECT_MODE)

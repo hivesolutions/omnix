@@ -140,7 +140,7 @@ def flush_activity():
     return flask.redirect(
         flask.url_for(
             "index",
-             message = "Activity emails have been sent"
+            message = "Activity emails have been sent"
         )
     )
 

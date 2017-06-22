@@ -41,6 +41,7 @@ from . import entity
 from . import extra
 from . import media
 from . import report
+from . import settings
 from . import store
 from . import supplier
 
@@ -57,5 +58,6 @@ from .extra import list_extras, media_extras, do_media_extras, images_extras, do
 from .media import list_media, list_media_json, show_media, edit_media, update_media,\
     delete_media
 from .report import list_reports, sales_reports
+from .settings import slack_oauth
 from .store import list_stores, list_stores_json, show_stores, sales_stores
 from .supplier import list_suppliers, list_suppliers_json, show_suppliers

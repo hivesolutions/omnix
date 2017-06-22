@@ -19,6 +19,9 @@
 # You should have received a copy of the Apache License along with
 # Hive Omnix System. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,8 +37,37 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import base
-from . import settings
+from omnix import models
 
-from .base import Base
-from .settings import Settings
+from omnix.main import app
+from omnix.main import flask
+from omnix.main import quorum
+
+@app.route("/settings/slack/oauth", methods = ("GET",))
+@quorum.ensure("oauth.slack")
+def oauth_slack():
+    code = quorum.get_field("code")
+    state = quorum.get_field("state")
+    next = state
+    api = _get_slack_api()
+    access_token = api.oauth_access(code)
+    settings = models.Settings.get_settings()
+    settings.facebook_token = access_token
+    settings.save()
+    return flask.redirect(
+       next or flask.url_for("index")
+    )
+
+def _get_slack_api(scope = None):
+    import github
+    kwargs = dict()
+    redirect_url = flask.url_for("oauth_slack", absolute = True)
+    access_token = flask.session and flask.session.get("slack.access_token", None)
+    if scope: kwargs["scope"] = scope
+    return github.Api(
+        client_id = quorum.conf("SLACK_ID"),
+        client_secret = quorum.conf("SLACK_SECRET"),
+        redirect_url = redirect_url,
+        access_token = access_token,
+        **kwargs
+    )

@@ -45,7 +45,7 @@ from . import settings
 from . import store
 from . import supplier
 
-from .base import index, signin, login, do_login, logout, about, reset, flush_birthday,\
+from .base import index, signin, login, do_login, logout, about, reset, flush_slack, flush_birthday,\
     flush_activity, flush_at, oauth, top, handler_404, handler_413, handler_exception
 from .customer import list_customers, list_customers_json, show_customers
 from .employee import list_employees, list_employees_json, show_employee, sales_employee,\

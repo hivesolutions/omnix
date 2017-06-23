@@ -40,7 +40,10 @@ __license__ = "Apache License, Version 2.0"
 import calendar
 import datetime
 
+import flask
 import quorum
+
+from omnix import models
 
 from . import logic
 from . import config
@@ -54,6 +57,55 @@ ACTIVITY_SUBJECT = dict(
     en_us = "Omni activity report for %s as of %s",
     pt_pt = "Relatório de atividade Omni para %s em %s"
 )
+
+def slack_sales(api = None, channel = None, all = False):
+    api = api or logic.get_api()
+    settings = models.Settings.get_settings()
+    slack_api = settings.get_slack_api()
+    if not slack_api: return
+    contents = api.stats_sales(unit = "day", has_global = True)
+    object_ids = quorum.legacy.keys(contents)
+    object_ids.sort()
+    if not all: object_ids = ["-1"]
+    for object_id in object_ids:
+        values = contents[object_id]
+        name = values["name"]
+        name = name.capitalize()
+        text = "Sales for store %s" % name,
+        current = dict(
+            net_price_vat = values["net_price_vat"][-1],
+            net_number_sales = values["net_number_sales"][-1]
+        )
+        slack_api.post_message_chat(
+            channel,
+            None,
+            attachments = [
+                dict(
+                    fallback = text,
+                    color = "#36a64f",
+                    title = "End of day %s's sales" % name,
+                    title_link = config.BASE_URL + flask.url_for("sales_stores", id = object_id),
+                    test = text,
+                    fields = [
+                        dict(
+                            title = "Store",
+                            value = name,
+                            short = True
+                        ),
+                        dict(
+                            title = "Number Sales",
+                            value = "%dx" % current["net_number_sales"],
+                            short = True
+                        ),
+                        dict(
+                            title = "Sales Amount",
+                            value = "%.2f EUR" % current["net_price_vat"],
+                            short = True
+                        )
+                    ]
+                )
+            ]
+        )
 
 def mail_birthday_all(
     api = None,

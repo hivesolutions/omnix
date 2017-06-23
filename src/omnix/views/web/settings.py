@@ -37,14 +37,24 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+from omnix import util
 from omnix import models
 
 from omnix.main import app
 from omnix.main import flask
 from omnix.main import quorum
 
+@app.route("/settings/slack/ensure", methods = ("GET",))
+@quorum.ensure("base.admin")
+def ensure_slack():
+    next = quorum.get_field("next")
+    api = _get_slack_api()
+    return flask.redirect(
+        api.oauth_authorize(state = next)
+    )
+
 @app.route("/settings/slack/oauth", methods = ("GET",))
-@quorum.ensure("oauth.slack")
+@quorum.ensure("base.admin")
 def oauth_slack():
     code = quorum.get_field("code")
     state = quorum.get_field("state")
@@ -52,7 +62,7 @@ def oauth_slack():
     api = _get_slack_api()
     access_token = api.oauth_access(code)
     settings = models.Settings.get_settings()
-    settings.facebook_token = access_token
+    settings.slack_token = access_token
     settings.save()
     return flask.redirect(
        next or flask.url_for("index")
@@ -61,7 +71,7 @@ def oauth_slack():
 def _get_slack_api(scope = None):
     import slack
     kwargs = dict()
-    redirect_url = flask.url_for("oauth_slack", absolute = True)
+    redirect_url = util.BASE_URL + flask.url_for("oauth_slack")
     access_token = flask.session and flask.session.get("slack.access_token", None)
     if scope: kwargs["scope"] = scope
     return slack.Api(

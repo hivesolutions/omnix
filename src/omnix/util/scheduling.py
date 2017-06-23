@@ -65,8 +65,14 @@ def load_mail():
     quorum.debug("Scheduled initial monthly activity previous task for %s" % month_date)
 
 def load_slack():
-    #@todo implement the sceduling for slack
-    pass
+    #if not config.REMOTE: return #@todo uncomment this
+    day_time = quorum.daily_work(sales_slack, offset = 14400)
+    day_date = datetime.datetime.utcfromtimestamp(day_time)
+    quorum.debug("Scheduled initial daily sales slack task for %s" % day_date)
+
+def sales_slack(month = None, day = None):
+    api = logic.get_api(mode = omni.Api.DIRECT_MODE)
+    business.slack_sales(api = api)
 
 def birthday_mail(month = None, day = None):
     api = logic.get_api(mode = omni.Api.DIRECT_MODE)

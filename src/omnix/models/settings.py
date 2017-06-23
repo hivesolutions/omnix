@@ -40,6 +40,8 @@ __license__ = "Apache License, Version 2.0"
 import flask
 import quorum
 
+from omnix import util
+
 from . import base
 
 class Settings(base.Base):
@@ -75,7 +77,7 @@ class Settings(base.Base):
         try: import slack
         except: return None
         if not self.slack_token: return None
-        redirect_url = flask.url_for("oauth_slack", absolute = True)
+        redirect_url = util.BASE_URL + flask.url_for("oauth_slack")
         access_token = self.slack_token
         return slack.Api(
             client_id = quorum.conf("SLACK_ID"),

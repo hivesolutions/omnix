@@ -110,6 +110,20 @@ def reset():
         flask.url_for("index")
     )
 
+@app.route("/flush_slack", methods = ("GET",))
+@quorum.ensure("base.admin")
+def flush_slack():
+    channel = quorum.get_field("channel", "general")
+
+    util.slack_sales(channel = channel)
+
+    return flask.redirect(
+        flask.url_for(
+            "index",
+             message = "Slack events have been sent"
+        )
+    )
+
 @app.route("/flush_birthday", methods = ("GET",))
 @quorum.ensure("base.admin")
 def flush_birthday():
@@ -125,7 +139,7 @@ def flush_birthday():
     return flask.redirect(
         flask.url_for(
             "index",
-             message = "Birthday emails have been sent"
+            message = "Birthday emails have been sent"
         )
     )
 
@@ -140,7 +154,7 @@ def flush_activity():
     return flask.redirect(
         flask.url_for(
             "index",
-             message = "Activity emails have been sent"
+            message = "Activity emails have been sent"
         )
     )
 

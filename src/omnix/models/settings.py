@@ -19,6 +19,9 @@
 # You should have received a copy of the Apache License along with
 # Hive Omnix System. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,28 +37,47 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import business
-from . import config
-from . import ctt
-from . import format
-from . import image
-from . import logic
-from . import scheduling
-from . import slave
-from . import supervisor
+import flask
+import quorum
 
-from .business import slack_sales, mail_birthday_all, mail_activity_all, mail_birthday,\
-    mail_activity, get_date, get_top, get_sales
-from .ctt import encode_ctt
-from .format import csv_file, csv_import, csv_value
-from .config import LOCAL_PREFIX, REMOTE_PREFIX, LOCAL_URL, REMOTE_URL, REDIRECT_URL,\
-    CLIENT_ID, CLIENT_SECRET, FIRST_DAY, SCOPE, AT_SALE_TYPES, AT_TRANSPORT_TYPES,\
-    AT_SUBMIT_TYPES, REMOTE, BASE_URL, SENDER_EMAIL, USERNAME, PASSWORD, SCHEDULE,\
-    COMMISSION_RATE, COMMISSION_DAY, IMAGE_RESIZE, LOCALE, QUEUE, OMNI_URL, PREFIX
-from .image import mask_image
-from .logic import get_models, get_api, ensure_api, on_auth, start_session, reset_session,\
-    get_tokens
+from omnix import util
 
-from .scheduling import load as load_scheduling
-from .slave import run as run_slave
-from .supervisor import run as run_supervisor
+from . import base
+
+class Settings(base.Base):
+
+    slack_token = quorum.field(
+        index = "hashed"
+    )
+
+    extra = quorum.field(
+        type = dict
+    )
+
+    @classmethod
+    def get_settings(cls, *args, **kwargs):
+        return cls.singleton(*args, **kwargs)
+
+    @classmethod
+    def linked_apis(cls):
+        linked = dict()
+        settings = cls.get_settings()
+        if settings.slack_token: linked["slack"] = settings.slack_token
+        return linked
+
+    @classmethod
+    def _plural(cls):
+        return "Settings"
+
+    def get_slack_api(self):
+        try: import slack
+        except: return None
+        if not self.slack_token: return None
+        redirect_url = util.BASE_URL + flask.url_for("oauth_slack")
+        access_token = self.slack_token
+        return slack.Api(
+            client_id = quorum.conf("SLACK_ID"),
+            client_secret = quorum.conf("SLACK_SECRET"),
+            redirect_url = redirect_url,
+            access_token = access_token
+        )

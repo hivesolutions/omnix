@@ -41,10 +41,11 @@ from . import entity
 from . import extra
 from . import media
 from . import report
+from . import settings
 from . import store
 from . import supplier
 
-from .base import index, signin, login, do_login, logout, about, reset, flush_birthday,\
+from .base import index, signin, login, do_login, logout, about, reset, flush_slack, flush_birthday,\
     flush_activity, flush_at, oauth, top, handler_404, handler_413, handler_exception
 from .customer import list_customers, list_customers_json, show_customers
 from .employee import list_employees, list_employees_json, show_employee, sales_employee,\
@@ -57,5 +58,6 @@ from .extra import list_extras, media_extras, do_media_extras, images_extras, do
 from .media import list_media, list_media_json, show_media, edit_media, update_media,\
     delete_media
 from .report import list_reports, sales_reports
+from .settings import oauth_slack
 from .store import list_stores, list_stores_json, show_stores, sales_stores
 from .supplier import list_suppliers, list_suppliers_json, show_suppliers

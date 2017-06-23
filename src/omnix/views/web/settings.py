@@ -59,12 +59,12 @@ def oauth_slack():
     )
 
 def _get_slack_api(scope = None):
-    import github
+    import slack
     kwargs = dict()
     redirect_url = flask.url_for("oauth_slack", absolute = True)
     access_token = flask.session and flask.session.get("slack.access_token", None)
     if scope: kwargs["scope"] = scope
-    return github.Api(
+    return slack.Api(
         client_id = quorum.conf("SLACK_ID"),
         client_secret = quorum.conf("SLACK_SECRET"),
         redirect_url = redirect_url,

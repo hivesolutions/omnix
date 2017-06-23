@@ -55,10 +55,6 @@ class Settings(base.Base):
     )
 
     @classmethod
-    def list_names(cls):
-        return ["id", "description", "created"]
-
-    @classmethod
     def get_settings(cls, *args, **kwargs):
         return cls.singleton(*args, **kwargs)
 

@@ -43,8 +43,6 @@ import datetime
 import flask
 import quorum
 
-from omnix import models
-
 from . import logic
 from . import config
 
@@ -59,6 +57,7 @@ ACTIVITY_SUBJECT = dict(
 )
 
 def slack_sales(api = None, channel = None, all = False):
+    from omnix import models
     api = api or logic.get_api()
     settings = models.Settings.get_settings()
     slack_api = settings.get_slack_api()

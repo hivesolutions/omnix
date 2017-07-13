@@ -1,4 +1,4 @@
-# Omni (x)Extensions
+# [Omni (x)Extensions](http://omnix.hive.pt)
 
 Simple web application consuming the Omni API.
 

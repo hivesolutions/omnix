@@ -48,10 +48,10 @@ from . import config
 def get_models():
     return omni.models
 
-def get_api(mode = omni.Api.OAUTH_MODE):
+def get_api(mode = omni.API.OAUTH_MODE):
     access_token = flask.session and flask.session.get("omnix.access_token", None)
     session_id = flask.session and flask.session.get("omnix.session_id", None)
-    api = omni.Api(
+    api = omni.API(
         base_url = config.OMNI_URL,
         open_url = config.OMNI_URL,
         prefix = config.PREFIX,

@@ -271,7 +271,7 @@ def do_images_extras():
                     ]
                 }
 
-                # creates the url for the merchandise retrieval and runs the get
+                # creates the URL for the merchandise retrieval and runs the get
                 # operation with the provided filter so that the target merchandise
                 # is retrieved for object id validation
                 merchandise = api.list_merchandise(**kwargs)

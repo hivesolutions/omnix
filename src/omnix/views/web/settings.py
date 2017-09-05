@@ -74,7 +74,7 @@ def _get_slack_api(scope = None):
     redirect_url = util.BASE_URL + flask.url_for("oauth_slack")
     access_token = flask.session and flask.session.get("slack.access_token", None)
     if scope: kwargs["scope"] = scope
-    return slack.Api(
+    return slack.API(
         client_id = quorum.conf("SLACK_ID"),
         client_secret = quorum.conf("SLACK_SECRET"),
         redirect_url = redirect_url,

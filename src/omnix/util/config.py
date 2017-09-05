@@ -48,18 +48,18 @@ REMOTE_PREFIX = "adm/"
 related resources from a remote perspective """
 
 LOCAL_URL = "http://localhost:8080/mvc/"
-""" The base url to be used to compose the various
-complete url values for the various operations, this is
+""" The base URL to be used to compose the various
+complete URL values for the various operations, this is
 the local version of it used mostly for debugging """
 
 REMOTE_URL = "https://ldj.frontdoorhd.com/"
-""" The base url to be used to compose the various
-complete url values for the various operations, this is
+""" The base URL to be used to compose the various
+complete URL values for the various operations, this is
 the remove version used in production environments """
 
 REDIRECT_URL = "http://localhost:8181/oauth"
-""" The redirect base url to be used as the base value
-for the construction of the base url instances """
+""" The redirect base URL to be used as the base value
+for the construction of the base URL instances """
 
 CLIENT_ID = "cabf02130bbe4886984ebfcfad9ec9e5"
 """ The id of the omni client to be used, this value

@@ -91,7 +91,7 @@ class Supervisor(threading.Thread):
         if username == None or password == None:
             raise RuntimeError("Missing authentication information")
 
-        self.api = logic.get_api(mode = omni.Api.DIRECT_MODE)
+        self.api = logic.get_api(mode = omni.API.DIRECT_MODE)
 
     def connect(self, queue = "default", retry = True):
         if not config.REMOTE: return
@@ -161,7 +161,7 @@ class Supervisor(threading.Thread):
 
         # iterates over all the valid documents that have been found
         # as not submitted and creates a task for their submission
-        # then adds the task to the amqp queue to be processed
+        # then adds the task to the AMQP queue to be processed
         for document in valid_documents:
             try:
                 # tries to run the basic publish operation, this operation
@@ -188,7 +188,7 @@ class Supervisor(threading.Thread):
                     log_trace = True
                 )
 
-                # re-tries to connect with the amqp channels using the currently
+                # re-tries to connect with the AMQP channels using the currently
                 # pre-defined queue system, this is a fallback of the error
                 self.reconnect()
 
@@ -207,7 +207,7 @@ class Supervisor(threading.Thread):
                     log_trace = True
                 )
 
-                # re-tries to connect with the amqp channels using the currently
+                # re-tries to connect with the AMQP channels using the currently
                 # pre-defined queue system, this is a fallback of the error
                 self.reconnect()
 
@@ -222,7 +222,7 @@ class Supervisor(threading.Thread):
                     log_trace = True
                 )
 
-                # re-tries to connect with the amqp channels using the currently
+                # re-tries to connect with the AMQP channels using the currently
                 # pre-defined queue system, this is a fallback of the error
                 self.reconnect()
 

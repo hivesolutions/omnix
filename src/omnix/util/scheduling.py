@@ -71,11 +71,11 @@ def load_mail():
     quorum.debug("Scheduled initial monthly activity previous task for %s" % month_date)
 
 def sales_slack(month = None, day = None):
-    api = logic.get_api(mode = omni.Api.DIRECT_MODE)
+    api = logic.get_api(mode = omni.API.DIRECT_MODE)
     business.slack_sales(api = api)
 
 def birthday_mail(month = None, day = None):
-    api = logic.get_api(mode = omni.Api.DIRECT_MODE)
+    api = logic.get_api(mode = omni.API.DIRECT_MODE)
     business.mail_birthday_all(
         api = api,
         month = month,
@@ -85,7 +85,7 @@ def birthday_mail(month = None, day = None):
     quorum.debug("Finished sending birthday emails")
 
 def activity_mail(year = None, month = None):
-    api = logic.get_api(mode = omni.Api.DIRECT_MODE)
+    api = logic.get_api(mode = omni.API.DIRECT_MODE)
     business.mail_activity_all(
         api = api,
         year = year,

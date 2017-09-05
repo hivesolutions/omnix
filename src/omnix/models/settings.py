@@ -75,7 +75,7 @@ class Settings(base.Base):
         if not self.slack_token: return None
         redirect_url = util.BASE_URL + flask.url_for("oauth_slack")
         access_token = self.slack_token
-        return slack.Api(
+        return slack.API(
             client_id = quorum.conf("SLACK_ID"),
             client_secret = quorum.conf("SLACK_SECRET"),
             redirect_url = redirect_url,

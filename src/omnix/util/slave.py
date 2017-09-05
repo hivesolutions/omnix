@@ -84,7 +84,7 @@ class Slave(threading.Thread):
         if username == None or password == None:
             raise RuntimeError("Missing authentication information")
 
-        self.api = logic.get_api(mode = omni.Api.DIRECT_MODE)
+        self.api = logic.get_api(mode = omni.API.DIRECT_MODE)
 
     def connect(self, queue = "default"):
         if not config.REMOTE: return

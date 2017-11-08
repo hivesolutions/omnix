@@ -52,7 +52,7 @@ def csv_file(
     _file_name, mime_type, data = file
     is_csv = mime_type in ("text/csv", "application/vnd.ms-excel")
     if not is_csv and strict:
-        raise quorum.OperationalError("Invalid mime type '%s'" % mime_type)
+        raise quorum.OperationalError("Invalid MIME type '%s'" % mime_type)
     data = data.decode(encoding)
     buffer = quorum.legacy.StringIO(data)
     return csv_import(

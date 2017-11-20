@@ -412,26 +412,31 @@ def do_metadata_extras():
             base,\
             name,\
             _retail_price,\
+            compare_price,\
             characteristics,\
             material,\
             category,\
             collection,\
             brand,\
             description,\
-            order = line[:10]
+            order = line[:11]
 
             # normalizes the various values that have been extracted from the line
             # so they are properly represented for importing
+            name = name or None
+            compare_price = compare_price or None
             characteristics = [value.strip() for value in characteristics.split(";") if value.strip()]
             material = [value.strip() for value in material.split(";") if value.strip()]
             category = [value.strip() for value in category.split(";") if value.strip()]
             collection = [value.strip() for value in collection.split(";") if value.strip()]
             brand = brand or None
+            description = description or None
             order = order or None
 
             # verifies and strips the various possible string values so that they
             # represent a valid not trailed value
             if name: name = name.strip()
+            if compare_price: compare_price = float(compare_price)
             if brand: brand = brand.strip()
             if description: description = description.strip()
             if order: order = int(order.strip())
@@ -439,6 +444,7 @@ def do_metadata_extras():
             # creates the update dictionary that is going to be used in the updating
             # of the "product" metadata
             update = dict(
+                compare_price = compare_price,
                 characteristics = characteristics,
                 material = material,
                 category = category,

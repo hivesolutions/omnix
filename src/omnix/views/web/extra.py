@@ -442,7 +442,7 @@ def do_metadata_extras():
             if order: order = int(order.strip())
 
             # creates the update dictionary that is going to be used in the updating
-            # of the "product" metadata
+            # of the "product" metadata (this is considered to be a delta dictionary)
             update = dict(
                 compare_price = compare_price,
                 characteristics = characteristics,

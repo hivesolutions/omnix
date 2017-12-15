@@ -1,1 +1,1 @@
-omni_api
+slack_api

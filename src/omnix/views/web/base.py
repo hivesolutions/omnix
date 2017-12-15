@@ -113,7 +113,7 @@ def reset():
 @app.route("/flush_slack", methods = ("GET",))
 @quorum.ensure("base.admin")
 def flush_slack():
-    channel = quorum.get_field("channel", "general")
+    channel = quorum.get_field("channel", None)
 
     util.slack_sales(channel = channel)
 

@@ -37,6 +37,7 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import time
 import calendar
 import datetime
 
@@ -62,6 +63,7 @@ def slack_sales(api = None, channel = None, all = False):
     settings = models.Settings.get_settings()
     slack_api = settings.get_slack_api()
     if not slack_api: return
+    date_s = datetime.datetime.utcfromtimestamp(time.time()).strftime("%d of %B")
     contents = api.stats_sales(unit = "day", has_global = True)
     object_ids = quorum.legacy.keys(contents)
     object_ids.sort()
@@ -70,19 +72,19 @@ def slack_sales(api = None, channel = None, all = False):
         values = contents[object_id]
         name = values["name"]
         name = name.capitalize()
-        text = "Sales for store %s" % name,
+        text = "%s sales report for %s" % (name, date_s),
         current = dict(
             net_price_vat = values["net_price_vat"][-1],
             net_number_sales = values["net_number_sales"][-1]
         )
         slack_api.post_message_chat(
-            channel,
+            channel or settings.slack_channel or "general",
             None,
             attachments = [
                 dict(
                     fallback = text,
                     color = "#36a64f",
-                    title = "End of day %s's sales" % name,
+                    title = text,
                     title_link = config.BASE_URL + flask.url_for("sales_stores", id = object_id),
                     test = text,
                     fields = [

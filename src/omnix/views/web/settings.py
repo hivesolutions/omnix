@@ -63,6 +63,7 @@ def oauth_slack():
     access_token = api.oauth_access(code)
     settings = models.Settings.get_settings()
     settings.slack_token = access_token
+    settings.slack_channel = api.channel
     settings.save()
     return flask.redirect(
        next or flask.url_for("index")

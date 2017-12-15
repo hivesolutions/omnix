@@ -53,6 +53,10 @@ class Settings(base.Base):
         authentication process is completed"""
     )
 
+    slack_channel = quorum.field(
+        index = "hashed"
+    )
+
     extra = quorum.field(
         type = dict
     )

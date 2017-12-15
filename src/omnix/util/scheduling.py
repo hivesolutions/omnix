@@ -72,7 +72,7 @@ def load_mail():
 
 def sales_slack(month = None, day = None):
     api = logic.get_api(mode = omni.API.DIRECT_MODE)
-    business.slack_sales(api = api, channel = "general")
+    business.slack_sales(api = api)
 
 def birthday_mail(month = None, day = None):
     api = logic.get_api(mode = omni.API.DIRECT_MODE)

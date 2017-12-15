@@ -47,7 +47,10 @@ from . import base
 class Settings(base.Base):
 
     slack_token = quorum.field(
-        index = "hashed"
+        index = "hashed",
+        observations = """The OAuth token from Slack that is going
+        to be used for long term Slack interaction after the OAuth
+        authentication process is completed"""
     )
 
     extra = quorum.field(

@@ -15,9 +15,10 @@ ENV MONGOHQ_URL mongodb://localhost
 ENV PYTHONPATH /src
 
 ADD requirements.txt /
+ADD extra.txt /
 ADD src /src
 
 RUN apk update && apk add libpng-dev libjpeg-turbo-dev libwebp-dev
-RUN pip install -r /requirements.txt && pip install --upgrade netius
+RUN pip install -r /requirements.txt && pip install -r /extra.txt && pip install --upgrade netius
 
 CMD ["/usr/bin/python", "/src/omnix/main.py"]

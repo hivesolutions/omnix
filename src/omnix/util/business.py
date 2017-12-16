@@ -57,13 +57,17 @@ ACTIVITY_SUBJECT = dict(
     pt_pt = "Relatório de atividade Omni para %s em %s"
 )
 
-def slack_sales(api = None, channel = None, all = False):
+def slack_sales(api = None, channel = None, all = False, offset = 0):
     from omnix import models
     api = api or logic.get_api()
     settings = models.Settings.get_settings()
     slack_api = settings.get_slack_api()
     if not slack_api: return
-    date_s = datetime.datetime.utcfromtimestamp(time.time()).strftime("%d of %B")
+    current = datetime.datetime.utcfromtimestamp(time.time())
+    delta = datetime.timedelta(days = offset)
+    target = current - delta
+    date_s = target.strftime("%d of %B")
+    offset_i = (offset + 1) * -1
     contents = api.stats_sales(unit = "day", has_global = True)
     object_ids = quorum.legacy.keys(contents)
     object_ids.sort()
@@ -73,9 +77,9 @@ def slack_sales(api = None, channel = None, all = False):
         name = values["name"]
         name = name.capitalize()
         text = "%s sales report for %s" % (name, date_s),
-        current = dict(
-            net_price_vat = values["net_price_vat"][-1],
-            net_number_sales = values["net_number_sales"][-1]
+        values = dict(
+            net_price_vat = values["net_price_vat"][offset_i],
+            net_number_sales = values["net_number_sales"][offset_i]
         )
         slack_api.post_message_chat(
             channel or settings.slack_channel or "general",
@@ -95,12 +99,12 @@ def slack_sales(api = None, channel = None, all = False):
                         ),
                         dict(
                             title = "Number Sales",
-                            value = "%dx" % current["net_number_sales"],
+                            value = "%dx" % values["net_number_sales"],
                             short = True
                         ),
                         dict(
                             title = "Sales Amount",
-                            value = "%.2f EUR" % current["net_price_vat"],
+                            value = "%.2f EUR" % values["net_price_vat"],
                             short = True
                         )
                     ]

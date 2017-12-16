@@ -114,8 +114,9 @@ def reset():
 @quorum.ensure("base.admin")
 def flush_slack():
     channel = quorum.get_field("channel", None)
+    offset = quorum.get_field("offset", 0, cast = int)
 
-    util.slack_sales(channel = channel)
+    util.slack_sales(channel = channel, offset = offset)
 
     return flask.redirect(
         flask.url_for(

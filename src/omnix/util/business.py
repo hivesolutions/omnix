@@ -76,7 +76,7 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
         values = contents[object_id]
         name = values["name"]
         name = name.capitalize()
-        text = "%s sales report for %s" % (name, date_s),
+        text = "%s sales report for %s" % (name, date_s)
         values = dict(
             net_price_vat = values["net_price_vat"][offset_i],
             net_number_sales = values["net_number_sales"][offset_i]

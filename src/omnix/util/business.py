@@ -57,6 +57,7 @@ ACTIVITY_SUBJECT = dict(
     pt_pt = "Relatório de atividade Omni para %s em %s"
 )
 
+@quorum.ensure_context
 def slack_sales(api = None, channel = None, all = False, offset = 0):
     from omnix import models
     api = api or logic.get_api()
@@ -112,6 +113,7 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
             ]
         )
 
+@quorum.ensure_context
 def mail_birthday_all(
     api = None,
     month = None,
@@ -141,6 +143,7 @@ def mail_birthday_all(
         )
         except quorum.OperationalError: pass
 
+@quorum.ensure_context
 def mail_activity_all(
     api = None,
     year = None,
@@ -161,6 +164,7 @@ def mail_activity_all(
         )
         except quorum.OperationalError: pass
 
+@quorum.ensure_context
 def mail_birthday(api = None, id = None, links = True):
     api = api or logic.get_api()
     employee = api.get_employee(id) if id else api.self_employee()
@@ -191,6 +195,7 @@ def mail_birthday(api = None, id = None, links = True):
         )
     )
 
+@quorum.ensure_context
 def mail_activity(
     api = None,
     id = None,

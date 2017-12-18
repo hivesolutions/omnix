@@ -90,7 +90,7 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                     fallback = text,
                     color = "#36a64f",
                     title = text,
-                    title_link = config.BASE_URL + flask.url_for("sales_stores", id = object_id),
+                    title_link = flask.url_for("sales_stores", id = object_id, _external = True),
                     test = text,
                     fields = [
                         dict(

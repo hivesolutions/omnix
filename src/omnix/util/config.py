@@ -135,6 +135,7 @@ AT_SUBMIT_TYPES = AT_SALE_TYPES + AT_TRANSPORT_TYPES
 that this range of values should be changed with care """
 
 REMOTE = quorum.conf("REMOTE", False)
+REMOTE = quorum.conf("OMNIX_REMOTE", REMOTE)
 BASE_URL = quorum.conf("BASE_URL", "http://localhost:8181")
 REDIRECT_URL = quorum.conf("REDIRECT_URL", REDIRECT_URL)
 CLIENT_ID = quorum.conf("OMNIX_CLIENT_ID", CLIENT_ID)

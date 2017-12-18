@@ -54,12 +54,9 @@ def load():
 
 def load_slack():
     if not config.REMOTE: return
-    #day_time = quorum.daily_work(sales_slack, offset = 14400)
-    #day_date = datetime.datetime.utcfromtimestamp(day_time)
-    #quorum.debug("Scheduled initial daily sales slack task for %s" % day_date)
-    minute_time = quorum.minutes_work(sales_slack)
-    minute_date = datetime.datetime.utcfromtimestamp(minute_time)
-    quorum.debug("Scheduled initial daily sales slack task for %s" % minute_date)
+    day_time = quorum.daily_work(sales_slack, offset = 14400)
+    day_date = datetime.datetime.utcfromtimestamp(day_time)
+    quorum.debug("Scheduled initial daily sales slack task for %s" % day_date)
 
 def load_mail():
     if not config.REMOTE: return

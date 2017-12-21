@@ -60,11 +60,13 @@ def list_stores_json():
     object = quorum.get_object()
     return api.list_stores(**object)
 
-@app.route("/stores/<int:id>", methods = ("GET",))
+@app.route("/stores/<id>", methods = ("GET",))
 @quorum.ensure("foundation.store.show")
 def show_stores(id):
     api = util.get_api()
-    store = api.get_store(id)
+    id = int(id)
+    is_global = id == -1
+    store = _global() if is_global else api.get_store(id) 
     return flask.render_template(
         "store/show.html.tpl",
         link = "stores",
@@ -72,17 +74,24 @@ def show_stores(id):
         store = store
     )
 
-@app.route("/stores/<int:id>/sales", methods = ("GET",))
+@app.route("/stores/<id>/sales", methods = ("GET",))
 @quorum.ensure(("foundation.store.show", "analytics.sale_snapshot.list"))
 def sales_stores(id):
     api = util.get_api()
 
+    id = int(id)
+    is_global = id == -1
+
     now = datetime.datetime.utcnow()
     current_day = datetime.datetime(now.year, now.month, now.day)
 
-    store = api.get_store(id)
+    store = _global() if is_global else api.get_store(id)
 
-    contents = api.stats_sales(unit = "day", store_id = id)
+    contents = api.stats_sales(
+        unit = "day",
+        store_id = None if is_global else id,
+        has_global = True
+    )
     stats = contents[str(id)]
     current = dict(
         net_price_vat = stats["net_price_vat"][-1],
@@ -129,3 +138,6 @@ def sales_stores(id):
         current = current,
         days = days
     )
+
+def _global(self):
+    return dict(object_id = -1, name = "Global")

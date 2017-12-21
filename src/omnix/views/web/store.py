@@ -139,5 +139,9 @@ def sales_stores(id):
         days = days
     )
 
-def _global(self):
-    return dict(object_id = -1, name = "Global")
+def _global():
+    return dict(
+        object_id = -1,
+        name = "Global",
+        primary_contact_information = dict()
+    )

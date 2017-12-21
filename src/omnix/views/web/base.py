@@ -313,7 +313,7 @@ def handler_413(error):
 @app.errorhandler(Exception)
 def handler_exception(error):
     formatted = traceback.format_exc()
-    lines = formatted.splitlines()
+    lines = formatted.splitlines() if quorum.is_devel() else []
 
     return flask.Response(
         flask.render_template(

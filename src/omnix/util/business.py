@@ -79,9 +79,10 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
         name = name.capitalize()
         text = "%s sales report for %s" % (name, date_s)
         values = dict(
+            number_entries = values["number_entries"][offset_i],
             net_price_vat = values["net_price_vat"][offset_i],
-            net_number_sales = values["net_number_sales"][offset_i],
-            net_mean_sale = values["net_price_vat"][offset_i] / values["net_number_sales"][offset_i]
+            net_mean_sale = values["net_price_vat"][offset_i] / values["net_number_sales"][offset_i],
+            net_number_sales = values["net_number_sales"][offset_i]
         )
         slack_api.post_message_chat(
             channel or settings.slack_channel or "general",
@@ -100,18 +101,23 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                             short = True
                         ),
                         dict(
+                            title = "Number Entries",
+                            value = "%dx" % values["number_entries"],
+                            short = True
+                        ),
+                        dict(
                             title = "Number Sales",
                             value = "%dx" % values["net_number_sales"],
                             short = True
                         ),
                         dict(
-                            title = "Sales Amount",
-                            value = "%.2f EUR" % values["net_price_vat"],
+                            title = "Mean Sale",
+                            value = "%.2f EUR" % values["net_mean_sale"],
                             short = True
                         ),
                         dict(
-                            title = "Mean Sale Amount",
-                            value = "%.2f EUR" % values["net_mean_sale"],
+                            title = "Total Sales",
+                            value = "%.2f EUR" % values["net_price_vat"],
                             short = True
                         )
                     ]

@@ -66,7 +66,7 @@ def show_stores(id):
     api = util.get_api()
     id = int(id)
     is_global = id == -1
-    store = _global() if is_global else api.get_store(id) 
+    store = _global() if is_global else api.get_store(id)
     return flask.render_template(
         "store/show.html.tpl",
         link = "stores",

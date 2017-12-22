@@ -80,7 +80,8 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
         text = "%s sales report for %s" % (name, date_s)
         values = dict(
             net_price_vat = values["net_price_vat"][offset_i],
-            net_number_sales = values["net_number_sales"][offset_i]
+            net_number_sales = values["net_number_sales"][offset_i],
+            net_mean_sale = values["net_price_vat"][offset_i] / values["net_number_sales"][offset_i]
         )
         slack_api.post_message_chat(
             channel or settings.slack_channel or "general",
@@ -106,6 +107,11 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                         dict(
                             title = "Sales Amount",
                             value = "%.2f EUR" % values["net_price_vat"],
+                            short = True
+                        ),
+                        dict(
+                            title = "Mean Sale Amount",
+                            value = "%.2f EUR" % values["net_mean_sale"],
                             short = True
                         )
                     ]

@@ -105,6 +105,7 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                     title = text,
                     title_link = flask.url_for("sales_stores", id = object_id, _external = True),
                     test = text,
+                    mrkdwn_in = ["text", "pretext", "fields"],
                     fields = [
                         dict(
                             title = "Store Name",
@@ -136,8 +137,9 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                         ),
                         dict(
                             title = "Total Sales",
-                            value = "%.2f EUR" % values["net_price_vat"],
-                            short = True
+                            value = "*%.2f EUR*" % values["net_price_vat"],
+                            short = True,
+                            mrkdwn = True
                         )
                     ]
                 )

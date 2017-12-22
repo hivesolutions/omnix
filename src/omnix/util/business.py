@@ -73,15 +73,25 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     object_ids = quorum.legacy.keys(contents)
     object_ids.sort()
     if not all: object_ids = ["-1"]
+    best_value, value = None, -1.0
+    for object_id, values in quorum.legacy.iteritems(contents):
+        store_name = values["name"]
+        store_net_price_vat = values["net_price_vat"][offset_i]
+        if not store_net_price_vat > value: continue
+        if object_id == "-1": continue
+        best_value = "<%s|%s>" % (
+            flask.url_for("sales_stores", id = object_id, _external = True),
+            store_name
+        )
     for object_id in object_ids:
         values = contents[object_id]
         name = values["name"]
         name = name.capitalize()
-        text = "%s sales report for %s" % (name, date_s)
+        text = "Sales report for %s" % date_s
         values = dict(
             number_entries = values["number_entries"][offset_i],
             net_price_vat = values["net_price_vat"][offset_i],
-            net_average_sale = values["net_price_vat"][offset_i] / values["net_number_sales"][offset_i],
+            net_average_sale = values["net_price_vat"][offset_i] / (values["net_number_sales"][offset_i] or 1.0),
             net_number_sales = values["net_number_sales"][offset_i]
         )
         slack_api.post_message_chat(
@@ -97,7 +107,15 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                     fields = [
                         dict(
                             title = "Store Name",
-                            value = name,
+                            value = "<%s|%s>" % (
+                                flask.url_for("sales_stores", id = object_id, _external = True),
+                                name
+                            ),
+                            short = True
+                        ),
+                        dict(
+                            title = "Best Store",
+                            value = best_value,
                             short = True
                         ),
                         dict(

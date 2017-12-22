@@ -79,6 +79,7 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
         store_net_price_vat = values["net_price_vat"][offset_i]
         if not store_net_price_vat > value: continue
         if object_id == "-1": continue
+        value = store_net_price_vat
         best_value = "<%s|%s>" % (
             flask.url_for("sales_stores", id = object_id, _external = True),
             store_name

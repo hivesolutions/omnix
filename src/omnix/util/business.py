@@ -102,12 +102,12 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                         ),
                         dict(
                             title = "Number Entries",
-                            value = "%dx" % values["number_entries"],
+                            value = "%d x" % values["number_entries"],
                             short = True
                         ),
                         dict(
                             title = "Number Sales",
-                            value = "%dx" % values["net_number_sales"],
+                            value = "%d x" % values["net_number_sales"],
                             short = True
                         ),
                         dict(

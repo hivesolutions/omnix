@@ -170,6 +170,38 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
         )
 
 @quorum.ensure_context
+def slack_comparison(api = None, unit = "day"):
+    from omnix import models
+
+    # tries to retrieve the reference to the API object
+    # and if it fails returns immediately (soft fail)
+    api = api or logic.get_api()
+    settings = models.Settings.get_settings()
+    slack_api = settings.get_slack_api()
+    if not slack_api: return
+
+    # retrieves the current time and updates it with the delta
+    # converting then the value to a string
+    current = datetime.datetime.utcfromtimestamp(time.time())
+
+    # tries to retrieve the proper span value according tot the
+    # requested unit of comparison
+    if unit == "day": span = current.day
+    elif unit == "month": span = current.month
+
+    previous = current - datetime.timedelta(year = 1)
+    previous_t = previous.utctimetuple()
+    previous_t = calendar.timegm(previous_t)
+
+    current_v = api.stats_sales(unit = unit, span = span, has_global = True)
+    previous_v = api.stats_sales(
+        datr = previous_t,
+        unit = unit,
+        span = span,
+        has_global = True
+    )
+
+@quorum.ensure_context
 def mail_birthday_all(
     api = None,
     month = None,

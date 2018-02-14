@@ -14,8 +14,8 @@ part of the omni extension (supervisor).
 * `OMNIX_PASSWORD` - The password value used in the authentication on the omni service, notice that
 this value will be sent in plain text (using an SSL encrypted connection)
 * `OMNIX_QUEUE` - The name of AMQP queue that is going to be used (defaults to `omnix`)
-* `REMOTE` - If the remove mode should be used (production url creation)
-* `REDIRECT_URL` - The url that will be used for outh based callbacks
+* `REMOTE` - If the remove mode should be used (production URL creation)
+* `REDIRECT_URL` - The URL that will be used for outh based callbacks
 
 Additionally one must also configure the mondogb and rabbitmq instances to be able to execute
 the proper master and slave supervisors. For that use the `MONGOHQ_URL` and `CLOUDAMQP_URL` variables.

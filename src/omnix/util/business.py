@@ -60,20 +60,40 @@ ACTIVITY_SUBJECT = dict(
 @quorum.ensure_context
 def slack_sales(api = None, channel = None, all = False, offset = 0):
     from omnix import models
+
+    # tries to retrieve the reference to the API object
+    # and if it fails returns immediately (soft fail)
     api = api or logic.get_api()
     settings = models.Settings.get_settings()
     slack_api = settings.get_slack_api()
     if not slack_api: return
+
+    # retrieves the current time and updates it with the delta
+    # converting then the value to a string
     current = datetime.datetime.utcfromtimestamp(time.time())
     delta = datetime.timedelta(days = offset)
     target = current - delta
     date_s = target.strftime("%d of %B")
+
+    # calculates the integer value of the offset (to be sent
+    # to the API (normalization)
     offset_i = (offset + 1) * -1
+
+    # retrieves the complete set of sales according to the
+    # default value and then sorts the received object identifiers
+    # according to their names and in case the
     contents = api.stats_sales(unit = "day", has_global = True)
     object_ids = quorum.legacy.keys(contents)
     object_ids.sort()
     if not all: object_ids = ["-1"]
+
+    # starts both the best (sales) value and the numeric value
+    # for this same best value
     best_value, value = None, -1.0
+
+    # iterates over the complete set of "stores" to try to find
+    # the one to be considered the best selling one and creates
+    # the best value string for it
     for object_id, values in quorum.legacy.iteritems(contents):
         store_name = values["name"]
         store_net_price_vat = values["net_price_vat"][offset_i]
@@ -84,6 +104,9 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
             flask.url_for("sales_stores", id = object_id, _external = True),
             store_name
         )
+
+    # iterates over the complete set of object identifiers for which
+    # a message is meant to be displayed and sends it using Slack API
     for object_id in object_ids:
         values = contents[object_id]
         name = values["name"]

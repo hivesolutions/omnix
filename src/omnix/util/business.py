@@ -184,14 +184,21 @@ def slack_comparison(api = None, unit = "day"):
     # converting then the value to a string
     current = datetime.datetime.utcfromtimestamp(time.time())
 
-    # tries to retrieve the proper span value according tot the
+    # tries to retrieve the proper span value according to the
     # requested unit of comparison
     if unit == "day": span = current.day
     elif unit == "month": span = current.month
 
     # calculates the previous period timestamp by removing one
     # complete year from the current time
-    previous = current - datetime.timedelta(year = 1)
+    previous = datetime.datetime(
+        current.year - 1,
+        current.month,
+        current.day,
+        hour = current.hour,
+        minute = current.minute,
+        second = current.second
+    )
     previous_t = previous.utctimetuple()
     previous_t = calendar.timegm(previous_t)
 
@@ -199,11 +206,15 @@ def slack_comparison(api = None, unit = "day"):
     # they can be properly compared
     current_v = api.stats_sales(unit = unit, span = span, has_global = True)
     previous_v = api.stats_sales(
-        datr = previous_t,
+        date = previous_t,
         unit = unit,
         span = span,
         has_global = True
     )
+    
+    # returns the tuple containing both the current and the previous
+    # period values to be compared with each other
+    return current_v, previous_v
 
 @quorum.ensure_context
 def mail_birthday_all(

@@ -90,8 +90,9 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     # retrieves the comparison values from both the day level and
     # the month level, so that it's possible to compare both the
     # current month and the current year against the previous ones
-    day_comparison = slack_comparison(api = api, unit = "day")
-    month_comparison = slack_comparison(api = api, unit = "month")
+    day_comparison = get_comparison(api = api, unit = "day")
+    month_comparison = get_comparison(api = api, unit = "month")
+    month_comparison = sum_results(month_comparison, day_comparison)
 
     # starts both the best (sales) value and the numeric value
     # for this same best value
@@ -192,87 +193,6 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                 )
             ]
         )
-
-@quorum.ensure_context
-def slack_comparison(api = None, unit = "day"):
-    from omnix import models
-
-    # tries to retrieve the reference to the API object
-    # and if it fails returns immediately (soft fail)
-    api = api or logic.get_api()
-    settings = models.Settings.get_settings()
-    slack_api = settings.get_slack_api()
-    if not slack_api: return
-
-    # retrieves the current time and updates it with the delta
-    # converting then the value to a string
-    current = datetime.datetime.utcfromtimestamp(time.time())
-
-    # tries to retrieve the proper span value according to the
-    # requested unit of comparison
-    if unit == "day": span = current.day
-    elif unit == "month": span = current.month
-
-    # calculates the previous period timestamp by removing one
-    # complete year from the current time
-    previous = datetime.datetime(
-        current.year - 1,
-        current.month,
-        current.day,
-        hour = current.hour,
-        minute = current.minute,
-        second = current.second
-    )
-    previous_t = previous.utctimetuple()
-    previous_t = calendar.timegm(previous_t)
-
-    # retrieves both the current and the previous values so that
-    # they can be properly compared
-    current_v = api.stats_sales(unit = unit, span = span, has_global = True)
-    previous_v = api.stats_sales(
-        date = previous_t,
-        unit = unit,
-        span = span,
-        has_global = True
-    )
-
-    # creates the dictionary that is going to store the multiple
-    # comparison values in a per object identifier basis
-    results = dict()
-
-    for object_id in quorum.legacy.keys(current_v):
-        current_i = current_v.get(object_id, {})
-        previous_i = previous_v.get(object_id, {})
-
-        result = dict(
-            number_entries = dict(
-                current = sum(current_i.get("number_entries", [])),
-                previous = sum(previous_i.get("number_entries", []))
-            ),
-            net_price_vat = dict(
-                current = sum(current_i.get("net_price_vat", [])),
-                previous = sum(previous_i.get("net_price_vat", []))
-            ),
-            net_number_sales = dict(
-                current = sum(current_i.get("net_number_sales", [])),
-                previous = sum(previous_i.get("net_number_sales", []))
-            ),
-            net_average_sale = dict(
-                current = sum(current_i.get("net_price_vat", [])) /\
-                    (sum(current_i.get("net_number_sales", [])) or 1.0),
-                previous = sum(previous_i.get("net_price_vat", [])) /\
-                    (sum(previous_i.get("net_number_sales", [])) or 1.0)
-            )
-        )
-
-        for values in quorum.legacy.itervalues(result):
-            values["diff"] = values["current"] - values["previous"]
-            values["percentage"] = values["diff"] /\
-                (values["previous"] or values["diff"] or 1.0) * 100.0
-
-        results[object_id] = result
-
-    return results
 
 @quorum.ensure_context
 def mail_birthday_all(
@@ -570,3 +490,130 @@ def get_sales(api = None, id = None, year = None, month = None):
         next_year,
         has_next
     )
+
+def get_comparison(api = None, unit = "day", offset = -1):
+    from omnix import models
+
+    # tries to retrieve the reference to the API object
+    # and if it fails returns immediately (soft fail)
+    api = api or logic.get_api()
+    settings = models.Settings.get_settings()
+    slack_api = settings.get_slack_api()
+    if not slack_api: return
+
+    # retrieves the current time and updates it with the delta
+    # converting then the value to a string
+    if unit == "day":
+        current = datetime.datetime.utcfromtimestamp(
+            time.time() + offset * 86400
+        )
+    if unit == "month":
+        now = datetime.datetime.utcfromtimestamp(time.time())
+        target_month = now.month + offset if now.month + offset > 1 else 1
+        current = datetime.datetime(
+            now.year,
+            target_month,
+            now.day,
+            hour = now.hour,
+            minute = now.minute,
+            second = now.second
+        )
+    current_t = current.utctimetuple()
+    current_t = calendar.timegm(current_t)
+
+    # tries to retrieve the proper span value according to the
+    # requested unit of comparison
+    if unit == "day": span = current.day
+    if unit == "month": span = current.month
+
+    # calculates the previous period timestamp by removing one
+    # complete year from the current time
+    previous = datetime.datetime(
+        current.year - 1,
+        current.month,
+        current.day,
+        hour = current.hour,
+        minute = current.minute,
+        second = current.second
+    )
+    previous_t = previous.utctimetuple()
+    previous_t = calendar.timegm(previous_t)
+
+    # retrieves both the current and the previous values so that
+    # they can be properly compared
+    current_v = api.stats_sales(
+        date = current_t,
+        unit = unit,
+        span = span,
+        has_global = True
+    )
+    previous_v = api.stats_sales(
+        date = previous_t,
+        unit = unit,
+        span = span,
+        has_global = True
+    )
+
+    # creates the dictionary that is going to store the multiple
+    # comparison values in a per object identifier basis
+    results = dict()
+
+    for object_id in quorum.legacy.keys(current_v):
+        current_i = current_v.get(object_id, {})
+        previous_i = previous_v.get(object_id, {})
+
+        result = dict(
+            number_entries = dict(
+                current = sum(current_i.get("number_entries", [])),
+                previous = sum(previous_i.get("number_entries", []))
+            ),
+            net_price_vat = dict(
+                current = sum(current_i.get("net_price_vat", [])),
+                previous = sum(previous_i.get("net_price_vat", []))
+            ),
+            net_number_sales = dict(
+                current = sum(current_i.get("net_number_sales", [])),
+                previous = sum(previous_i.get("net_number_sales", []))
+            ),
+            net_average_sale = dict(
+                current = sum(current_i.get("net_price_vat", [])) /\
+                    (sum(current_i.get("net_number_sales", [])) or 1.0),
+                previous = sum(previous_i.get("net_price_vat", [])) /\
+                    (sum(previous_i.get("net_number_sales", [])) or 1.0)
+            )
+        )
+
+        results[object_id] = result
+
+    # runs the post-processing calculus operations on the results
+    # so that the calculated attributes get correctly processed
+    calc_results(results)
+
+    return results
+
+def sum_results(first, second, calc = True):
+    result = dict()
+
+    for object_id in quorum.legacy.iterkeys(first):
+        first_r = first[object_id]
+        second_r = second.get(object_id, {})
+        result_r = result.get(object_id, {})
+        result[object_id] = result_r
+        for key in quorum.legacy.iterkeys(first_r):
+            first_m = first_r[key]
+            second_m = second_r.get(key, {})
+            result_m = result_r.get(key, {})
+            result_r[key] = result_m
+            for _key in quorum.legacy.iterkeys(first_m):
+                result_m[_key] = first_m.get(_key, 0.0) + second_m.get(_key, 0.0)
+
+    if calc: calc_results(result)
+
+    return result
+
+def calc_results(results):
+    for result in quorum.legacy.itervalues(results):
+        for values in quorum.legacy.itervalues(result):
+            values["diff"] = values["current"] - values["previous"]
+            values["percentage"] = values["diff"] /\
+                (values["previous"] or values["diff"] or 1.0) * 100.0

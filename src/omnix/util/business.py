@@ -193,63 +193,77 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                 )
             ]
         )
-        slack_api.post_message_chat(
-            channel or settings.slack_channel or "general",
-            None,
-            attachments = [
-                dict(
-                    fallback = text,
-                    color = "#36a64f",
-                    title = text,
-                    title_link = flask.url_for("sales_stores", id = object_id, _external = True),
-                    test = text,
-                    mrkdwn_in = ["text", "pretext", "fields"],
-                    fields = [
-                        dict(
-                            title = "Store Name",
-                            value = "<%s|%s>" % (
-                                flask.url_for("sales_stores", id = object_id, _external = True),
-                                name
-                            ),
-                            short = True
-                        ),
-                        dict(
-                            title = "Number Entries",
-                            value = "%d x / %.2f %%" % (
-                                month_comparison[object_id]["number_entries"]["diff"],
-                                month_comparison[object_id]["number_entries"]["percentage"]
-                            ),
-                            short = True
-                        ),
-                        dict(
-                            title = "Number Sales",
-                            value = "%d x / %.2f %%" % (
-                                month_comparison[object_id]["net_number_sales"]["diff"],
-                                month_comparison[object_id]["net_number_sales"]["percentage"]
-                            ),
-                            short = True
-                        ),
-                        dict(
-                            title = "Average Sale",
-                            value = "%.2f EUR / %.2f %%" % (
-                                month_comparison[object_id]["net_average_sale"]["diff"],
-                                month_comparison[object_id]["net_average_sale"]["percentage"]
-                            ),
-                            short = True
-                        ),
-                        dict(
-                            title = "Total Sales",
-                            value = "*%.2f EUR / %.2f %%*" % (
-                                month_comparison[object_id]["net_price_vat"]["diff"],
-                                month_comparison[object_id]["net_price_vat"]["percentage"]
-                            ),
-                            short = True,
-                            mrkdwn = True
-                        )
-                    ]
-                )
-            ]
+
+        reports = (
+            dict(
+                text = "Month to date report for %s" % date_s,
+                comparison = day_comparison
+            ),
+            dict(
+                text = "Year to date report for %s" % date_s,
+                comparison = month_comparison
+            )
         )
+
+        for report in reports:
+            text, comparison = report["text"], report["comparison"]
+            slack_api.post_message_chat(
+                channel or settings.slack_channel or "general",
+                None,
+                attachments = [
+                    dict(
+                        fallback = text,
+                        color = "#36a64f",
+                        title = text,
+                        title_link = flask.url_for("sales_stores", id = object_id, _external = True),
+                        test = text,
+                        mrkdwn_in = ["text", "pretext", "fields"],
+                        fields = [
+                            dict(
+                                title = "Store Name",
+                                value = "<%s|%s>" % (
+                                    flask.url_for("sales_stores", id = object_id, _external = True),
+                                    name
+                                ),
+                                short = True
+                            ),
+                            dict(
+                                title = "Number Entries",
+                                value = "%d x / %.2f %%" % (
+                                    comparison[object_id]["number_entries"]["diff"],
+                                    comparison[object_id]["number_entries"]["percentage"]
+                                ),
+                                short = True
+                            ),
+                            dict(
+                                title = "Number Sales",
+                                value = "%d x / %.2f %%" % (
+                                    comparison[object_id]["net_number_sales"]["diff"],
+                                    comparison[object_id]["net_number_sales"]["percentage"]
+                                ),
+                                short = True
+                            ),
+                            dict(
+                                title = "Average Sale",
+                                value = "%.2f EUR / %.2f %%" % (
+                                    comparison[object_id]["net_average_sale"]["diff"],
+                                    comparison[object_id]["net_average_sale"]["percentage"]
+                                ),
+                                short = True
+                            ),
+                            dict(
+                                title = "Total Sales",
+                                value = "*%.2f EUR / %.2f %%*" % (
+                                    comparison[object_id]["net_price_vat"]["diff"],
+                                    comparison[object_id]["net_price_vat"]["percentage"]
+                                ),
+                                short = True,
+                                mrkdwn = True
+                            )
+                        ]
+                    )
+                ]
+            )
 
 @quorum.ensure_context
 def mail_birthday_all(
@@ -686,5 +700,5 @@ def calc_results(results):
     for result in quorum.legacy.itervalues(results):
         for values in quorum.legacy.itervalues(result):
             values["diff"] = values["current"] - values["previous"]
-            values["percentage"] = values["diff"] /\
-                (values["previous"] or values["diff"] or 1.0) * 100.0
+            values["percentage"] = float(values["diff"]) /\
+                (float(values["previous"]) or float(values["diff"]) or 1.0) * 100.0

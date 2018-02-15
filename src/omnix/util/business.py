@@ -87,6 +87,12 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     object_ids.sort()
     if not all: object_ids = ["-1"]
 
+    # retrieves the comparison values from both the day level and
+    # the month level, so that it's possible to compare both the
+    # current month and the current year agains the previous ones
+    day_comparison = slack_comparison(api = api, unit = "day")
+    month_comparison = slack_comparison(api = api, unit = "month")
+
     # starts both the best (sales) value and the numeric value
     # for this same best value
     best_value, value = None, -1.0
@@ -163,6 +169,24 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                             value = "*%.2f EUR*" % values["net_price_vat"],
                             short = True,
                             mrkdwn = True
+                        ),
+                        dict(
+                            title = "Month to Date",
+                            value = "*%.1f %% (%.2f EUR)*" % (
+                                day_comparison["-1"]["net_price_vat"]["percentage"],
+                                day_comparison["-1"]["net_price_vat"]["diff"]
+                            ),
+                            short = True,
+                            mrkdwn = True
+                        ),
+                        dict(
+                            title = "Year to Date",
+                            value = "*%.1f %% (%.2f EUR)*" % (
+                                month_comparison["-1"]["net_price_vat"]["percentage"],
+                                month_comparison["-1"]["net_price_vat"]["diff"]
+                            ),
+                            short = True,
+                            mrkdwn = True
                         )
                     ]
                 )
@@ -212,11 +236,11 @@ def slack_comparison(api = None, unit = "day"):
         has_global = True
     )
 
+    # creates the dictionary that is going to store the multiple
+    # comparison values in a per object identifier basis
     results = dict()
 
-    keys = quorum.legacy.keys(current_v)
-
-    for object_id in keys:
+    for object_id in quorum.legacy.keys(current_v):
         current_i = current_v.get(object_id, {})
         previous_i = previous_v.get(object_id, {})
 

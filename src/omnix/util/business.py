@@ -189,10 +189,14 @@ def slack_comparison(api = None, unit = "day"):
     if unit == "day": span = current.day
     elif unit == "month": span = current.month
 
+    # calculates the previous period timestamp by removing one
+    # complete year from the current time
     previous = current - datetime.timedelta(year = 1)
     previous_t = previous.utctimetuple()
     previous_t = calendar.timegm(previous_t)
 
+    # retrieves both the current and the previous values so that
+    # they can be properly compared
     current_v = api.stats_sales(unit = unit, span = span, has_global = True)
     previous_v = api.stats_sales(
         datr = previous_t,

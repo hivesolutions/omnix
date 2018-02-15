@@ -211,7 +211,8 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                             ),
                             dict(
                                 title = "Number Entries",
-                                value = "%d x / %.2f %%" % (
+                                value = "%d x / %d x (%.2f %%)" % (
+                                    comparison[object_id]["number_entries"]["current"],
                                     comparison[object_id]["number_entries"]["diff"],
                                     comparison[object_id]["number_entries"]["percentage"]
                                 ),
@@ -219,7 +220,8 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                             ),
                             dict(
                                 title = "Number Sales",
-                                value = "%d x / %.2f %%" % (
+                                value = "%d x / %d x (%.2f %%)" % (
+                                    comparison[object_id]["net_number_sales"]["current"],
                                     comparison[object_id]["net_number_sales"]["diff"],
                                     comparison[object_id]["net_number_sales"]["percentage"]
                                 ),
@@ -227,7 +229,8 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                             ),
                             dict(
                                 title = "Average Sale",
-                                value = "%.2f EUR / %.2f %%" % (
+                                value = "%.2f EUR / %.2f EUR (%.2f %%)" % (
+                                    comparison[object_id]["net_average_sale"]["current"],
                                     comparison[object_id]["net_average_sale"]["diff"],
                                     comparison[object_id]["net_average_sale"]["percentage"]
                                 ),
@@ -235,11 +238,12 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                             ),
                             dict(
                                 title = "Total Sales",
-                                value = "*%.2f EUR / %.2f %%*" % (
+                                value = "*%.2f EUR / %.2f EUR (%.2f %%)*" % (
+                                    comparison[object_id]["net_price_vat"]["current"],
                                     comparison[object_id]["net_price_vat"]["diff"],
                                     comparison[object_id]["net_price_vat"]["percentage"]
                                 ),
-                                short = True,
+                                short = False,
                                 mrkdwn = True
                             )
                         ]

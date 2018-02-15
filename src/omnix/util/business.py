@@ -89,7 +89,7 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
 
     # retrieves the comparison values from both the day level and
     # the month level, so that it's possible to compare both the
-    # current month and the current year agains the previous ones
+    # current month and the current year against the previous ones
     day_comparison = slack_comparison(api = api, unit = "day")
     month_comparison = slack_comparison(api = api, unit = "month")
 

@@ -211,10 +211,44 @@ def slack_comparison(api = None, unit = "day"):
         span = span,
         has_global = True
     )
-    
-    # returns the tuple containing both the current and the previous
-    # period values to be compared with each other
-    return current_v, previous_v
+
+    results = dict()
+
+    keys = quorum.legacy.keys(current_v)
+
+    for object_id in keys:
+        current_i = current_v.get(object_id, {})
+        previous_i = previous_v.get(object_id, {})
+
+        result = dict(
+            number_entries = dict(
+                current = sum(current_i.get("number_entries", [])),
+                previous = sum(previous_i.get("number_entries", []))
+            ),
+            net_price_vat = dict(
+                current = sum(current_i.get("net_price_vat", [])),
+                previous = sum(previous_i.get("net_price_vat", []))
+            ),
+            net_number_sales = dict(
+                current = sum(current_i.get("net_number_sales", [])),
+                previous = sum(previous_i.get("net_number_sales", []))
+            ),
+            net_average_sale = dict(
+                current = sum(current_i.get("net_price_vat", [])) /\
+                    (sum(current_i.get("net_number_sales", [])) or 1.0),
+                previous = sum(previous_i.get("net_price_vat", [])) /\
+                    (sum(previous_i.get("net_number_sales", [])) or 1.0)
+            )
+        )
+
+        for values in quorum.legacy.itervalues(result):
+            values["diff"] = values["current"] - values["previous"]
+            values["percentage"] = values["diff"] /\
+                (values["previous"] or values["diff"] or 1.0) * 100.0
+
+        results[object_id] = result
+
+    return results
 
 @quorum.ensure_context
 def mail_birthday_all(

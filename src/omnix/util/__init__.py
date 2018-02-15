@@ -46,7 +46,7 @@ from . import supervisor
 
 from .business import slack_sales, mail_birthday_all, mail_activity_all,\
     mail_birthday, mail_activity, get_date, get_top, get_sales, get_comparison,\
-    sum_results, calc_results
+    sum_results, calc_extra, calc_results
 from .ctt import encode_ctt
 from .format import csv_file, csv_import, csv_value
 from .config import LOCAL_PREFIX, REMOTE_PREFIX, LOCAL_URL, REMOTE_URL, REDIRECT_URL,\

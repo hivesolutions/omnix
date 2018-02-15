@@ -193,6 +193,63 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                 )
             ]
         )
+        slack_api.post_message_chat(
+            channel or settings.slack_channel or "general",
+            None,
+            attachments = [
+                dict(
+                    fallback = text,
+                    color = "#36a64f",
+                    title = text,
+                    title_link = flask.url_for("sales_stores", id = object_id, _external = True),
+                    test = text,
+                    mrkdwn_in = ["text", "pretext", "fields"],
+                    fields = [
+                        dict(
+                            title = "Store Name",
+                            value = "<%s|%s>" % (
+                                flask.url_for("sales_stores", id = object_id, _external = True),
+                                name
+                            ),
+                            short = True
+                        ),
+                        dict(
+                            title = "Number Entries",
+                            value = "%d x / %.2f %%" % (
+                                month_comparison[object_id]["number_entries"]["diff"],
+                                month_comparison[object_id]["number_entries"]["percentage"]
+                            ),
+                            short = True
+                        ),
+                        dict(
+                            title = "Number Sales",
+                            value = "%d x / %.2f %%" % (
+                                month_comparison[object_id]["net_number_sales"]["diff"],
+                                month_comparison[object_id]["net_number_sales"]["percentage"]
+                            ),
+                            short = True
+                        ),
+                        dict(
+                            title = "Average Sale",
+                            value = "%.2f EUR / %.2f %%" % (
+                                month_comparison[object_id]["net_average_sale"]["diff"],
+                                month_comparison[object_id]["net_average_sale"]["percentage"]
+                            ),
+                            short = True
+                        ),
+                        dict(
+                            title = "Total Sales",
+                            value = "*%.2f EUR / %.2f %%*" % (
+                                month_comparison[object_id]["net_price_vat"]["diff"],
+                                month_comparison[object_id]["net_price_vat"]["percentage"]
+                            ),
+                            short = True,
+                            mrkdwn = True
+                        )
+                    ]
+                )
+            ]
+        )
 
 @quorum.ensure_context
 def mail_birthday_all(
@@ -574,19 +631,16 @@ def get_comparison(api = None, unit = "day", offset = -1):
             net_number_sales = dict(
                 current = sum(current_i.get("net_number_sales", [])),
                 previous = sum(previous_i.get("net_number_sales", []))
-            ),
-            net_average_sale = dict(
-                current = sum(current_i.get("net_price_vat", [])) /\
-                    (sum(current_i.get("net_number_sales", [])) or 1.0),
-                previous = sum(previous_i.get("net_price_vat", [])) /\
-                    (sum(previous_i.get("net_number_sales", [])) or 1.0)
             )
         )
 
+        # sets the current object identifier result in the map
+        # of results (for latter usage)
         results[object_id] = result
 
     # runs the post-processing calculus operations on the results
     # so that the calculated attributes get correctly processed
+    calc_extra(results)
     calc_results(results)
 
     return results
@@ -597,19 +651,36 @@ def sum_results(first, second, calc = True):
     for object_id in quorum.legacy.iterkeys(first):
         first_r = first[object_id]
         second_r = second.get(object_id, {})
+
         result_r = result.get(object_id, {})
         result[object_id] = result_r
+
         for key in quorum.legacy.iterkeys(first_r):
             first_m = first_r[key]
             second_m = second_r.get(key, {})
+
             result_m = result_r.get(key, {})
             result_r[key] = result_m
+
+            # iterates over the complete set of keys in the first
+            # map to calculate the complete set of sums
             for _key in quorum.legacy.iterkeys(first_m):
                 result_m[_key] = first_m.get(_key, 0.0) + second_m.get(_key, 0.0)
 
-    if calc: calc_results(result)
+    if calc:
+        calc_extra(result)
+        calc_results(result)
 
     return result
+
+def calc_extra(results):
+    for result in quorum.legacy.itervalues(results):
+        result["net_average_sale"] = dict(
+            current = result["net_price_vat"]["current"] /\
+                (result["net_number_sales"]["current"] or 1.0),
+            previous = result["net_price_vat"]["previous"] /\
+                (result["net_number_sales"]["previous"] or 1.0)
+        )
 
 def calc_results(results):
     for result in quorum.legacy.itervalues(results):

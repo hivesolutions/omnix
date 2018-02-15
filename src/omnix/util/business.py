@@ -170,24 +170,6 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
                             value = "*%.2f EUR*" % values["net_price_vat"],
                             short = True,
                             mrkdwn = True
-                        ),
-                        dict(
-                            title = "Month to Date",
-                            value = "*%.1f %% / %.2f EUR*" % (
-                                day_comparison["-1"]["net_price_vat"]["percentage"],
-                                day_comparison["-1"]["net_price_vat"]["diff"]
-                            ),
-                            short = True,
-                            mrkdwn = True
-                        ),
-                        dict(
-                            title = "Year to Date",
-                            value = "*%.1f %% / %.2f EUR*" % (
-                                month_comparison["-1"]["net_price_vat"]["percentage"],
-                                month_comparison["-1"]["net_price_vat"]["diff"]
-                            ),
-                            short = True,
-                            mrkdwn = True
                         )
                     ]
                 )

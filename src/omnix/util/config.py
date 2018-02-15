@@ -52,7 +52,7 @@ LOCAL_URL = "http://localhost:8080/mvc/"
 complete URL values for the various operations, this is
 the local version of it used mostly for debugging """
 
-REMOTE_URL = "https://ldj.frontdoorhd.com/"
+REMOTE_URL = "https://omni.stage.hive.pt/"
 """ The base URL to be used to compose the various
 complete URL values for the various operations, this is
 the remove version used in production environments """
@@ -61,11 +61,11 @@ REDIRECT_URL = "http://localhost:8181/oauth"
 """ The redirect base URL to be used as the base value
 for the construction of the base URL instances """
 
-CLIENT_ID = "cabf02130bbe4886984ebfcfad9ec9e5"
+CLIENT_ID = "2a4dd8f8f649472dba4dfbbefdf7d623"
 """ The id of the omni client to be used, this value
 is not considered to be secret and may be freely used """
 
-CLIENT_SECRET = "4c37a7dff4c3411ba1646093d2109d87"
+CLIENT_SECRET = "b3ae4af4454945479592792ad970f8d7"
 """ The secret key value to be used to access the
 omni api as the client, this value should not be shared
 with every single person (keep private) """

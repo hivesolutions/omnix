@@ -2,7 +2,7 @@
 
 Simple web application consuming the Omni API.
 
-This application may be used as a supervisor of the Omni Platform to run tsaks in an async
+This application may be used as a supervisor of the Omni Platform to run tasks in an async
 fashion, this way it's possible to remove async tasks from the Omni core.
 
 ## Usage

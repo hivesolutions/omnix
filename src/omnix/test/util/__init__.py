@@ -33,30 +33,3 @@ __copyright__ = "Copyright (c) 2008-2018 Hive Solutions Lda."
 
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
-
-from . import business
-from . import config
-from . import ctt
-from . import format
-from . import image
-from . import logic
-from . import scheduling
-from . import slave
-from . import supervisor
-
-from .business import slack_sales, mail_birthday_all, mail_activity_all,\
-    mail_birthday, mail_activity, get_date, get_top, get_sales, get_comparison,\
-    sum_results, calc_comparison, calc_extra, calc_results
-from .ctt import encode_ctt
-from .format import csv_file, csv_import, csv_value
-from .config import LOCAL_PREFIX, REMOTE_PREFIX, LOCAL_URL, REMOTE_URL, REDIRECT_URL,\
-    CLIENT_ID, CLIENT_SECRET, FIRST_DAY, SCOPE, AT_SALE_TYPES, AT_TRANSPORT_TYPES,\
-    AT_SUBMIT_TYPES, REMOTE, BASE_URL, SENDER_EMAIL, USERNAME, PASSWORD, SCHEDULE,\
-    COMMISSION_RATE, COMMISSION_DAY, IMAGE_RESIZE, LOCALE, QUEUE, OMNI_URL, PREFIX
-from .image import mask_image
-from .logic import get_models, get_api, ensure_api, on_auth, start_session, reset_session,\
-    get_tokens
-
-from .scheduling import load as load_scheduling
-from .slave import run as run_slave
-from .supervisor import run as run_supervisor

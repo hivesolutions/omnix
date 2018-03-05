@@ -45,7 +45,38 @@ import omnix
 
 class BusinessTest(unittest.TestCase):
 
-    def test_get_comparison(self):
+    def test_get_comparison_day(self):
+        timestamp = calendar.timegm(datetime.datetime(year = 2018, month = 3, day = 1, hour = 4).utctimetuple())
+        current = calendar.timegm(datetime.datetime(year = 2018, month = 2, day = 28, hour = 4).utctimetuple())
+        previous = calendar.timegm(datetime.datetime(year = 2017, month = 2, day = 28, hour = 4).utctimetuple())
+        current_v, previous_v = omnix.calc_comparison(unit = "day", timestamp = timestamp)
+
+        self.assertEqual(current_v["date"], current)
+        self.assertEqual(current_v["span"], 28)
+        self.assertEqual(current_v["unit"], "day")
+        self.assertEqual(current_v["has_global"], True)
+
+        self.assertEqual(previous_v["date"], previous)
+        self.assertEqual(previous_v["span"], 28)
+        self.assertEqual(previous_v["unit"], "day")
+        self.assertEqual(previous_v["has_global"], True)
+
+        timestamp = calendar.timegm(datetime.datetime(year = 2018, month = 3, day = 1, hour = 4).utctimetuple())
+        current = calendar.timegm(datetime.datetime(year = 2018, month = 3, day = 1, hour = 4).utctimetuple())
+        previous = calendar.timegm(datetime.datetime(year = 2017, month = 3, day = 1, hour = 4).utctimetuple())
+        current_v, previous_v = omnix.calc_comparison(unit = "day", offset = 0, timestamp = timestamp)
+
+        self.assertEqual(current_v["date"], current)
+        self.assertEqual(current_v["span"], 1)
+        self.assertEqual(current_v["unit"], "day")
+        self.assertEqual(current_v["has_global"], True)
+
+        self.assertEqual(previous_v["date"], previous)
+        self.assertEqual(previous_v["span"], 1)
+        self.assertEqual(previous_v["unit"], "day")
+        self.assertEqual(previous_v["has_global"], True)
+
+    def test_get_comparison_month(self):
         timestamp = calendar.timegm(datetime.datetime(year = 2018, month = 3, day = 1, hour = 4).utctimetuple())
         current = calendar.timegm(datetime.datetime(year = 2018, month = 2, day = 28, hour = 4).utctimetuple())
         previous = calendar.timegm(datetime.datetime(year = 2017, month = 2, day = 28, hour = 4).utctimetuple())

@@ -49,7 +49,7 @@ class BusinessTest(unittest.TestCase):
         timestamp = calendar.timegm(datetime.datetime(year = 2018, month = 3, day = 1, hour = 4).utctimetuple())
         current = calendar.timegm(datetime.datetime(year = 2018, month = 2, day = 28, hour = 4).utctimetuple())
         previous = calendar.timegm(datetime.datetime(year = 2017, month = 2, day = 28, hour = 4).utctimetuple())
-        current_v, previous_v = omnix.calc_comparison(unit = "day", timestamp = timestamp)
+        current_v, previous_v = omnix.calc_comparison(unit = "day", offset = -1, timestamp = timestamp)
 
         self.assertEqual(current_v["date"], current)
         self.assertEqual(current_v["span"], 28)
@@ -80,7 +80,7 @@ class BusinessTest(unittest.TestCase):
         timestamp = calendar.timegm(datetime.datetime(year = 2018, month = 3, day = 1, hour = 4).utctimetuple())
         current = calendar.timegm(datetime.datetime(year = 2018, month = 2, day = 28, hour = 4).utctimetuple())
         previous = calendar.timegm(datetime.datetime(year = 2017, month = 2, day = 28, hour = 4).utctimetuple())
-        current_v, previous_v = omnix.calc_comparison(unit = "month", timestamp = timestamp)
+        current_v, previous_v = omnix.calc_comparison(unit = "month", offset = -1, timestamp = timestamp)
 
         self.assertEqual(current_v["date"], current)
         self.assertEqual(current_v["span"], 2)

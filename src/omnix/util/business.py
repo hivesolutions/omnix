@@ -77,7 +77,7 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
 
     # calculates the integer value of the offset (to be sent
     # to the API (normalization)
-    offset_i = (offset + 1) * -1
+    offset_i = offset * -1
 
     # retrieves the complete set of sales according to the
     # default value and then sorts the received object identifiers

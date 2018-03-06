@@ -78,7 +78,11 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     # retrieves the complete set of sales according to the
     # default value and then sorts the received object identifiers
     # according to their names and in case the
-    contents = api.stats_sales(unit = "day", has_global = True)
+    contents = api.stats_sales(
+        date = time.time() - offset * 86400,
+        unit = "day",
+        has_global = True
+    )
     object_ids = quorum.legacy.keys(contents)
     object_ids.sort()
     if not all: object_ids = ["-1"]
@@ -86,8 +90,16 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     # retrieves the comparison values from both the day level and
     # the month level, so that it's possible to compare both the
     # current month and the current year against the previous ones
-    day_comparison = get_comparison(api = api, unit = "day", offset = offset * -1)
-    month_comparison = get_comparison(api = api, unit = "month", offset = offset * -1)
+    day_comparison = get_comparison(
+        api = api,
+        unit = "day",
+        offset = offset * -1
+    )
+    month_comparison = get_comparison(
+        api = api,
+        unit = "month",
+        offset = current.day * -1
+    )
     month_comparison = sum_results(month_comparison, day_comparison)
 
     # starts both the best (sales) value and the numeric value

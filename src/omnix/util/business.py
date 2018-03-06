@@ -75,10 +75,6 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     target = current - delta
     date_s = target.strftime("%d of %B")
 
-    # calculates the integer value of the offset (to be sent
-    # to the API (normalization)
-    offset_i = offset * -1
-
     # retrieves the complete set of sales according to the
     # default value and then sorts the received object identifiers
     # according to their names and in case the
@@ -90,8 +86,8 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     # retrieves the comparison values from both the day level and
     # the month level, so that it's possible to compare both the
     # current month and the current year against the previous ones
-    day_comparison = get_comparison(api = api, unit = "day", offset = offset_i)
-    month_comparison = get_comparison(api = api, unit = "month", offset = offset_i)
+    day_comparison = get_comparison(api = api, unit = "day", offset = offset * -1)
+    month_comparison = get_comparison(api = api, unit = "month", offset = offset * -1)
     month_comparison = sum_results(month_comparison, day_comparison)
 
     # starts both the best (sales) value and the numeric value

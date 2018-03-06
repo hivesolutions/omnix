@@ -91,7 +91,8 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     month_comparison = sum_results(month_comparison, day_comparison)
 
     # starts both the best (sales) value and the numeric value
-    # for this same best value
+    # for this same best value, these values should start with
+    # the lower possible values (to be overriden)
     best_value, value = None, -1.0
 
     # iterates over the complete set of "stores" to try to find

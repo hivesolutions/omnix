@@ -548,7 +548,7 @@ def get_sales(api = None, id = None, year = None, month = None):
         has_next
     )
 
-def get_comparison(api = None, unit = "day", offset = -1, timestamp = None):
+def get_comparison(api = None, unit = "day", offset = 0, timestamp = None):
     from omnix import models
 
     # tries to retrieve the reference to the API object
@@ -561,7 +561,9 @@ def get_comparison(api = None, unit = "day", offset = -1, timestamp = None):
     # retrieves both the current and the previous dictionary
     # set of arguments to be passed to the API requests
     current_args, previous_args = calc_comparison(
-        unit = unit, offset = offset, timestamp = timestamp
+        unit = unit,
+        offset = offset,
+        timestamp = timestamp
     )
 
     # retrieves both the current and the previous values so that
@@ -631,7 +633,7 @@ def sum_results(first, second, calc = True):
 
     return result
 
-def calc_comparison(unit = "day", offset = -1, timestamp = None):
+def calc_comparison(unit = "day", offset = 0, timestamp = None):
     # tries to retrieve the proper timestamp value falling back
     # to the current time in case nothing is provided
     timestamp = timestamp or time.time()

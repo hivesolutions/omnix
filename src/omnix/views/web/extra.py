@@ -418,8 +418,10 @@ def do_metadata_extras():
             category,\
             collection,\
             brand,\
+            season,\
+            gender,\
             description,\
-            order = line[:11]
+            order = line[:13]
 
             # normalizes the various values that have been extracted from the line
             # so they are properly represented for importing
@@ -430,6 +432,8 @@ def do_metadata_extras():
             category = [value.strip() for value in category.split(";") if value.strip()]
             collection = [value.strip() for value in collection.split(";") if value.strip()]
             brand = brand or None
+            season = season or None
+            gender = gender or None
             description = description or None
             order = order or None
 
@@ -438,6 +442,8 @@ def do_metadata_extras():
             if name: name = name.strip()
             if compare_price: compare_price = float(compare_price)
             if brand: brand = brand.strip()
+            if season: season = season.strip()
+            if gender: gender = gender.strip()
             if description: description = description.strip()
             if order: order = int(order.strip())
 
@@ -450,6 +456,8 @@ def do_metadata_extras():
                 category = category,
                 collection = collection,
                 brand = brand,
+                season = season,
+                gender = gender,
                 order = order
             )
 

@@ -364,7 +364,7 @@ def do_metadata_extras():
     # the header will be used for dynamic retrieval
     custom = quorum.get_field("custom", False, cast = bool)
 
-    # check if the csv file to uploaded is separated by the comma
+    # check if the CSV file to uploaded is separated by the comma
     # character or if instead it used the semicolon
     comma = quorum.get_field("comma", False, cast = bool)
 
@@ -374,7 +374,7 @@ def do_metadata_extras():
     metadata_file.save(file_path)
 
     # creates the file object that is going to be used in the
-    # reading of the csv file (underlying object)
+    # reading of the CSV file (underlying object)
     file = open(file_path, "rb")
     try: data = file.read()
     finally: file.close()
@@ -403,7 +403,7 @@ def do_metadata_extras():
             base = update.pop("base", base)
 
             # tries to retrieve some of the base entity values
-            # if their found they are properly poped out
+            # if their found they are properly popped out
             name = update.pop("name", None)
             description = update.pop("description", None)
         else:
@@ -507,8 +507,8 @@ def do_metadata_extras():
         api.update_entity(object_id, payload = dict(root_entity = model))
 
     try:
-        # start the csv import operation that is going to import the
-        # various lines of the csv in the buffer and for each of them
+        # start the CSV import operation that is going to import the
+        # various lines of the CSV in the buffer and for each of them
         # call the function passed as callback
         util.csv_import(
             buffer,
@@ -688,7 +688,7 @@ def do_inventory_extras():
     inventory_file.save(file_path)
 
     # creates the file object that is going to be used in the
-    # reading of the csv file (underlying object)
+    # reading of the CSV file (underlying object)
     file = open(file_path, "rb")
     try: data = file.read()
     finally: file.close()
@@ -819,8 +819,8 @@ def do_inventory_extras():
             except: pass
 
     try:
-        # start the csv import operation that is going to import the
-        # various lines of the csv in the buffer and for each of them
+        # start the CSV import operation that is going to import the
+        # various lines of the CSV in the buffer and for each of them
         # call the function passed as callback
         util.csv_import(buffer, callback, delimiter = ";")
         flush_adjustment()
@@ -889,7 +889,7 @@ def do_transfers_extras():
     transfers_file.save(file_path)
 
     # creates the file object that is going to be used in the
-    # reading of the csv file (underlying object)
+    # reading of the CSV file (underlying object)
     file = open(file_path, "rb")
     try: data = file.read()
     finally: file.close()
@@ -1023,8 +1023,8 @@ def do_transfers_extras():
             except: pass
 
     try:
-        # start the csv import operation that is going to import the
-        # various lines of the csv in the buffer and for each of them
+        # start the CSV import operation that is going to import the
+        # various lines of the CSV in the buffer and for each of them
         # call the function passed as callback
         util.csv_import(buffer, callback, delimiter = ";")
         flush_transfer()

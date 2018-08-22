@@ -511,7 +511,7 @@ def do_metadata_extras():
         # proper execution of the metadata import
         model = dict(metadata = metadata)
         if name: model["name"] = name
-        if description: model["description"] = description
+        if description: model["description"] = description[:256]
         api.update_entity(object_id, payload = dict(root_entity = model))
 
     try:

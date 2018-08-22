@@ -4,7 +4,7 @@
 {% block content %}
     <div class="quote">
         Please provide the file containing the list of metadata to be imported
-        to the data source, the file should be <strong>csv file
+        to the data source, the file should be <strong>CSV file
         based</strong> containing object id and metdata.<br />
         Remember this is a <strong>dangerous operation</strong>.
     </div>

@@ -4,7 +4,7 @@
 {% block content %}
     <div class="quote">
         Please provide the file containing the transfers list to be imported
-        to the data source, the file should be <strong>csv and multiple value
+        to the data source, the file should be <strong>CSV and multiple value
         based</strong> containing the store codes and product codes.<br />
         Remember this is a <strong>dangerous operation</strong>.
     </div>

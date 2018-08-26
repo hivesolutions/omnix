@@ -421,7 +421,8 @@ def do_metadata_extras():
             season,\
             gender,\
             description,\
-            order = line[:13]
+            order,\
+            sku_field = line[:14]
 
             # normalizes the various values that have been extracted from the line
             # so they are properly represented for importing
@@ -458,7 +459,8 @@ def do_metadata_extras():
                 brand = brand,
                 season = season,
                 gender = gender,
-                order = order
+                order = order,
+                sku_field = sku_field
             )
 
         # tries to "cast" the base value as an integer and in case

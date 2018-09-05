@@ -111,12 +111,29 @@ def reset():
     )
 
 @app.route("/flush_slack", methods = ("GET",))
+@app.route("/flush_slack_sales", methods = ("GET",))
 @quorum.ensure("base.admin")
-def flush_slack():
+def flush_slack_sales():
     channel = quorum.get_field("channel", None)
     offset = quorum.get_field("offset", 0, cast = int)
 
     util.slack_sales(channel = channel, offset = offset)
+
+    return flask.redirect(
+        flask.url_for(
+            "index",
+             message = "Slack events have been sent"
+        )
+    )
+
+@app.route("/flush_slack_previous", methods = ("GET",))
+@quorum.ensure("base.admin")
+def flush_slack_previous():
+    channel = quorum.get_field("channel", None)
+    offset = quorum.get_field("offset", 0, cast = int)
+    span = quorum.get_field("span", 7, cast = int)
+
+    util.slack_previous(channel = channel, offset = offset, span = span)
 
     return flask.redirect(
         flask.url_for(

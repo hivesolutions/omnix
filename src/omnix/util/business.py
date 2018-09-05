@@ -267,6 +267,39 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
             )
 
 @quorum.ensure_context
+def slack_previous(api = None, channel = None, all = False, offset = 0, span = 7):
+    from omnix import models
+
+    # tries to retrieve the reference to the API object
+    # and if it fails returns immediately (soft fail)
+    api = api or logic.get_api()
+    settings = models.Settings.get_settings()
+    slack_api = settings.get_slack_api()
+    if not slack_api: return
+
+    current = datetime.datetime.utcfromtimestamp(time.time())
+    previous = datetime.datetime(
+        current.year - 1,
+        current.month,
+        current.day,
+        hour = current.hour,
+        minute = current.minute,
+        second = current.second
+    )
+    previous_t = previous.utctimetuple()
+    previous_t = calendar.timegm(previous_t)
+
+    contents = api.stats_sales(
+        date = previous_t - offset * 86400,
+        unit = "day",
+        span = span,
+        has_global = True
+    )
+
+    import pprint
+    pprint.pprint(contents)
+
+@quorum.ensure_context
 def mail_birthday_all(
     api = None,
     month = None,

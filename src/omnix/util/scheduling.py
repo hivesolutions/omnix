@@ -77,7 +77,7 @@ def sales_slack(offset = 1):
     api = logic.get_api(mode = omni.API.DIRECT_MODE)
     business.slack_sales(api = api, offset = offset)
 
-def previous_slack(offset = 1, span = 7):
+def previous_slack(offset = 0, span = 7):
     api = logic.get_api(mode = omni.API.DIRECT_MODE)
     business.slack_previous(api = api, offset = offset, span = span)
 

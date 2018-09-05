@@ -299,7 +299,7 @@ def slack_previous(api = None, channel = None, all = False, offset = 0, span = 7
     values = contents["-1"]
     name = values["name"]
     name = name.capitalize()
-    text = "Previous weekly sales for %d" % previous.year
+    text = "Weekly sales for %d" % previous.year
 
     fields = []
     curent_t = previous_t - offset * 86400

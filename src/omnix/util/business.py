@@ -290,7 +290,7 @@ def slack_previous(api = None, channel = None, all = False, offset = 0, span = 7
     previous_t = calendar.timegm(previous_t)
 
     contents = api.stats_sales(
-        date = previous_t - offset * 86400 + span * 86400,
+        date = previous_t - offset * 86400 + (span - 1) * 86400,
         unit = "day",
         span = span,
         has_global = True
@@ -299,7 +299,7 @@ def slack_previous(api = None, channel = None, all = False, offset = 0, span = 7
     values = contents["-1"]
     name = values["name"]
     name = name.capitalize()
-    text = "Previous sales for %d" % previous.year
+    text = "Previous weekly sales for %d" % previous.year
 
     fields = []
     curent_t = previous_t - offset * 86400
@@ -308,7 +308,7 @@ def slack_previous(api = None, channel = None, all = False, offset = 0, span = 7
         fields.append(
             dict(
                 title = "Sales for %s" % (datetime.datetime.utcfromtimestamp(curent_t).strftime("%d of %B")),
-                value = "*%.2f EUR*" % value,
+                value = "%.2f EUR" % value,
                 short = False,
                 mrkdwn = True
             )

@@ -55,7 +55,7 @@ def load():
 def load_slack():
     if not config.REMOTE: return
     sales_time = quorum.daily_work(sales_slack, offset = 14400)
-    previous_time = quorum.weekly_work(previous_slack, weekday = 6, offset = 14400)
+    previous_time = quorum.weekly_work(previous_slack, weekday = 0, offset = 14400)
     sales_date = datetime.datetime.utcfromtimestamp(sales_time)
     previous_date = datetime.datetime.utcfromtimestamp(previous_time)
     quorum.debug("Scheduled initial daily sales slack task for %s" % sales_date)

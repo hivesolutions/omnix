@@ -296,8 +296,39 @@ def slack_previous(api = None, channel = None, all = False, offset = 0, span = 7
         has_global = True
     )
 
-    import pprint
-    pprint.pprint(contents)
+    values = contents["-1"]
+    name = values["name"]
+    name = name.capitalize()
+    text = "Previous sales for %d" % previous.year
+
+    fields = []
+    curent_t = previous_t - offset * 86400
+
+    for value in values["net_price_vat"]:
+        fields.append(
+            dict(
+                title = "Sales for %s" % (datetime.datetime.utcfromtimestamp(curent_t).strftime("%d of %B")),
+                value = "*%.2f EUR*" % value,
+                short = False,
+                mrkdwn = True
+            )
+        )
+        curent_t += 86400
+
+    slack_api.post_message_chat(
+        channel or settings.slack_channel or "general",
+        None,
+        attachments = [
+            dict(
+                fallback = text,
+                color = "#36a64f",
+                title = text,
+                test = text,
+                mrkdwn_in = ["text", "pretext", "fields"],
+                fields = fields
+            )
+        ]
+    )
 
 @quorum.ensure_context
 def mail_birthday_all(

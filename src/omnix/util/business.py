@@ -304,11 +304,11 @@ def slack_previous(api = None, channel = None, all = False, offset = 0, span = 7
     fields = []
     curent_t = previous_t - offset * 86400
 
-    for value in values["net_price_vat"]:
+    for amount, number_sales in zip(values["net_price_vat"], values["net_number_sales"]):
         fields.append(
             dict(
                 title = "Sales for %s" % (datetime.datetime.utcfromtimestamp(curent_t).strftime("%d of %B")),
-                value = "%.2f EUR" % value,
+                value = "%.2f EUR (%d x)" % (amount, number_sales),
                 short = False,
                 mrkdwn = True
             )

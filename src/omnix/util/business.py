@@ -295,13 +295,6 @@ def slack_previous(api = None, channel = None, all = False, offset = 0):
         has_global = True
     )
 
-    # unpacks the contents of the API call and creates som of the
-    # global values to be used in the Slack message creation
-    values = contents["-1"]
-    name = values["name"]
-    name = name.capitalize()
-    text = "Previous period sales for %s" % previous.strftime("%d, %B of %Y")
-
     # starts both the best (sales) value and the numeric value
     # for this same best value, these values should start with
     # the lower possible values (to be overriden)
@@ -320,6 +313,13 @@ def slack_previous(api = None, channel = None, all = False, offset = 0):
             flask.url_for("sales_stores", id = object_id, _external = True),
             store_name
         )
+
+    # unpacks the contents of the API call and creates som of the
+    # global values to be used in the Slack message creation
+    values = contents["-1"]
+    name = values["name"]
+    name = name.capitalize()
+    text = "Previous period sales for %s" % previous.strftime("%d, %B of %Y")
 
     values = dict(
         number_entries = values["number_entries"][-1],

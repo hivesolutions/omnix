@@ -295,6 +295,8 @@ def slack_previous(api = None, channel = None, all = False, offset = 0):
         has_global = True
     )
 
+    # unpacks the contents of the API call and creates som of the
+    # global values to be used in the Slack message creation
     values = contents["-1"]
     name = values["name"]
     name = name.capitalize()

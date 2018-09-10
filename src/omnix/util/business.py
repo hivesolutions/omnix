@@ -81,6 +81,7 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     contents = api.stats_sales(
         date = time.time() - offset * 86400,
         unit = "day",
+        span = 1,
         has_global = True
     )
     object_ids = quorum.legacy.keys(contents)
@@ -93,11 +94,13 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     day_comparison = get_comparison(
         api = api,
         unit = "day",
+        span = 1,
         offset = offset * -1
     )
     month_comparison = get_comparison(
         api = api,
         unit = "month",
+        span = 1,
         offset = current.day * -1
     )
 
@@ -290,8 +293,9 @@ def slack_previous(api = None, channel = None, all = False, offset = 0):
     previous_t = calendar.timegm(previous_t)
 
     contents = api.stats_sales(
-        date = previous_t - (offset - 1) * 86400,
+        date = previous_t - offset * 86400,
         unit = "day",
+        span = 1,
         has_global = True
     )
 

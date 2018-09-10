@@ -61,8 +61,8 @@ def load_slack():
     previous_date = datetime.datetime.utcfromtimestamp(previous_time)
     week_date = datetime.datetime.utcfromtimestamp(week_time)
     quorum.debug("Scheduled initial daily sales slack task for %s" % sales_date)
-    quorum.debug("Scheduled initial daily previous slack task for %s" % previous_date)
-    quorum.debug("Scheduled initial weekly previous (sales) slack task for %s" % week_date)
+    quorum.debug("Scheduled initial daily previous (sales) slack task for %s" % previous_date)
+    quorum.debug("Scheduled initial weekly previous week (sales) slack task for %s" % week_date)
 
 def load_mail():
     if not config.REMOTE: return

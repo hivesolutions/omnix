@@ -314,7 +314,7 @@ def slack_previous(api = None, channel = None, all = False, offset = 0):
             store_name
         )
 
-    # unpacks the contents of the API call and creates som of the
+    # unpacks the contents of the API call and creates some of the
     # global values to be used in the Slack message creation
     values = contents["-1"]
     name = values["name"]

@@ -55,11 +55,14 @@ def load():
 def load_slack():
     if not config.REMOTE: return
     sales_time = quorum.daily_work(sales_slack, offset = 14400)
-    previous_time = quorum.weekly_work(previous_slack, weekday = 0, offset = 14400)
+    previous_time = quorum.daily_work(previous_slack, offset = 14400)
+    week_time = quorum.weekly_work(week_slack, weekday = 0, offset = 14400)
     sales_date = datetime.datetime.utcfromtimestamp(sales_time)
     previous_date = datetime.datetime.utcfromtimestamp(previous_time)
+    week_date = datetime.datetime.utcfromtimestamp(week_time)
     quorum.debug("Scheduled initial daily sales slack task for %s" % sales_date)
-    quorum.debug("Scheduled initial weekly previous (sales) slack task for %s" % previous_date)
+    quorum.debug("Scheduled initial daily previous slack task for %s" % previous_date)
+    quorum.debug("Scheduled initial weekly previous (sales) slack task for %s" % week_date)
 
 def load_mail():
     if not config.REMOTE: return
@@ -77,7 +80,11 @@ def sales_slack(offset = 1):
     api = logic.get_api(mode = omni.API.DIRECT_MODE)
     business.slack_sales(api = api, offset = offset)
 
-def previous_slack(offset = 0, span = 7):
+def previous_slack(offset = 0):
+    api = logic.get_api(mode = omni.API.DIRECT_MODE)
+    business.slack_previous(api = api, offset = offset)
+
+def week_slack(offset = 0, span = 7):
     api = logic.get_api(mode = omni.API.DIRECT_MODE)
     business.slack_previous(api = api, offset = offset, span = span)
 

@@ -267,7 +267,118 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
             )
 
 @quorum.ensure_context
-def slack_previous(api = None, channel = None, all = False, offset = 0, span = 7):
+def slack_previous(api = None, channel = None, all = False, offset = 0):
+    from omnix import models
+
+    # tries to retrieve the reference to the API object
+    # and if it fails returns immediately (soft fail)
+    api = api or logic.get_api()
+    settings = models.Settings.get_settings()
+    slack_api = settings.get_slack_api()
+    if not slack_api: return
+
+    current = datetime.datetime.utcfromtimestamp(time.time())
+    previous = datetime.datetime(
+        current.year - 1,
+        current.month,
+        current.day,
+        hour = current.hour,
+        minute = current.minute,
+        second = current.second
+    )
+    previous_t = previous.utctimetuple()
+    previous_t = calendar.timegm(previous_t)
+
+    contents = api.stats_sales(
+        date = previous_t - (offset - 1) * 86400,
+        unit = "day",
+        has_global = True
+    )
+
+    values = contents["-1"]
+    name = values["name"]
+    name = name.capitalize()
+    text = "Previous period sales for %s" % previous.strftime("%d, %B of %Y")
+
+    # starts both the best (sales) value and the numeric value
+    # for this same best value, these values should start with
+    # the lower possible values (to be overriden)
+    best_value, value = None, -1.0
+
+    # iterates over the complete set of "stores" to try to find
+    # the one to be considered the best selling one and creates
+    # the best value string for it
+    for object_id, values in quorum.legacy.iteritems(contents):
+        store_name = values["name"]
+        store_net_price_vat = values["net_price_vat"][-1]
+        if not store_net_price_vat > value: continue
+        if object_id == "-1": continue
+        value = store_net_price_vat
+        best_value = "<%s|%s>" % (
+            flask.url_for("sales_stores", id = object_id, _external = True),
+            store_name
+        )
+
+    values = dict(
+        number_entries = values["number_entries"][-1],
+        net_price_vat = values["net_price_vat"][-1],
+        net_average_sale = values["net_price_vat"][-1] / (values["net_number_sales"][-1] or 1.0),
+        net_number_sales = values["net_number_sales"][-1]
+    )
+
+    slack_api.post_message_chat(
+        channel or settings.slack_channel or "general",
+        None,
+        attachments = [
+            dict(
+                fallback = text,
+                color = "#36a64f",
+                title = text,
+                title_link = flask.url_for("sales_stores", id = object_id, _external = True),
+                test = text,
+                mrkdwn_in = ["text", "pretext", "fields"],
+                fields = [
+                    dict(
+                        title = "Store Name",
+                        value = "<%s|%s>" % (
+                            flask.url_for("sales_stores", id = object_id, _external = True),
+                            name
+                        ),
+                        short = True
+                    ),
+                    dict(
+                        title = "Best Store",
+                        value = best_value,
+                        short = True
+                    ),
+                    dict(
+                        title = "Number Entries",
+                        value = "%d x" % values["number_entries"],
+                        short = True
+                    ),
+                    dict(
+                        title = "Number Sales",
+                        value = "%d x" % values["net_number_sales"],
+                        short = True
+                    ),
+                    dict(
+                        title = "Average Sale",
+                        value = "%.2f EUR" % values["net_average_sale"],
+                        short = True
+                    ),
+                    dict(
+                        title = "Total Sales",
+                        value = "*%.2f EUR*" % values["net_price_vat"],
+                        short = True,
+                        mrkdwn = True
+                    )
+                ]
+            )
+        ]
+    )
+
+@quorum.ensure_context
+def slack_week(api = None, channel = None, all = False, offset = 0, span = 7):
     from omnix import models
 
     # tries to retrieve the reference to the API object

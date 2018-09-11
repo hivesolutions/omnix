@@ -94,13 +94,11 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     day_comparison = get_comparison(
         api = api,
         unit = "day",
-        span = 1,
         offset = offset * -1
     )
     month_comparison = get_comparison(
         api = api,
         unit = "month",
-        span = 1,
         offset = current.day * -1
     )
 

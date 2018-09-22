@@ -405,7 +405,7 @@ def slack_week(api = None, channel = None, all = False, offset = 0, span = 7):
     previous_t = calendar.timegm(previous_t)
 
     contents = api.stats_sales(
-        date = previous_t + (span - offset) * 86400,
+        date = previous_t + (span - offset - 1) * 86400,
         unit = "day",
         span = span,
         has_global = True

@@ -86,7 +86,7 @@ def previous_slack(offset = 0):
 
 def week_slack(offset = 0, span = 7):
     api = logic.get_api(mode = omni.API.DIRECT_MODE)
-    business.slack_previous(api = api, offset = offset, span = span)
+    business.slack_week(api = api, offset = offset, span = span)
 
 def birthday_mail(month = None, day = None):
     api = logic.get_api(mode = omni.API.DIRECT_MODE)

@@ -102,6 +102,12 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
         offset = current.day * -1
     )
 
+    # in case the month in calculus if the first one an empty
+    # result is going to be forced as this is the case for the
+    # first month (only day comparison is relevant)
+    if current.month == 1:
+        month_comparison = empty_results(month_comparison)
+
     # in case the current day is not the first one then the month
     # comparison values are from the previous month and so the day
     # values must be incremented to those to get the proper year
@@ -840,6 +846,47 @@ def sum_results(first, second, calc = True):
             # map to calculate the complete set of sums
             for _key in quorum.legacy.iterkeys(first_m):
                 result_m[_key] = first_m.get(_key, 0.0) + second_m.get(_key, 0.0)
+
+    if calc:
+        calc_extra(result)
+        calc_results(result)
+
+    return result
+
+def empty_results(input, calc = True):
+    """
+    Generates an empty results dictionary taking as reference the
+    input dictionary structure.
+
+    The resulting dictionary should conform with the expected input
+    specification.
+
+    :type first: Dictionary
+    :param first: The comparison dictionary to be used for the spec
+    analysis on the generation of the empty dictionary.
+    :type calc: bool
+    :param calc: If the calculated attributes should be re-calculated
+    after the empty operation has occurred.
+    :rtype: Dictionary
+    :return: A new dictionary containing an empty result set.
+    """
+
+    result = dict()
+
+    for object_id in quorum.legacy.iterkeys(input):
+        input_r = input[object_id]
+
+        result_r = result.get(object_id, {})
+        result[object_id] = result_r
+
+        for key in quorum.legacy.iterkeys(input_r):
+            input_m = input_r[key]
+
+            result_m = result_r.get(key, {})
+            result_r[key] = result_m
+
+            for _key in quorum.legacy.iterkeys(input_m):
+                result_m[_key] = 0.0
 
     if calc:
         calc_extra(result)

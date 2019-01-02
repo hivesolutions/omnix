@@ -151,3 +151,33 @@ class BusinessTest(unittest.TestCase):
         self.assertEqual(previous_v["span"], 1)
         self.assertEqual(previous_v["unit"], "month")
         self.assertEqual(previous_v["has_global"], True)
+
+        timestamp = calendar.timegm(datetime.datetime(year = 2018, month = 2, day = 1, hour = 4).utctimetuple())
+        current = calendar.timegm(datetime.datetime(year = 2018, month = 1, day = 31, hour = 4).utctimetuple())
+        previous = calendar.timegm(datetime.datetime(year = 2017, month = 1, day = 31, hour = 4).utctimetuple())
+        current_v, previous_v = omnix.calc_comparison(unit = "month", offset = -1, timestamp = timestamp)
+
+        self.assertEqual(current_v["date"], current)
+        self.assertEqual(current_v["span"], 1)
+        self.assertEqual(current_v["unit"], "month")
+        self.assertEqual(current_v["has_global"], True)
+
+        self.assertEqual(previous_v["date"], previous)
+        self.assertEqual(previous_v["span"], 1)
+        self.assertEqual(previous_v["unit"], "month")
+        self.assertEqual(previous_v["has_global"], True)
+
+        timestamp = calendar.timegm(datetime.datetime(year = 2018, month = 2, day = 2, hour = 4).utctimetuple())
+        current = calendar.timegm(datetime.datetime(year = 2018, month = 1, day = 31, hour = 4).utctimetuple())
+        previous = calendar.timegm(datetime.datetime(year = 2017, month = 1, day = 31, hour = 4).utctimetuple())
+        current_v, previous_v = omnix.calc_comparison(unit = "month", offset = -2, timestamp = timestamp)
+
+        self.assertEqual(current_v["date"], current)
+        self.assertEqual(current_v["span"], 1)
+        self.assertEqual(current_v["unit"], "month")
+        self.assertEqual(current_v["has_global"], True)
+
+        self.assertEqual(previous_v["date"], previous)
+        self.assertEqual(previous_v["span"], 1)
+        self.assertEqual(previous_v["unit"], "month")
+        self.assertEqual(previous_v["has_global"], True)

@@ -102,9 +102,9 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
         offset = current.day * -1
     )
 
-    # in case the month in calculus is the first one an empty
+    # in case the month in calculus is the first one then an empty
     # result is going to be forced as this is the case for the
-    # first month (only day comparison is relevant)
+    # first month of the year (only day comparison is relevant)
     if current.month == 1:
         month_comparison = empty_results(month_comparison)
 

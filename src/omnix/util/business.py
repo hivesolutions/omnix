@@ -75,6 +75,23 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     target = current - delta
     date_s = target.strftime("%d of %B")
 
+    # calculates both the day and the month (time) reference values
+    # to be used in the calculus of the comparison values, notice
+    # that the day is positioned at the offset value in the month
+    # and the month one is positioned at the beginning of the month
+    # considered to be of reference (previous n months calculus)
+    day_ref = target
+    month_ref = datetime.datetime(
+        target.year,
+        target.month,
+        target.day,
+        hour = target.hour,
+        minute = target.minute,
+        second = target.second
+    ) - datetime.timedelta(days = target.day)
+    day_ref_t = calendar.timegm(day_ref.utctimetuple())
+    month_ref_t = calendar.timegm(month_ref.utctimetuple())
+
     # retrieves the complete set of sales according to the
     # default value and then sorts the received object identifiers
     # according to their names and in case the
@@ -94,18 +111,18 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     day_comparison = get_comparison(
         api = api,
         unit = "day",
-        offset = offset * -1
+        timestamp = day_ref_t
     )
     month_comparison = get_comparison(
         api = api,
         unit = "month",
-        offset = current.day * -1
+        timestamp = month_ref_t
     )
 
     # in case the month in calculus is the first one then an empty
     # result is going to be forced as this is the case for the
     # first month of the year (only day comparison is relevant)
-    if current.month == 1:
+    if target.month == 1:
         month_comparison = empty_results(month_comparison)
 
     # increments the month values (year to date) that currently contain

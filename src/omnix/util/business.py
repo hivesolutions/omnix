@@ -111,7 +111,7 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     # increments the month values (year to date) that currently contain
     # only the completed month values with the values for the on-going
     # month (day comparison) this should provide the complete year to
-    # date set of values (as expected) 
+    # date set of values (previous months plus current month values)
     month_comparison = sum_results(month_comparison, day_comparison)
 
     # starts both the best (sales) value and the numeric value

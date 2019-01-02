@@ -81,14 +81,7 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
     # and the month one is positioned at the beginning of the month
     # considered to be of reference (previous n months calculus)
     day_ref = target
-    month_ref = datetime.datetime(
-        target.year,
-        target.month,
-        target.day,
-        hour = target.hour,
-        minute = target.minute,
-        second = target.second
-    ) - datetime.timedelta(days = target.day)
+    month_ref = target - datetime.timedelta(days = target.day)
     day_ref_t = calendar.timegm(day_ref.utctimetuple())
     month_ref_t = calendar.timegm(month_ref.utctimetuple())
 

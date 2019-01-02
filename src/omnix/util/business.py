@@ -800,6 +800,26 @@ def get_comparison(api = None, unit = "day", offset = 0, timestamp = None):
     return results
 
 def sum_results(first, second, calc = True):
+    """
+    Sums the results of the first comparison dictionary
+    with the second one.
+
+    The function should return a dictionary compliant with
+    the structure of the input ones.
+
+    :type first: Dictionary
+    :param first: The first comparison dictionary to be used
+    for the sum operation.
+    :type second: Dictionary
+    :param second: The second comparison dictionary to be used
+    in the sum.
+    :type calc: bool
+    :param calc: If the calculated attributes should be re-calculated
+    after the sum has occurred.
+    :rtype: Dictionary
+    :return: A new dictionary containing the resulting values.
+    """
+
     result = dict()
 
     for object_id in quorum.legacy.iterkeys(first):

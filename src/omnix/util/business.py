@@ -102,18 +102,17 @@ def slack_sales(api = None, channel = None, all = False, offset = 0):
         offset = current.day * -1
     )
 
-    # in case the month in calculus if the first one an empty
+    # in case the month in calculus is the first one an empty
     # result is going to be forced as this is the case for the
     # first month (only day comparison is relevant)
     if current.month == 1:
         month_comparison = empty_results(month_comparison)
 
-    # in case the current day is not the first one then the month
-    # comparison values are from the previous month and so the day
-    # values must be incremented to those to get the proper year
-    # to date final values (ready for the comparison)
-    if not current.day == 1:
-        month_comparison = sum_results(month_comparison, day_comparison)
+    # increments the month values (year to date) that currently contain
+    # only the completed month values with the values for the on-going
+    # month (day comparison) this should provide the complete year to
+    # date set of values (as expected) 
+    month_comparison = sum_results(month_comparison, day_comparison)
 
     # starts both the best (sales) value and the numeric value
     # for this same best value, these values should start with

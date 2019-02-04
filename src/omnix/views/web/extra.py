@@ -422,7 +422,8 @@ def do_metadata_extras():
             gender,\
             description,\
             order,\
-            sku_field = line[:14]
+            discountable,\
+            sku_field = line[:15]
 
             # normalizes the various values that have been extracted from the line
             # so they are properly represented for importing
@@ -437,6 +438,8 @@ def do_metadata_extras():
             gender = gender or None
             description = description or None
             order = order or None
+            discountable = discountable or None
+            sku_field = sku_field or None
 
             # verifies and strips the various possible string values so that they
             # represent a valid not trailed value
@@ -447,6 +450,8 @@ def do_metadata_extras():
             if gender: gender = gender.strip()
             if description: description = description.strip()
             if order: order = int(order.strip())
+            if discountable: discountable = discountable == "1"
+            if sku_field: sku_field = sku_field.strip()
 
             # creates the update dictionary that is going to be used in the updating
             # of the "product" metadata (this is considered to be a delta dictionary)
@@ -460,6 +465,7 @@ def do_metadata_extras():
                 season = season,
                 gender = gender,
                 order = order,
+                discountable = discountable,
                 sku_field = sku_field
             )
 

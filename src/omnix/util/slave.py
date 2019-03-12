@@ -98,7 +98,7 @@ class Slave(threading.Thread):
                 self.channel.basic_qos(prefetch_count = 1)
                 self.channel.basic_consume(self.callback, queue = queue)
                 self.channel.start_consuming()
-            except BaseException as exception:
+            except Exception as exception:
                 quorum.error(
                     "Exception while executing - %s" % quorum.legacy.UNICODE(exception),
                     log_trace = True
@@ -163,7 +163,7 @@ class Slave(threading.Thread):
             # described by the provided object id, in case there's a problem
             # in the request an exception should be raised and handled properly
             api_method(object_id)
-        except BaseException as exception:
+        except Exception as exception:
             quorum.error("Exception while submitting document - %s" % quorum.legacy.UNICODE(exception))
             retries = properties.priority or 0
             retries -= 1

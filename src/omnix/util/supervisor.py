@@ -105,7 +105,7 @@ class Supervisor(threading.Thread):
                 self.channel.queue_declare(queue = queue, durable = True)
                 self.queue = queue
                 break
-            except BaseException as exception:
+            except Exception as exception:
                 if not retry: raise
                 quorum.error(
                     "Exception while connecting - %s" % quorum.legacy.UNICODE(exception),
@@ -180,7 +180,7 @@ class Supervisor(threading.Thread):
                     )
                 )
                 count += 1
-            except BaseException as exception:
+            except Exception as exception:
                 # prints a warning message about the exception that has just occurred
                 # so that it's possible to act on it
                 quorum.warning(
@@ -199,7 +199,7 @@ class Supervisor(threading.Thread):
     def loop(self):
         while True:
             try: self.execute()
-            except BaseException as exception:
+            except Exception as exception:
                 # prints an error message about the exception that has just occurred
                 # so that it's possible to act on it
                 quorum.error(
@@ -214,7 +214,7 @@ class Supervisor(threading.Thread):
             try:
                 if self.connection: self.connection.sleep(LOOP_TIMEOUT)
                 else: time.sleep(LOOP_TIMEOUT)
-            except BaseException as exception:
+            except Exception as exception:
                 # prints a critical message about the exception that has just occurred
                 # so that it's possible to act on it
                 quorum.critical(

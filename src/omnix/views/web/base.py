@@ -249,7 +249,7 @@ def flush_at():
             # account that the document id to be submitted is the one that
             # has been extracted from the (signed) document structure
             api.submit_invoice_at(object_id)
-        except BaseException as exception:
+        except Exception as exception:
             quorum.error("Exception while submitting document - %s" % quorum.legacy.UNICODE(exception))
         else:
             quorum.info("Document submitted with success")

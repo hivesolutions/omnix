@@ -78,7 +78,7 @@ class Settings(base.Base):
 
     def get_slack_api(self):
         try: import slack
-        except: return None
+        except ImportError: return None
         if not self.slack_token: return None
         redirect_url = util.BASE_URL + flask.url_for("oauth_slack")
         access_token = self.slack_token

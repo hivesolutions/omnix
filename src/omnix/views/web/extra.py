@@ -125,7 +125,7 @@ def do_media_extras():
                 # tries to "cast" the base file name value as an integer and in case
                 # it's possible assumes that this value is the object identifier
                 try: object_id = int(base_s[0])
-                except: object_id = None
+                except Exception: object_id = None
 
                 # in case no object id was retrieved from the base file name value
                 # a secondary strategy is used, so that the merchandise database
@@ -145,7 +145,7 @@ def do_media_extras():
                     # merchandise entity for the requested (unique) product code in
                     # case there's at least one merchandise its object id is used
                     try: merchandise = api.list_merchandise(**kwargs)
-                    except: merchandise = []
+                    except Exception: merchandise = []
                     if merchandise: object_id = merchandise[0]["object_id"]
 
                 # in case no object id was retrieved must skip the current loop
@@ -472,7 +472,7 @@ def do_metadata_extras():
         # tries to "cast" the base value as an integer and in case
         # it's possible assumes that this value is the object identifier
         try: object_id = int(base)
-        except: object_id = None
+        except Exception: object_id = None
 
         # in case no object id was retrieved from the base name value
         # a secondary strategy is used, so that the merchandise database
@@ -492,7 +492,7 @@ def do_metadata_extras():
             # merchandise entity for the requested (unique) product code in
             # case there's at least one merchandise its object id is used
             try: merchandise = api.list_merchandise(**kwargs)
-            except: merchandise = []
+            except Exception: merchandise = []
             if merchandise: object_id = merchandise[0]["object_id"]
 
         # in case no object id was retrieved must skip the current loop
@@ -777,7 +777,7 @@ def do_inventory_extras():
         }
 
         try: stores = api.list_stores(**kwargs)
-        except: stores = []
+        except Exception: stores = []
         if stores: object_id = stores[0]["object_id"]
 
         stores_map[store_code] = object_id
@@ -803,7 +803,7 @@ def do_inventory_extras():
         # merchandise entity for the requested (unique) product code in
         # case there's at least one merchandise its object id is used
         try: merchandise = api.list_merchandise(**kwargs)
-        except: merchandise = []
+        except Exception: merchandise = []
         if merchandise: object_id = merchandise[0]["object_id"]
 
         # updates the (cache) map for the merchandise with the reference
@@ -832,7 +832,7 @@ def do_inventory_extras():
                 merchandise_id,
                 quantity = quantity
             )
-            except: pass
+            except Exception: pass
 
     try:
         # start the CSV import operation that is going to import the
@@ -982,7 +982,7 @@ def do_transfers_extras():
         }
 
         try: stores = api.list_stores(**kwargs)
-        except: stores = []
+        except Exception: stores = []
         if stores: object_id = stores[0]["object_id"]
 
         stores_map[store_code] = object_id
@@ -1008,7 +1008,7 @@ def do_transfers_extras():
         # merchandise entity for the requested (unique) product code in
         # case there's at least one merchandise its object id is used
         try: merchandise = api.list_merchandise(**kwargs)
-        except: merchandise = []
+        except Exception: merchandise = []
         if merchandise: object_id = merchandise[0]["object_id"]
 
         # updates the (cache) map for the merchandise with the reference
@@ -1036,7 +1036,7 @@ def do_transfers_extras():
                 merchandise_id,
                 quantity = quantity
             )
-            except: pass
+            except Exception: pass
 
     try:
         # start the CSV import operation that is going to import the
@@ -1115,7 +1115,7 @@ def do_template_extras():
 
     api = util.get_api()
     try: mask_data = api.public_media_system_company(label = mask_name)
-    except: mask_data = None
+    except Exception: mask_data = None
     if not mask_data: raise quorum.OperationalError("No mask defined")
 
     out_data = util.mask_image(base_data, mask_data, format = format)

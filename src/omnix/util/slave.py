@@ -96,7 +96,10 @@ class Slave(threading.Thread):
                 self.channel = self.connection.channel()
                 self.channel.queue_declare(queue = queue, durable = True)
                 self.channel.basic_qos(prefetch_count = 1)
-                self.channel.basic_consume(self.callback, queue = queue)
+                self.channel.basic_consume(
+                    queue = queue,
+                    on_message_callback = self.callback
+                )
                 self.channel.start_consuming()
             except Exception as exception:
                 quorum.error(

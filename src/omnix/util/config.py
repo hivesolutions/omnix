@@ -149,6 +149,10 @@ COMMISSION_DAY = quorum.conf("OMNIX_COMMISSION_DAY", 26, cast = int)
 IMAGE_RESIZE = quorum.conf("OMNIX_IMAGE_RESIZE", "crop")
 LOCALE = quorum.conf("OMNIX_LOCALE", "en_us")
 QUEUE = quorum.conf("OMNIX_QUEUE", "omnix")
+BIRTHDAY_TEMPLATE = quorum.conf(
+    "OMNIX_BIRTHDAY_TEMPLATE",
+    "email/birthday.%s.html.tpl" % LOCALE
+)
 
 OMNI_URL = REMOTE_URL if REMOTE else LOCAL_URL
 PREFIX = REMOTE_PREFIX if REMOTE else LOCAL_PREFIX

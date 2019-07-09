@@ -18,6 +18,7 @@ part of the omni extension (supervisor).
 | **OMNIX_CLIENT_ID** | `str` | The identifier of the Omni API client to be used for authentication. |
 | **OMNIX_CLIENT_SECRET** | `str` | The secret string to be used by the Omni API client for authentication. |
 | **OMNIX_QUEUE** | `str` | The name of AMQP queue that is going to be used (defaults to `omnix`). |
+| **OMNIX_BIRTHDAY_TEMPLATE** | `str` | If set allows for a remote definition of the base template to be used for email sending  (defaults to `None`). |
 | **REMOTE** | `bool` | If the remove mode should be used (production URL creation). |
 | **OMNIX_REMOTE** | `bool` | Same as `REMOTE`. |
 | **OMNIX_SCHEDULE** | `bool` | If the scheduling (background) operations of the Omnix should be enabled (defaults to `True`). |

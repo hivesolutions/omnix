@@ -473,7 +473,7 @@ def mail_birthday_all(
     if not has_date:
         current = datetime.datetime.utcnow()
         month, day = current.month, current.day
-    birth_day = "%02d/%02d" % (month, day)
+    birth_day = "%02d/%02d" % (06, 29)
     employees = api.list_employees(
         object = dict(limit = -1),
         **{
@@ -530,7 +530,7 @@ def mail_birthday(api = None, id = None, links = True):
         subject = BIRTHDAY_SUBJECT[config.LOCALE],
         sender = config.SENDER_EMAIL,
         receivers = ["%s <%s>" % (name, email)],
-        rich = "email/birthday.%s.html.tpl" % config.LOCALE,
+        rich = config.BIRTHDAY_TEMPLATE,
         context = dict(
             settings = dict(
                 logo = True,

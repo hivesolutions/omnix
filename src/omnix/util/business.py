@@ -473,7 +473,7 @@ def mail_birthday_all(
     if not has_date:
         current = datetime.datetime.utcnow()
         month, day = current.month, current.day
-    birth_day = "%02d/%02d" % (06, 29)
+    birth_day = "%02d/%02d" % (month, day)
     employees = api.list_employees(
         object = dict(limit = -1),
         **{

@@ -413,6 +413,7 @@ def do_metadata_extras():
             name,\
             _retail_price,\
             compare_price,\
+            discount,\
             characteristics,\
             material,\
             category,\
@@ -423,7 +424,7 @@ def do_metadata_extras():
             description,\
             order,\
             discountable,\
-            sku_field = line[:15]
+            sku_field = line[:16]
 
             # normalizes the various values that have been extracted from the line
             # so they are properly represented for importing
@@ -440,6 +441,7 @@ def do_metadata_extras():
             order = order or None
             discountable = discountable or None
             sku_field = sku_field or None
+            discount = discount or None
 
             # verifies and strips the various possible string values so that they
             # represent a valid not trailed value
@@ -452,11 +454,13 @@ def do_metadata_extras():
             if order: order = int(order.strip())
             if discountable: discountable = discountable == "1"
             if sku_field: sku_field = sku_field.strip()
+            if discount: discount = float(discount)
 
             # creates the update dictionary that is going to be used in the updating
             # of the "product" metadata (this is considered to be a delta dictionary)
             update = dict(
                 compare_price = compare_price,
+                discount = discount,
                 characteristics = characteristics,
                 material = material,
                 category = category,

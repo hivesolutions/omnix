@@ -430,6 +430,7 @@ def do_metadata_extras():
             # so they are properly represented for importing
             name = name or None
             compare_price = compare_price or None
+            discount = discount or None
             characteristics = [value.strip() for value in characteristics.split(";") if value.strip()]
             material = [value.strip() for value in material.split(";") if value.strip()]
             category = [value.strip() for value in category.split(";") if value.strip()]
@@ -441,7 +442,6 @@ def do_metadata_extras():
             order = order or None
             discountable = discountable or None
             sku_field = sku_field or None
-            discount = discount or None
 
             # verifies and strips the various possible string values so that they
             # represent a valid not trailed value

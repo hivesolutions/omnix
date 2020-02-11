@@ -52,14 +52,16 @@
             var previewPanel = jQuery(".preview-panel", element);
             var mediaTarget = jQuery(".media-target", previewPanel);
             var operationsTarget = jQuery(".operations-target", previewPanel);
-            var button = jQuery(".button", operationsTarget);
+            var buttonAdd = jQuery(".button-add", operationsTarget);
+            var buttonClear = jQuery(".button-clear", operationsTarget);
             var objectId = jQuery(".text-field[name=object_id]", element);
             var classInput = jQuery("input[name=class]", element);
             var representationInput = jQuery("input[name=representation]",
                 element);
             var url = form.attr("action");
             var mediaUrl = form.attr("data-media");
-            var newUrl = button.attr("data-reference");
+            var newUrlAdd = buttonAdd.attr("data-reference");
+            var newUrlClear = buttonClear.attr("data-reference");
             var value = objectId.uxvalue();
             previewPanel.hide();
             mediaTarget.empty();
@@ -89,7 +91,8 @@
                         mediaTarget.append(imageContainer);
                         imageContainer.uxapply();
                     }
-                    button.attr("data-link", newUrl + value);
+                    buttonAdd.attr("data-link", newUrlAdd + value);
+                    buttonClear.attr("data-link", newUrlClear + value);
                     classInput.val(data._class);
                     representationInput.val(data.representation);
                     previewPanel.show();

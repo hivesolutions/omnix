@@ -1233,6 +1233,15 @@ def create_media_browser(id):
         flask.url_for("browser_extras", id = id)
     )
 
+@app.route("/extras/browser/clear_media/<int:id>", methods = ("GET",))
+@quorum.ensure("foundation.root_entity.clear_media")
+def clear_media_browser(id):
+    api = util.get_api()
+    api.clear_media_entity(id)
+    return flask.redirect(
+        flask.url_for("browser_extras", id = id)
+    )
+
 def _media_sorter(item):
     return (
         item["label"] or "",

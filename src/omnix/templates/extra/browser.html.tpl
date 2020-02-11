@@ -30,7 +30,10 @@
                 </div>
                 <div class="media-target"></div>
                 <div class="operations-target">
-                    <span class="button" data-reference="{{ url_for('new_media_browser', id = 0) }}">Add Media</span>
+                    <span class="button button-add" data-reference="{{ url_for('new_media_browser', id = 0) }}">Add Media</span>
+                    <span>//</span>
+                    <span class="button button-confirm button-clear" data-reference="{{ url_for('clear_media_browser', id = 0) }}"
+                          data-message="Do you really want to clear all media values for entity ?">Clear Media</span>
                 </div>
             </div>
         </div>

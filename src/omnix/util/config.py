@@ -92,6 +92,7 @@ SCOPE = (
     "foundation.root_entity.update",
     "foundation.root_entity.show_media",
     "foundation.root_entity.set_media",
+    "foundation.root_entity.clear_media",
     "foundation.supplier_company.list",
     "foundation.supplier_company.show",
     "foundation.system_company.show.self",

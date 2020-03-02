@@ -929,23 +929,35 @@ def calc_comparison(unit = "day", offset = 0, timestamp = None):
     current_t = current.utctimetuple()
     current_t = calendar.timegm(current_t)
 
-    # tries to retrieve the proper span value according to the
-    # requested unit of comparison
-    if unit == "day": span = current.day
-    if unit == "month": span = current.month
-
-    # calculates the previous period timestamp by removing one
-    # complete year from the current time
-    previous = datetime.datetime(
-        current.year - 1,
-        current.month,
-        current.day,
-        hour = current.hour,
-        minute = current.minute,
-        second = current.second
-    )
+    try:
+        # calculates the previous period timestamp by removing one
+        # complete year from the current time
+        previous = datetime.datetime(
+            current.year - 1,
+            current.month,
+            current.day,
+            hour = current.hour,
+            minute = current.minute,
+            second = current.second
+        )
+    except ValueError:
+        # in case the value error assumes that's because of a leap
+        # year invalid date range and decrements the day by one
+        previous = datetime.datetime(
+            current.year - 1,
+            current.month,
+            current.day - 1,
+            hour = current.hour,
+            minute = current.minute,
+            second = current.second
+        )
     previous_t = previous.utctimetuple()
     previous_t = calendar.timegm(previous_t)
+
+    # tries to retrieve the proper span value according to the
+    # requested unit of comparison
+    if unit == "day": span_c, span_p = current.day, previous.day
+    if unit == "month": span_c, span_p = current.month, previous.month
 
     # return a tuple containing both the current and previous values,
     # to be evaluated from the outside as expected, possible to be used
@@ -953,12 +965,12 @@ def calc_comparison(unit = "day", offset = 0, timestamp = None):
     return dict(
         date = current_t,
         unit = unit,
-        span = span,
+        span = span_c,
         has_global = True
     ), dict(
         date = previous_t,
         unit = unit,
-        span = span,
+        span = span_p,
         has_global = True
     )
 

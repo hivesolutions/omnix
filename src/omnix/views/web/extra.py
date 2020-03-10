@@ -151,7 +151,7 @@ def do_media_extras():
                 # in case no object id was retrieved must skip the current loop
                 # with a proper information message (as expected)
                 if not object_id:
-                    quorum.info("Skipping, could not resolve object id for '%s'" % base)
+                    quorum.info("Skipping, could not resolve Object ID id for '%s'" % base)
                     continue
 
                 # prints a logging message about the upload of media file that
@@ -502,7 +502,7 @@ def do_metadata_extras():
         # in case no object id was retrieved must skip the current loop
         # with a proper information message (as expected)
         if not object_id:
-            quorum.info("Skipping, could not resolve object id for '%s'" % base)
+            quorum.info("Skipping, could not resolve Object ID for '%s'" % base)
             return
 
         # prints a logging message about the updating of the metadata for

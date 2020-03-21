@@ -46,7 +46,7 @@ import omnix.models
 
 MONGO_DATABASE = "omnix"
 """ The default database to be used for the connection with
-the mongo database """
+the MongoDB database """
 
 SECRET_KEY = "zhsga32ki5kvv7ymq8nolbleg248fzn1"
 """ The "secret" key to be at the internal encryption

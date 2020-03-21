@@ -50,7 +50,7 @@ from . import config
 
 LOOP_TIMEOUT = 120
 """ The time to be used in between reading new
-messages from the omni service, this will only be
+messages from the Omni service, this will only be
 used in case there's a problem in the client
 connection with the queueing service """
 

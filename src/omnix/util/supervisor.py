@@ -49,7 +49,7 @@ from . import config
 
 LOOP_TIMEOUT = 120
 """ The time to be used in between queueing new
-messages from the omni service """
+messages from the Omni service """
 
 MESSAGE_TIMEOUT = 120
 """ The amount of seconds before a message is

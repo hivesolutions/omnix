@@ -62,12 +62,12 @@ REDIRECT_URL = "http://localhost:8181/oauth"
 for the construction of the base URL instances """
 
 CLIENT_ID = "2a4dd8f8f649472dba4dfbbefdf7d623"
-""" The id of the omni client to be used, this value
+""" The id of the Omni client to be used, this value
 is not considered to be secret and may be freely used """
 
 CLIENT_SECRET = "b3ae4af4454945479592792ad970f8d7"
 """ The secret key value to be used to access the
-omni API as the client, this value should not be shared
+Omni API as the client, this value should not be shared
 with every single person (keep private) """
 
 FIRST_DAY = 1

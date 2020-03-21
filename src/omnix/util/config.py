@@ -67,7 +67,7 @@ is not considered to be secret and may be freely used """
 
 CLIENT_SECRET = "b3ae4af4454945479592792ad970f8d7"
 """ The secret key value to be used to access the
-omni api as the client, this value should not be shared
+omni API as the client, this value should not be shared
 with every single person (keep private) """
 
 FIRST_DAY = 1

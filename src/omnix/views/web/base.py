@@ -267,7 +267,7 @@ def flush_at():
 
 @app.route("/oauth", methods = ("GET",))
 def oauth():
-    # retrieves the reference to the current api object, so that
+    # retrieves the reference to the current API object, so that
     # it may be used for the retrieval of the access token from
     # the currently received code value
     api = util.get_api()
@@ -284,7 +284,7 @@ def oauth():
     error_description = quorum.get_field("error_description", None)
     if error: raise RuntimeError("%s - %s" % (error, error_description))
 
-    # creates the access token URL for the api usage and sends the
+    # creates the access token URL for the API usage and sends the
     # appropriate attributes for the retrieval of the access token,
     # then stores it in the current session
     access_token = api.oauth_access(code)

@@ -69,7 +69,7 @@ def media_extras():
 @app.route("/extras/media", methods = ("POST",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def do_media_extras():
-    # retrieves the reference to the (omni) api object that
+    # retrieves the reference to the (omni) API object that
     # is going to be used for the operations of updating of
     # the merchandise in bulk (multiple operations at a time)
     api = util.get_api()
@@ -214,7 +214,7 @@ def images_extras():
 @app.route("/extras/images", methods = ("POST",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def do_images_extras():
-    # retrieves the reference to the (omni) api object that
+    # retrieves the reference to the (omni) API object that
     # is going to be used for the operations of updating of
     # the merchandise in bulk (multiple operations at a time)
     api = util.get_api()
@@ -311,7 +311,7 @@ def do_images_extras():
                 }
 
                 # uses the "resolved" items structure in the operation to
-                # the omni api so that the images for them get updated
+                # the omni API so that the images for them get updated
                 api.update_merchandise(object_id, data_m)
         finally:
             # removes the temporary path as it's no longer going to be
@@ -343,7 +343,7 @@ def metadata_extras():
 @app.route("/extras/metadata", methods = ("POST",))
 @quorum.ensure("foundation.root_entity.update")
 def do_metadata_extras():
-    # retrieves the reference to the api object that is going
+    # retrieves the reference to the API object that is going
     # to be used for the updating of prices operation
     api = util.get_api()
 
@@ -563,7 +563,7 @@ def prices_extras():
 @app.route("/extras/prices", methods = ("POST",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def do_prices_extras():
-    # retrieves the reference to the api object that is going
+    # retrieves the reference to the API object that is going
     # to be used for the updating of prices operation
     api = util.get_api()
 
@@ -598,7 +598,7 @@ def do_prices_extras():
         os.remove(file_path)
 
     # uses the "resolved" items structure in the put operation to
-    # the omni api so that the prices for them get updated
+    # the omni API so that the prices for them get updated
     api.prices_merchandise(items)
 
     # redirects the user back to the prices list page with a success
@@ -621,7 +621,7 @@ def costs_extras():
 @app.route("/extras/costs", methods = ("POST",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def do_costs_extras():
-    # retrieves the reference to the api object that is going
+    # retrieves the reference to the API object that is going
     # to be used for the updating of costs operation
     api = util.get_api()
 
@@ -656,7 +656,7 @@ def do_costs_extras():
         os.remove(file_path)
 
     # uses the "resolved" items structure in the put operation to
-    # the omni api so that the costs for them get updated
+    # the omni API so that the costs for them get updated
     api.costs_merchandise(items)
 
     # redirects the user back to the costs list page with a success
@@ -687,7 +687,7 @@ def inventory_extras():
     "foundation.store.list"
 ))
 def do_inventory_extras():
-    # retrieves the reference to the api object that is going
+    # retrieves the reference to the API object that is going
     # to be used for the updating of prices operation
     api = util.get_api()
 
@@ -878,7 +878,7 @@ def transfers_extras():
     "foundation.store.list"
 ))
 def do_transfers_extras():
-    # retrieves the reference to the api object that is going
+    # retrieves the reference to the API object that is going
     # to be used for the updating of prices operation
     api = util.get_api()
 

@@ -113,7 +113,7 @@ SCOPE = (
     "inventory.transactional_merchandise.update"
 )
 """ The list of permissions to be used to create the
-scope string for the oauth value """
+scope string for the OAuth value """
 
 AT_SALE_TYPES = (
     "MoneySaleSlip",

@@ -279,7 +279,7 @@ def oauth():
     state = quorum.get_field("state", None)
 
     # tries to retrieve the error field an in case it exists raises
-    # an error indicating the oauth based problem
+    # an error indicating the OAuth based problem
     error = quorum.get_field("error", None)
     error_description = quorum.get_field("error_description", None)
     if error: raise RuntimeError("%s - %s" % (error, error_description))

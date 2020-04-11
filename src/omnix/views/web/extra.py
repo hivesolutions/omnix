@@ -424,7 +424,9 @@ def do_metadata_extras():
             description,\
             order,\
             discountable,\
-            sku_field = line[:16]
+            sku_field,\
+            upc,\
+            ean = line[:18]
 
             # normalizes the various values that have been extracted from the line
             # so they are properly represented for importing
@@ -442,6 +444,8 @@ def do_metadata_extras():
             order = order or None
             discountable = discountable or None
             sku_field = sku_field or None
+            upc = upc or None
+            ean = ean or None
 
             # verifies and strips the various possible string values so that they
             # represent a valid not trailed value
@@ -455,6 +459,8 @@ def do_metadata_extras():
             if discountable: discountable = discountable == "1"
             if sku_field: sku_field = sku_field.strip()
             if discount: discount = float(discount)
+            if upc: upc = upc.strip()
+            if ean: ean = ean.strip()
 
             # creates the update dictionary that is going to be used in the updating
             # of the "product" metadata (this is considered to be a delta dictionary)
@@ -524,6 +530,8 @@ def do_metadata_extras():
         model = dict(metadata = metadata)
         if name: model["name"] = name
         if description: model["description"] = description
+        if upc: model["upc"] = upc
+        if ean: model["ean"] = ean
         api.update_entity(object_id, payload = dict(root_entity = model))
 
     try:

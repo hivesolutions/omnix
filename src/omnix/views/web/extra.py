@@ -406,6 +406,8 @@ def do_metadata_extras():
             # if their found they are properly popped out
             name = update.pop("name", None)
             description = update.pop("description", None)
+            upc = update.pop("upc", None)
+            ean = update.pop("ean", None)
         else:
             # unpacks the current "metadata" line into its components as
             # expected by the specification

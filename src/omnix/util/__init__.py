@@ -52,7 +52,8 @@ from .format import csv_file, csv_import, csv_value
 from .config import LOCAL_PREFIX, REMOTE_PREFIX, LOCAL_URL, REMOTE_URL, REDIRECT_URL,\
     CLIENT_ID, CLIENT_SECRET, FIRST_DAY, SCOPE, AT_SALE_TYPES, AT_TRANSPORT_TYPES,\
     AT_SUBMIT_TYPES, REMOTE, BASE_URL, SENDER_EMAIL, USERNAME, PASSWORD, SCHEDULE,\
-    COMMISSION_RATE, COMMISSION_DAY, IMAGE_RESIZE, LOCALE, QUEUE, BIRTHDAY_TEMPLATE, OMNI_URL, PREFIX
+    COMMISSION_RATE, COMMISSION_DAY, IMAGE_RESIZE, LOCALE, QUEUE, RECORD_CHUNK,\
+    BIRTHDAY_TEMPLATE, OMNI_URL, PREFIX
 from .image import mask_image
 from .logic import get_models, get_api, ensure_api, on_auth, start_session, reset_session,\
     get_tokens

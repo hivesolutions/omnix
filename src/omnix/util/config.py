@@ -150,6 +150,7 @@ COMMISSION_DAY = quorum.conf("OMNIX_COMMISSION_DAY", 26, cast = int)
 IMAGE_RESIZE = quorum.conf("OMNIX_IMAGE_RESIZE", "crop")
 LOCALE = quorum.conf("OMNIX_LOCALE", "en_us")
 QUEUE = quorum.conf("OMNIX_QUEUE", "omnix")
+RECORD_CHUNK = quorum.conf("OMNIX_RECORD_CHUNK", 256, cast = int)
 BIRTHDAY_TEMPLATE = quorum.conf(
     "OMNIX_BIRTHDAY_TEMPLATE",
     "email/birthday.%s.html.tpl" % LOCALE

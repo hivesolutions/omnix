@@ -64,7 +64,7 @@ MESSAGE_RETRIES = 3
 """ The number of retries to be used for the message
 before it's considered discarded """
 
-NUMBER_RECORDS = 100
+NUMBER_RECORDS = config.RECORD_CHUNK
 """ The maximum number of records that is going to be
 retrieved and set for submission, this value influences
 the performance, mostly under heavy load situations """

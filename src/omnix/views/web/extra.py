@@ -384,6 +384,9 @@ def do_metadata_extras():
     buffer = quorum.legacy.BytesIO(data)
 
     def callback(line, header = None):
+        # in case the custom metadata mode is enabled then a special work
+        # model is set where all of the columns are going to be used dynamically
+        # for the update of the metadata map of the object
         if custom:
             # creates a zip of tuples with the header to line value association
             # and uses them to build a proper dictionary
@@ -391,7 +394,7 @@ def do_metadata_extras():
             update = dict(zipped)
 
             # iterates over the complete set of items in the map of values
-            # and update the update map with the sanitized value
+            # and updates the update map with the sanitized value
             for name, value in update.items():
                 update[name] = value.strip()
 
@@ -408,6 +411,9 @@ def do_metadata_extras():
             description = update.pop("description", None)
             upc = update.pop("upc", None)
             ean = update.pop("ean", None)
+
+        # otherwise this is a "normal" update and the "typical" metadata
+        # fields are the one to be updated
         else:
             # unpacks the current "metadata" line into its components as
             # expected by the specification

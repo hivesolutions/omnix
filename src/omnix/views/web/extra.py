@@ -439,8 +439,8 @@ def do_metadata_extras():
             # normalizes the various values that have been extracted from the line
             # so they are properly represented for importing
             name = name or None
-            compare_price = compare_price or None
-            discount = discount or None
+            compare_price = (compare_price and compare_price.strip()) or None
+            discount = (discount and discount.strip()) or None
             characteristics = [value.strip() for value in characteristics.split(";") if value.strip()]
             material = [value.strip() for value in material.split(";") if value.strip()]
             category = [value.strip() for value in category.split(";") if value.strip()]
@@ -449,7 +449,7 @@ def do_metadata_extras():
             season = season or None
             gender = gender or None
             description = description or None
-            order = order or None
+            order = (order and order.strip()) or None
             discountable = discountable or None
             sku_field = sku_field or None
             upc = upc or None
@@ -458,18 +458,15 @@ def do_metadata_extras():
             # verifies and strips the various possible string values so that they
             # represent a valid not trailed value
             if name: name = name.strip()
-            if compare_price and compare_price.strip():
-                compare_price = float(compare_price.strip())
+            if compare_price: compare_price = float(compare_price)
             if brand: brand = brand.strip()
             if season: season = season.strip()
             if gender: gender = gender.strip()
             if description: description = description.strip()
-            if order and order.strip():
-                order = int(order.strip())
+            if order: order = int(order)
             if discountable: discountable = discountable == "1"
             if sku_field: sku_field = sku_field.strip()
-            if discount and discount.strip():
-                discount = float(discount.strip())
+            if discount: discount = float(discount)
             if upc: upc = upc.strip()
             if ean: ean = ean.strip()
 

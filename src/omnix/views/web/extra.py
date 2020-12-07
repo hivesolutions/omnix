@@ -458,7 +458,7 @@ def do_metadata_extras():
             # verifies and strips the various possible string values so that they
             # represent a valid not trailed value
             if name: name = name.strip()
-            if compare_price: compare_price = float(compare_price)
+            if compare_price: compare_price = float(compare_price.strip())
             if brand: brand = brand.strip()
             if season: season = season.strip()
             if gender: gender = gender.strip()
@@ -466,7 +466,7 @@ def do_metadata_extras():
             if order: order = int(order.strip())
             if discountable: discountable = discountable == "1"
             if sku_field: sku_field = sku_field.strip()
-            if discount: discount = float(discount)
+            if discount: discount = float(discount.strip())
             if upc: upc = upc.strip()
             if ean: ean = ean.strip()
 

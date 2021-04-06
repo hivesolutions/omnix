@@ -6,4 +6,4 @@ redis
 pika
 xlrd
 omni_api
-pillow
+pillow<7

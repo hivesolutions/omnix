@@ -14,12 +14,14 @@ jobs:
       - run: |
           pip install -r requirements.txt
           pip install -r extra.txt
+          pip install "tinydb<4.5"
         if: matrix.python-version != '2.7'
       - run: |
           pip install -r requirements.py2.txt
           pip install -r extra.py2.txt
+          pip install "tinydb<4"
         if: matrix.python-version == '2.7'
-      - run: python setup.py test
+      - run: ADAPTER=tiny python setup.py test
   build-pypy:
     name: Build PyPy
     strategy:
@@ -33,9 +35,11 @@ jobs:
       - run: |
           pip install -r requirements.txt
           pip install -r extra.txt
+          pip install "tinydb<4.5"
         if: matrix.python-version != '2.7'
       - run: |
           pip install -r requirements.py2.txt
           pip install -r extra.py2.txt
+          pip install "tinydb<4"
         if: matrix.python-version == '2.7'
-      - run: pypy setup.py test
+      - run: ADAPTER=tiny pypy setup.py test

@@ -436,6 +436,13 @@ def do_metadata_extras():
             upc,\
             ean = line[:18]
 
+            # verifies if the initials part of the CSV line exists and
+            # if that's the case processes it properly
+            if len(line) > 20:
+                initials, initials_min, initials_max = line[18:21]
+            else:
+                initials, initials_min, initials_max = "", "", ""
+
             # normalizes the various values that have been extracted from the line
             # so they are properly represented for importing
             name = name or None
@@ -454,6 +461,9 @@ def do_metadata_extras():
             sku_field = sku_field or None
             upc = upc or None
             ean = ean or None
+            initials = initials or None
+            initials_min = initials_min or None
+            initials_max = initials_max or None
 
             # verifies and strips the various possible string values so that they
             # represent a valid not trailed value
@@ -469,6 +479,15 @@ def do_metadata_extras():
             if discount: discount = float(discount)
             if upc: upc = upc.strip()
             if ean: ean = ean.strip()
+            if initials: initials = initials == "1"
+            if initials_min: initials_min = int(initials_min)
+            if initials_max: initials_max = int(initials_max)
+
+            # creates the map that is going to hold the complete set of features
+            # and populates the features according to their existence
+            features = dict()
+            if initials:
+                features["initials"] = dict(min = initials_min, max = initials_max)
 
             # creates the update dictionary that is going to be used in the updating
             # of the "product" metadata (this is considered to be a delta dictionary)
@@ -476,6 +495,7 @@ def do_metadata_extras():
                 compare_price = compare_price,
                 discount = discount,
                 characteristics = characteristics,
+                features = features,
                 material = material,
                 category = category,
                 collection = collection,

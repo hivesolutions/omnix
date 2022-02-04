@@ -13,11 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-* Better pre validation of prices in XLS upload
+*
 
 ### Fixed
 
 *
+
+## [0.2.6] - 2022-02-04
+
+### Changed
+
+* Better pre validation of prices in XLS upload
 
 ## [0.2.5] - 2022-02-04
 

@@ -4,8 +4,8 @@
 {% block content %}
     <div class="quote">
         Please provide the file containing the list of costs to be imported
-        to the data source, the file should be <strong>excell and key value
-        based</strong> associating the product id with its cost.<br />
+        to the data source, the file should be <strong>Microsoft Excel (XLS)
+        and key value based</strong> associating the product id with its cost.<br />
         Remember this is a <strong>dangerous operation</strong>.
     </div>
     <div class="separator-horizontal"></div>

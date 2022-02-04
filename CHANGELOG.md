@@ -19,7 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *
 
-## [0.2.4] - 2021-12-30
+## [0.2.5] - 2022-02-04
+
+### Changed
+
+* Float based casting in XLS upload
+
+## [0.2.4] - 2022-02-04
 
 ### Changed
 

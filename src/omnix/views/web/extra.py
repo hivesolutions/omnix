@@ -625,13 +625,25 @@ def do_prices_extras():
         items = quorum.xlsx_to_map(
             file_path,
             keys = ("company_product_code", "retail_price"),
-            types = (quorum.legacy.UNICODE, float)
+            types = (quorum.legacy.UNICODE, None)
         )
     finally:
         # closes the temporary file descriptor and removes the temporary
         # file (avoiding any memory leaks)
         os.close(fd)
         os.remove(file_path)
+
+    # iterates over the complete set of items to make sure that they
+    # all comply with the expected structure
+    for index, item in enumerate(items):
+        quorum.verify(
+            item["company_product_code"],
+            message = "No key for value at index %d, please verify" % index
+        )
+        quorum.verify(
+            not item["retail_price"] in (None, ""),
+            message = "No retail price for code '%s', please verify" % item["company_product_code"]
+        )
 
     # uses the "resolved" items structure in the put operation to
     # the Omni API so that the prices for them get updated
@@ -683,13 +695,25 @@ def do_costs_extras():
         items = quorum.xlsx_to_map(
             file_path,
             keys = ("company_product_code", "cost"),
-            types = (quorum.legacy.UNICODE, float)
+            types = (quorum.legacy.UNICODE, None)
         )
     finally:
         # closes the temporary file descriptor and removes the temporary
         # file (avoiding any memory leaks)
         os.close(fd)
         os.remove(file_path)
+
+    # iterates over the complete set of items to make sure that they
+    # all comply with the expected structure
+    for index, item in enumerate(items):
+        quorum.verify(
+            item["company_product_code"],
+            message = "No key for value at index %d, please verify" % index
+        )
+        quorum.verify(
+            not item["cost"] in (None, ""),
+            message = "No cost value for code '%s', please verify" % item["company_product_code"]
+        )
 
     # uses the "resolved" items structure in the put operation to
     # the Omni API so that the costs for them get updated

@@ -42,7 +42,7 @@ import setuptools
 
 setuptools.setup(
     name = "omnix",
-    version = "0.2.7",
+    version = "0.3.0",
     author = "Hive Solutions Lda.",
     author_email = "development@hive.pt",
     description = "Omnix System",

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* Support for the `orderable` field in the metadata CSV
+*
 
 ### Changed
 
@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 *
+
+## [0.3.0] - 2022-06-25
+
+### Added
+
+* Support for the `orderable` field in the metadata CSV
 
 ## [0.2.7] - 2022-02-05
 

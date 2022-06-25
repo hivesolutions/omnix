@@ -432,9 +432,10 @@ def do_metadata_extras():
             description,\
             order,\
             discountable,\
+            orderable,\
             sku_field,\
             upc,\
-            ean = line[:18]
+            ean = line[:19]
 
             # verifies if the initials part of the CSV line exists and
             # if that's the case processes it properly
@@ -458,6 +459,7 @@ def do_metadata_extras():
             description = description or None
             order = (order and order.strip()) or None
             discountable = discountable or None
+            orderable = orderable or None
             sku_field = sku_field or None
             upc = upc or None
             ean = ean or None
@@ -475,6 +477,7 @@ def do_metadata_extras():
             if description: description = description.strip()
             if order: order = int(order)
             if discountable: discountable = discountable == "1"
+            if orderable: orderable = orderable == "1"
             if sku_field: sku_field = sku_field.strip()
             if discount: discount = float(discount)
             if upc: upc = upc.strip()
@@ -504,6 +507,7 @@ def do_metadata_extras():
                 gender = gender,
                 order = order,
                 discountable = discountable,
+                orderable = orderable,
                 sku_field = sku_field
             )
 

@@ -1,2 +1,8 @@
 *.pyc
 *.debug
+
+.DS_Store
+
+/.vscode/settings.json
+
+/.venv

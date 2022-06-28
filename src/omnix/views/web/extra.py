@@ -439,8 +439,8 @@ def do_metadata_extras():
 
             # verifies if the initials part of the CSV line exists and
             # if that's the case processes it properly
-            if len(line) > 20:
-                initials, initials_min, initials_max = line[18:21]
+            if len(line) >= 22:
+                initials, initials_min, initials_max = line[19:22]
             else:
                 initials, initials_min, initials_max = "", "", ""
 

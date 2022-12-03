@@ -3,7 +3,7 @@ flask
 quorum
 pymongo
 redis
-pika
+pika<1.3
 xlrd
 omni-api
 enum34

@@ -5,6 +5,6 @@ pymongo
 redis
 pika
 xlrd
-omni_api
+omni-api
 enum34
 pillow<7

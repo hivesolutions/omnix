@@ -5,5 +5,5 @@ pymongo
 redis
 pika
 xlrd
-omni_api
+omni-api
 pillow

@@ -93,7 +93,7 @@ setuptools.setup(
         "redis",
         "pika",
         "xlrd",
-        "omni_api"
+        "omni-api"
     ],
     classifiers = [
         "Development Status :: 5 - Production/Stable",

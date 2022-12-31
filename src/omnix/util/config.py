@@ -132,7 +132,7 @@ AT_TRANSPORT_TYPES = (
 are considered to be of type transport """
 
 AT_SUBMIT_TYPES = AT_SALE_TYPES + AT_TRANSPORT_TYPES
-""" The set of valid types for submission to at, note
+""" The set of valid types for submission to AT, note
 that this range of values should be changed with care """
 
 REMOTE = quorum.conf("REMOTE", False, cast = bool)

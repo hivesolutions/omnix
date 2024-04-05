@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -50,23 +44,20 @@ from omnix.main import app
 from omnix.main import flask
 from omnix.main import quorum
 
-@app.route("/extras", methods = ("GET",))
+
+@app.route("/extras", methods=("GET",))
 @quorum.ensure("base.user")
 def list_extras():
-    return flask.render_template(
-        "extra/list.html.tpl",
-        link = "extras"
-    )
+    return flask.render_template("extra/list.html.tpl", link="extras")
 
-@app.route("/extras/media", methods = ("GET",))
+
+@app.route("/extras/media", methods=("GET",))
 @quorum.ensure("foundation.root_entity.set_media")
 def media_extras():
-    return flask.render_template(
-        "extra/media.html.tpl",
-        link = "extras"
-    )
+    return flask.render_template("extra/media.html.tpl", link="extras")
 
-@app.route("/extras/media", methods = ("POST",))
+
+@app.route("/extras/media", methods=("POST",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def do_media_extras():
     # retrieves the reference to the (Omni) API object that
@@ -80,17 +71,17 @@ def do_media_extras():
     media_file = quorum.get_field("media_file", None)
     if media_file == None or not media_file.filename:
         return flask.render_template(
-            "extra/media.html.tpl",
-            link = "extras",
-            error = "No file defined"
+            "extra/media.html.tpl", link="extras", error="No file defined"
         )
 
     # creates a temporary file path for the storage of the file
     # and then saves it into that directory, closing the same
     # file afterwards, as it has been properly saved
     fd, file_path = tempfile.mkstemp()
-    try: media_file.save(file_path)
-    finally: media_file.close()
+    try:
+        media_file.save(file_path)
+    finally:
+        media_file.close()
 
     try:
         # creates a new temporary directory that is going to be used
@@ -101,8 +92,10 @@ def do_media_extras():
             # and then extracts the complete set of contents to the "target"
             # temporary path closing the zip file afterwards
             zip = zipfile.ZipFile(file_path)
-            try: zip.extractall(temp_path)
-            finally: zip.close()
+            try:
+                zip.extractall(temp_path)
+            finally:
+                zip.close()
 
             # iterates over the complete set of names in the temporary path
             # to try to upload the media to the target data source, note that
@@ -119,13 +112,17 @@ def do_media_extras():
                 # splits the base value of the file name so that it's possible to
                 # extract the proper position of the image if that's required
                 base_s = base.rsplit("_", 1)
-                if len(base_s) > 1: position = int(base_s[1])
-                else: position = 1
+                if len(base_s) > 1:
+                    position = int(base_s[1])
+                else:
+                    position = 1
 
                 # tries to "cast" the base file name value as an integer and in case
                 # it's possible assumes that this value is the object identifier
-                try: object_id = int(base_s[0])
-                except Exception: object_id = None
+                try:
+                    object_id = int(base_s[0])
+                except Exception:
+                    object_id = None
 
                 # in case no object id was retrieved from the base file name value
                 # a secondary strategy is used, so that the merchandise database
@@ -134,31 +131,34 @@ def do_media_extras():
                     # creates the keyword arguments map so that the the merchandise
                     # with the provided company product code is retrieved
                     kwargs = {
-                        "start_record" : 0,
-                        "number_records" : 1,
-                        "filters[]" : [
-                            "company_product_code:equals:%s" % base_s[0]
-                        ]
+                        "start_record": 0,
+                        "number_records": 1,
+                        "filters[]": ["company_product_code:equals:%s" % base_s[0]],
                     }
 
                     # runs the list merchandise operation in order to try to find a
                     # merchandise entity for the requested (unique) product code in
                     # case there's at least one merchandise its object id is used
-                    try: merchandise = api.list_merchandise(**kwargs)
-                    except Exception: merchandise = []
-                    if merchandise: object_id = merchandise[0]["object_id"]
+                    try:
+                        merchandise = api.list_merchandise(**kwargs)
+                    except Exception:
+                        merchandise = []
+                    if merchandise:
+                        object_id = merchandise[0]["object_id"]
 
                 # in case no object id was retrieved must skip the current loop
                 # with a proper information message (as expected)
                 if not object_id:
-                    quorum.info("Skipping, could not resolve Object ID id for '%s'" % base)
+                    quorum.info(
+                        "Skipping, could not resolve Object ID id for '%s'" % base
+                    )
                     continue
 
                 # prints a logging message about the upload of media file that
                 # is going to be performed for the current entity
                 quorum.debug(
-                    "Adding media file for entity '%d' in position '%d'" %\
-                    (object_id, position)
+                    "Adding media file for entity '%d' in position '%d'"
+                    % (object_id, position)
                 )
 
                 # creates the target temporary media path from the temporary directory
@@ -166,8 +166,10 @@ def do_media_extras():
                 # file afterwards (no more reading allowed)
                 media_path = os.path.join(temp_path, name)
                 media_file = open(media_path, "rb")
-                try: contents = media_file.read()
-                finally: media_file.close()
+                try:
+                    contents = media_file.read()
+                finally:
+                    media_file.close()
 
                 # tries to guess the proper image type for the image located at the
                 # provided path and the uses this value to construct the mime type
@@ -179,15 +181,15 @@ def do_media_extras():
                 api.set_media_entity(
                     object_id,
                     contents,
-                    position = position,
-                    mime_type = mime_type,
-                    engine = "fs",
-                    thumbnails = True
+                    position=position,
+                    mime_type=mime_type,
+                    engine="fs",
+                    thumbnails=True,
                 )
         finally:
             # removes the temporary path as it's no longer going to be
             # required for the operation (errors are ignored)
-            shutil.rmtree(temp_path, ignore_errors = True)
+            shutil.rmtree(temp_path, ignore_errors=True)
     finally:
         # closes the temporary file descriptor and removes the temporary
         # file (avoiding any memory leaks)
@@ -197,21 +199,17 @@ def do_media_extras():
     # redirects the user back to the media list page with a success
     # message indicating that everything went as expected
     return flask.redirect(
-        flask.url_for(
-            "media_extras",
-            message = "Media file processed with success"
-        )
+        flask.url_for("media_extras", message="Media file processed with success")
     )
 
-@app.route("/extras/images", methods = ("GET",))
+
+@app.route("/extras/images", methods=("GET",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def images_extras():
-    return flask.render_template(
-        "extra/images.html.tpl",
-        link = "extras"
-    )
+    return flask.render_template("extra/images.html.tpl", link="extras")
 
-@app.route("/extras/images", methods = ("POST",))
+
+@app.route("/extras/images", methods=("POST",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def do_images_extras():
     # retrieves the reference to the (Omni) API object that
@@ -225,17 +223,17 @@ def do_images_extras():
     images_file = quorum.get_field("images_file", None)
     if images_file == None or not images_file.filename:
         return flask.render_template(
-            "extra/images.html.tpl",
-            link = "extras",
-            error = "No file defined"
+            "extra/images.html.tpl", link="extras", error="No file defined"
         )
 
     # creates a temporary file path for the storage of the file
     # and then saves it into that directory, closing the same
     # file afterwards, as it has been properly saved
     fd, file_path = tempfile.mkstemp()
-    try: images_file.save(file_path)
-    finally: images_file.close()
+    try:
+        images_file.save(file_path)
+    finally:
+        images_file.close()
 
     try:
         # creates a new temporary directory that is going to be used
@@ -246,8 +244,10 @@ def do_images_extras():
             # and then extracts the complete set of contents to the "target"
             # temporary path closing the zip file afterwards
             zip = zipfile.ZipFile(file_path)
-            try: zip.extractall(temp_path)
-            finally: zip.close()
+            try:
+                zip.extractall(temp_path)
+            finally:
+                zip.close()
 
             # iterates over the complete set of names in the temporary path
             # to try to upload the image to the target data source, note that
@@ -264,11 +264,9 @@ def do_images_extras():
                 # creates the keyword arguments map so that the the merchandise
                 # with the provided company product code is retrieved
                 kwargs = {
-                    "start_record" : 0,
-                    "number_records" : 1,
-                    "filters[]" : [
-                        "company_product_code:equals:%s" % base
-                    ]
+                    "start_record": 0,
+                    "number_records": 1,
+                    "filters[]": ["company_product_code:equals:%s" % base],
                 }
 
                 # creates the URL for the merchandise retrieval and runs the get
@@ -296,8 +294,10 @@ def do_images_extras():
                 # file afterwards (no more reading allowed)
                 image_path = os.path.join(temp_path, name)
                 image_file = open(image_path, "rb")
-                try: contents = image_file.read()
-                finally: image_file.close()
+                try:
+                    contents = image_file.read()
+                finally:
+                    image_file.close()
 
                 # creates the image (file) tuple with both the name of the file and the
                 # contents if it (multipart standard)
@@ -306,8 +306,8 @@ def do_images_extras():
                 # creates the multipart data map with both the object id and the image
                 # file parameters that are going to be used in the encoding
                 data_m = {
-                    "object_id" : object_id,
-                    "transactional_merchandise[_parameters][image_file]" : image_tuple
+                    "object_id": object_id,
+                    "transactional_merchandise[_parameters][image_file]": image_tuple,
                 }
 
                 # uses the "resolved" items structure in the operation to
@@ -316,7 +316,7 @@ def do_images_extras():
         finally:
             # removes the temporary path as it's no longer going to be
             # required for the operation (errors are ignored)
-            shutil.rmtree(temp_path, ignore_errors = True)
+            shutil.rmtree(temp_path, ignore_errors=True)
     finally:
         # closes the temporary file descriptor and removes the temporary
         # file (avoiding any memory leaks)
@@ -326,21 +326,17 @@ def do_images_extras():
     # redirects the user back to the images list page with a success
     # message indicating that everything went as expected
     return flask.redirect(
-        flask.url_for(
-            "images_extras",
-            message = "Images file processed with success"
-        )
+        flask.url_for("images_extras", message="Images file processed with success")
     )
 
-@app.route("/extras/metadata", methods = ("GET",))
+
+@app.route("/extras/metadata", methods=("GET",))
 @quorum.ensure("foundation.root_entity.update")
 def metadata_extras():
-    return flask.render_template(
-        "extra/metadata.html.tpl",
-        link = "extras"
-    )
+    return flask.render_template("extra/metadata.html.tpl", link="extras")
 
-@app.route("/extras/metadata", methods = ("POST",))
+
+@app.route("/extras/metadata", methods=("POST",))
 @quorum.ensure("foundation.root_entity.update")
 def do_metadata_extras():
     # retrieves the reference to the API object that is going
@@ -353,20 +349,18 @@ def do_metadata_extras():
     metadata_file = quorum.get_field("metadata_file", None)
     if metadata_file == None or not metadata_file.filename:
         return flask.render_template(
-            "extra/metadata.html.tpl",
-            link = "extras",
-            error = "No file defined"
+            "extra/metadata.html.tpl", link="extras", error="No file defined"
         )
 
     # retrieves the value of the custom field that control if
     # the importing will be performed using a dynamic approach
     # meaning that no static values will be retrieved and instead
     # the header will be used for dynamic retrieval
-    custom = quorum.get_field("custom", False, cast = bool)
+    custom = quorum.get_field("custom", False, cast=bool)
 
     # check if the CSV file to uploaded is separated by the comma
     # character or if instead it used the semicolon
-    comma = quorum.get_field("comma", False, cast = bool)
+    comma = quorum.get_field("comma", False, cast=bool)
 
     # creates a temporary file path for the storage of the file
     # and then saves it into that directory
@@ -376,14 +370,16 @@ def do_metadata_extras():
     # creates the file object that is going to be used in the
     # reading of the CSV file (underlying object)
     file = open(file_path, "rb")
-    try: data = file.read()
-    finally: file.close()
+    try:
+        data = file.read()
+    finally:
+        file.close()
 
     # constructs the bytes based buffer object from the data that
     # has just been loaded from the file
     buffer = quorum.legacy.BytesIO(data)
 
-    def callback(line, header = None):
+    def callback(line, header=None):
         # in case the custom metadata mode is enabled then a special work
         # model is set where all of the columns are going to be used dynamically
         # for the update of the metadata map of the object
@@ -417,25 +413,27 @@ def do_metadata_extras():
         else:
             # unpacks the current "metadata" line into its components as
             # expected by the specification
-            base,\
-            name,\
-            _retail_price,\
-            compare_price,\
-            discount,\
-            characteristics,\
-            material,\
-            category,\
-            collection,\
-            brand,\
-            season,\
-            gender,\
-            description,\
-            order,\
-            discountable,\
-            orderable,\
-            sku_field,\
-            upc,\
-            ean = line[:19]
+            (
+                base,
+                name,
+                _retail_price,
+                compare_price,
+                discount,
+                characteristics,
+                material,
+                category,
+                collection,
+                brand,
+                season,
+                gender,
+                description,
+                order,
+                discountable,
+                orderable,
+                sku_field,
+                upc,
+                ean,
+            ) = line[:19]
 
             # verifies if the initials part of the CSV line exists and
             # if that's the case processes it properly
@@ -449,10 +447,14 @@ def do_metadata_extras():
             name = name or None
             compare_price = (compare_price and compare_price.strip()) or None
             discount = (discount and discount.strip()) or None
-            characteristics = [value.strip() for value in characteristics.split(";") if value.strip()]
+            characteristics = [
+                value.strip() for value in characteristics.split(";") if value.strip()
+            ]
             material = [value.strip() for value in material.split(";") if value.strip()]
             category = [value.strip() for value in category.split(";") if value.strip()]
-            collection = [value.strip() for value in collection.split(";") if value.strip()]
+            collection = [
+                value.strip() for value in collection.split(";") if value.strip()
+            ]
             brand = brand or None
             season = season or None
             gender = gender or None
@@ -469,52 +471,70 @@ def do_metadata_extras():
 
             # verifies and strips the various possible string values so that they
             # represent a valid not trailed value
-            if name: name = name.strip()
-            if compare_price: compare_price = float(compare_price)
-            if brand: brand = brand.strip()
-            if season: season = season.strip()
-            if gender: gender = gender.strip()
-            if description: description = description.strip()
-            if order: order = int(order)
-            if discountable: discountable = discountable == "1"
-            if orderable: orderable = orderable == "1"
-            if sku_field: sku_field = sku_field.strip()
-            if discount: discount = float(discount)
-            if upc: upc = upc.strip()
-            if ean: ean = ean.strip()
-            if initials: initials = initials == "1"
-            if initials_min: initials_min = int(initials_min)
-            if initials_max: initials_max = int(initials_max)
+            if name:
+                name = name.strip()
+            if compare_price:
+                compare_price = float(compare_price)
+            if brand:
+                brand = brand.strip()
+            if season:
+                season = season.strip()
+            if gender:
+                gender = gender.strip()
+            if description:
+                description = description.strip()
+            if order:
+                order = int(order)
+            if discountable:
+                discountable = discountable == "1"
+            if orderable:
+                orderable = orderable == "1"
+            if sku_field:
+                sku_field = sku_field.strip()
+            if discount:
+                discount = float(discount)
+            if upc:
+                upc = upc.strip()
+            if ean:
+                ean = ean.strip()
+            if initials:
+                initials = initials == "1"
+            if initials_min:
+                initials_min = int(initials_min)
+            if initials_max:
+                initials_max = int(initials_max)
 
             # creates the map that is going to hold the complete set of features
             # and populates the features according to their existence
             features = dict()
             if initials:
-                features["initials"] = dict(min = initials_min, max = initials_max)
+                features["initials"] = dict(min=initials_min, max=initials_max)
 
             # creates the update dictionary that is going to be used in the updating
             # of the "product" metadata (this is considered to be a delta dictionary)
             update = dict(
-                compare_price = compare_price,
-                discount = discount,
-                characteristics = characteristics,
-                features = features,
-                material = material,
-                category = category,
-                collection = collection,
-                brand = brand,
-                season = season,
-                gender = gender,
-                order = order,
-                discountable = discountable,
-                orderable = orderable,
-                sku_field = sku_field
+                compare_price=compare_price,
+                discount=discount,
+                characteristics=characteristics,
+                features=features,
+                material=material,
+                category=category,
+                collection=collection,
+                brand=brand,
+                season=season,
+                gender=gender,
+                order=order,
+                discountable=discountable,
+                orderable=orderable,
+                sku_field=sku_field,
             )
 
         # tries to "cast" the base value as an integer and in case
         # it's possible assumes that this value is the object identifier
-        try: object_id = int(base)
-        except Exception: object_id = None
+        try:
+            object_id = int(base)
+        except Exception:
+            object_id = None
 
         # in case no object id was retrieved from the base name value
         # a secondary strategy is used, so that the merchandise database
@@ -523,19 +543,20 @@ def do_metadata_extras():
             # creates the keyword arguments map so that the the merchandise
             # with the provided company product code is retrieved
             kwargs = {
-                "start_record" : 0,
-                "number_records" : 1,
-                "filters[]" : [
-                    "company_product_code:equals:%s" % base
-                ]
+                "start_record": 0,
+                "number_records": 1,
+                "filters[]": ["company_product_code:equals:%s" % base],
             }
 
             # runs the list merchandise operation in order to try to find a
             # merchandise entity for the requested (unique) product code in
             # case there's at least one merchandise its object id is used
-            try: merchandise = api.list_merchandise(**kwargs)
-            except Exception: merchandise = []
-            if merchandise: object_id = merchandise[0]["object_id"]
+            try:
+                merchandise = api.list_merchandise(**kwargs)
+            except Exception:
+                merchandise = []
+            if merchandise:
+                object_id = merchandise[0]["object_id"]
 
         # in case no object id was retrieved must skip the current loop
         # with a proper information message (as expected)
@@ -559,23 +580,23 @@ def do_metadata_extras():
 
         # creates the model structure to be updated and then runs the
         # proper execution of the metadata import
-        model = dict(metadata = metadata)
-        if name: model["name"] = name
-        if description: model["description"] = description
-        if upc: model["upc"] = upc
-        if ean: model["ean"] = ean
-        api.update_entity(object_id, payload = dict(root_entity = model))
+        model = dict(metadata=metadata)
+        if name:
+            model["name"] = name
+        if description:
+            model["description"] = description
+        if upc:
+            model["upc"] = upc
+        if ean:
+            model["ean"] = ean
+        api.update_entity(object_id, payload=dict(root_entity=model))
 
     try:
         # start the CSV import operation that is going to import the
         # various lines of the CSV in the buffer and for each of them
         # call the function passed as callback
         util.csv_import(
-            buffer,
-            callback,
-            header = True,
-            delimiter = "," if comma else ";",
-            quoting = True
+            buffer, callback, header=True, delimiter="," if comma else ";", quoting=True
         )
     finally:
         # closes the temporary file descriptor and removes the temporary
@@ -586,21 +607,17 @@ def do_metadata_extras():
     # redirects the user back to the metadata list page with a success
     # message indicating that everything went ok
     return flask.redirect(
-        flask.url_for(
-            "metadata_extras",
-            message = "Metadata file processed with success"
-        )
+        flask.url_for("metadata_extras", message="Metadata file processed with success")
     )
 
-@app.route("/extras/prices", methods = ("GET",))
+
+@app.route("/extras/prices", methods=("GET",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def prices_extras():
-    return flask.render_template(
-        "extra/prices.html.tpl",
-        link = "extras"
-    )
+    return flask.render_template("extra/prices.html.tpl", link="extras")
 
-@app.route("/extras/prices", methods = ("POST",))
+
+@app.route("/extras/prices", methods=("POST",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def do_prices_extras():
     # retrieves the reference to the API object that is going
@@ -613,9 +630,7 @@ def do_prices_extras():
     prices_file = quorum.get_field("prices_file", None)
     if prices_file == None or not prices_file.filename:
         return flask.render_template(
-            "extra/prices.html.tpl",
-            link = "extras",
-            error = "No file defined"
+            "extra/prices.html.tpl", link="extras", error="No file defined"
         )
 
     # creates a temporary file path for the storage of the file
@@ -628,8 +643,8 @@ def do_prices_extras():
         # to the provided set of keys (to create the correct structures)
         items = quorum.xlsx_to_map(
             file_path,
-            keys = ("company_product_code", "retail_price"),
-            types = (quorum.legacy.UNICODE, None)
+            keys=("company_product_code", "retail_price"),
+            types=(quorum.legacy.UNICODE, None),
         )
     finally:
         # closes the temporary file descriptor and removes the temporary
@@ -642,11 +657,12 @@ def do_prices_extras():
     for index, item in enumerate(items):
         quorum.verify(
             item["company_product_code"],
-            message = "No key for value at index %d, please verify" % index
+            message="No key for value at index %d, please verify" % index,
         )
         quorum.verify(
             not item["retail_price"] in (None, ""),
-            message = "No retail price for code '%s', please verify" % item["company_product_code"]
+            message="No retail price for code '%s', please verify"
+            % item["company_product_code"],
         )
 
     # uses the "resolved" items structure in the put operation to
@@ -656,21 +672,17 @@ def do_prices_extras():
     # redirects the user back to the prices list page with a success
     # message indicating that everything went ok
     return flask.redirect(
-        flask.url_for(
-            "prices_extras",
-            message = "Prices file processed with success"
-        )
+        flask.url_for("prices_extras", message="Prices file processed with success")
     )
 
-@app.route("/extras/costs", methods = ("GET",))
+
+@app.route("/extras/costs", methods=("GET",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def costs_extras():
-    return flask.render_template(
-        "extra/costs.html.tpl",
-        link = "extras"
-    )
+    return flask.render_template("extra/costs.html.tpl", link="extras")
 
-@app.route("/extras/costs", methods = ("POST",))
+
+@app.route("/extras/costs", methods=("POST",))
 @quorum.ensure("inventory.transactional_merchandise.update")
 def do_costs_extras():
     # retrieves the reference to the API object that is going
@@ -683,9 +695,7 @@ def do_costs_extras():
     costs_file = quorum.get_field("costs_file", None)
     if costs_file == None or not costs_file.filename:
         return flask.render_template(
-            "extra/costs.html.tpl",
-            link = "extras",
-            error = "No file defined"
+            "extra/costs.html.tpl", link="extras", error="No file defined"
         )
 
     # creates a temporary file path for the storage of the file
@@ -698,8 +708,8 @@ def do_costs_extras():
         # to the provided set of keys (to create the correct structures)
         items = quorum.xlsx_to_map(
             file_path,
-            keys = ("company_product_code", "cost"),
-            types = (quorum.legacy.UNICODE, None)
+            keys=("company_product_code", "cost"),
+            types=(quorum.legacy.UNICODE, None),
         )
     finally:
         # closes the temporary file descriptor and removes the temporary
@@ -712,11 +722,12 @@ def do_costs_extras():
     for index, item in enumerate(items):
         quorum.verify(
             item["company_product_code"],
-            message = "No key for value at index %d, please verify" % index
+            message="No key for value at index %d, please verify" % index,
         )
         quorum.verify(
             not item["cost"] in (None, ""),
-            message = "No cost value for code '%s', please verify" % item["company_product_code"]
+            message="No cost value for code '%s', please verify"
+            % item["company_product_code"],
         )
 
     # uses the "resolved" items structure in the put operation to
@@ -726,30 +737,30 @@ def do_costs_extras():
     # redirects the user back to the costs list page with a success
     # message indicating that everything went ok
     return flask.redirect(
-        flask.url_for(
-            "costs_extras",
-            message = "Costs file processed with success"
-        )
+        flask.url_for("costs_extras", message="Costs file processed with success")
     )
 
-@app.route("/extras/inventory", methods = ("GET",))
-@quorum.ensure((
-    "inventory.stock_adjustment.create",
-    "inventory.transactional_merchandise.list",
-    "foundation.store.list"
-))
+
+@app.route("/extras/inventory", methods=("GET",))
+@quorum.ensure(
+    (
+        "inventory.stock_adjustment.create",
+        "inventory.transactional_merchandise.list",
+        "foundation.store.list",
+    )
+)
 def inventory_extras():
-    return flask.render_template(
-        "extra/inventory.html.tpl",
-        link = "extras"
-    )
+    return flask.render_template("extra/inventory.html.tpl", link="extras")
 
-@app.route("/extras/inventory", methods = ("POST",))
-@quorum.ensure((
-    "inventory.stock_adjustment.create",
-    "inventory.transactional_merchandise.list",
-    "foundation.store.list"
-))
+
+@app.route("/extras/inventory", methods=("POST",))
+@quorum.ensure(
+    (
+        "inventory.stock_adjustment.create",
+        "inventory.transactional_merchandise.list",
+        "foundation.store.list",
+    )
+)
 def do_inventory_extras():
     # retrieves the reference to the API object that is going
     # to be used for the updating of prices operation
@@ -761,9 +772,7 @@ def do_inventory_extras():
     inventory_file = quorum.get_field("inventory_file", None)
     if inventory_file == None or not inventory_file.filename:
         return flask.render_template(
-            "extra/inventory.html.tpl",
-            link = "extras",
-            error = "No file defined"
+            "extra/inventory.html.tpl", link="extras", error="No file defined"
         )
 
     # creates a temporary file path for the storage of the file
@@ -774,8 +783,10 @@ def do_inventory_extras():
     # creates the file object that is going to be used in the
     # reading of the CSV file (underlying object)
     file = open(file_path, "rb")
-    try: data = file.read()
-    finally: file.close()
+    try:
+        data = file.read()
+    finally:
+        file.close()
 
     # constructs the bytes based buffer object from the data that
     # has just been loaded from the file
@@ -796,10 +807,7 @@ def do_inventory_extras():
     def new_adjustment(target_id):
         flush_adjustment()
         adjustment = dict(
-            adjustment_target = dict(
-                object_id = target_id
-            ),
-            stock_adjustment_lines = []
+            adjustment_target=dict(object_id=target_id), stock_adjustment_lines=[]
         )
         state["adjustment"] = adjustment
         return adjustment
@@ -807,46 +815,45 @@ def do_inventory_extras():
     def flush_adjustment():
         adjustment = get_adjustment()
         state["adjustment"] = None
-        if not adjustment: return
-        payload = dict(stock_adjustment = adjustment)
+        if not adjustment:
+            return
+        payload = dict(stock_adjustment=adjustment)
         stock_adjustment = api.create_stock_adjustment(payload)
         store_id = adjustment["adjustment_target"]["object_id"]
         stock_adjustment_id = stock_adjustment["object_id"]
         quorum.debug(
-            "Created stock adjustment '%d' for store '%d'" %\
-            (stock_adjustment_id, store_id)
+            "Created stock adjustment '%d' for store '%d'"
+            % (stock_adjustment_id, store_id)
         )
         return stock_adjustment
 
-    def add_adjustment_line(merchandise_id, quantity = -1):
+    def add_adjustment_line(merchandise_id, quantity=-1):
         adjustment = get_adjustment()
-        if not adjustment: raise quorum.OperationalError(
-            "No adjustment in context"
-        )
+        if not adjustment:
+            raise quorum.OperationalError("No adjustment in context")
         lines = adjustment["stock_adjustment_lines"]
         line = dict(
-            stock_on_hand_delta = quantity,
-            merchandise = dict(
-                object_id = merchandise_id
-            )
+            stock_on_hand_delta=quantity, merchandise=dict(object_id=merchandise_id)
         )
         lines.append(line)
 
     def get_store_id(store_code):
         object_id = stores_map.get(store_code, None)
-        if object_id: return object_id
+        if object_id:
+            return object_id
 
         kwargs = {
-            "start_record" : 0,
-            "number_records" : 1,
-            "filters[]" : [
-                "store_code:equals:%s" % store_code
-            ]
+            "start_record": 0,
+            "number_records": 1,
+            "filters[]": ["store_code:equals:%s" % store_code],
         }
 
-        try: stores = api.list_stores(**kwargs)
-        except Exception: stores = []
-        if stores: object_id = stores[0]["object_id"]
+        try:
+            stores = api.list_stores(**kwargs)
+        except Exception:
+            stores = []
+        if stores:
+            object_id = stores[0]["object_id"]
 
         stores_map[store_code] = object_id
         return object_id
@@ -855,24 +862,26 @@ def do_inventory_extras():
         # tries to retrieve the object id of the merchandise from the
         # cache and in case it succeeds returns it immediately
         object_id = merchandise_map.get(company_product_code, None)
-        if object_id: return object_id
+        if object_id:
+            return object_id
 
         # creates the map containing the (filter) keyword arguments that
         # are going to be send to the list merchandise operation
         kwargs = {
-            "start_record" : 0,
-            "number_records" : 1,
-            "filters[]" : [
-                "company_product_code:equals:%s" % company_product_code
-            ]
+            "start_record": 0,
+            "number_records": 1,
+            "filters[]": ["company_product_code:equals:%s" % company_product_code],
         }
 
         # runs the list merchandise operation in order to try to find a
         # merchandise entity for the requested (unique) product code in
         # case there's at least one merchandise its object id is used
-        try: merchandise = api.list_merchandise(**kwargs)
-        except Exception: merchandise = []
-        if merchandise: object_id = merchandise[0]["object_id"]
+        try:
+            merchandise = api.list_merchandise(**kwargs)
+        except Exception:
+            merchandise = []
+        if merchandise:
+            object_id = merchandise[0]["object_id"]
 
         # updates the (cache) map for the merchandise with the reference
         # new object id to company product code reference and then returns
@@ -880,7 +889,7 @@ def do_inventory_extras():
         merchandise_map[company_product_code] = object_id
         return object_id
 
-    def callback(line, header = None):
+    def callback(line, header=None):
         code, quantity, _date, _time = line[:4]
 
         code = code.strip()
@@ -889,24 +898,27 @@ def do_inventory_extras():
         quantity = quantity * -1
 
         is_store = len(code) < 4
-        if is_store: store_id = get_store_id(code)
-        else: merchandise_id = get_merchandise_id(code)
+        if is_store:
+            store_id = get_store_id(code)
+        else:
+            merchandise_id = get_merchandise_id(code)
 
         if is_store:
-            if store_id: new_adjustment(store_id)
-            else: flush_adjustment()
+            if store_id:
+                new_adjustment(store_id)
+            else:
+                flush_adjustment()
         elif merchandise_id:
-            try: add_adjustment_line(
-                merchandise_id,
-                quantity = quantity
-            )
-            except Exception: pass
+            try:
+                add_adjustment_line(merchandise_id, quantity=quantity)
+            except Exception:
+                pass
 
     try:
         # start the CSV import operation that is going to import the
         # various lines of the CSV in the buffer and for each of them
         # call the function passed as callback
-        util.csv_import(buffer, callback, delimiter = ";")
+        util.csv_import(buffer, callback, delimiter=";")
         flush_adjustment()
     finally:
         # closes the temporary file descriptor and removes the temporary
@@ -918,29 +930,31 @@ def do_inventory_extras():
     # message indicating that everything went ok
     return flask.redirect(
         flask.url_for(
-            "inventory_extras",
-            message = "Inventory file processed with success"
+            "inventory_extras", message="Inventory file processed with success"
         )
     )
 
-@app.route("/extras/transfers", methods = ("GET",))
-@quorum.ensure((
-    "inventory.transfer.create",
-    "inventory.transactional_merchandise.list",
-    "foundation.store.list"
-))
-def transfers_extras():
-    return flask.render_template(
-        "extra/transfers.html.tpl",
-        link = "extras"
-    )
 
-@app.route("/extras/transfers", methods = ("POST",))
-@quorum.ensure((
-    "inventory.transfer.create",
-    "inventory.transactional_merchandise.list",
-    "foundation.store.list"
-))
+@app.route("/extras/transfers", methods=("GET",))
+@quorum.ensure(
+    (
+        "inventory.transfer.create",
+        "inventory.transactional_merchandise.list",
+        "foundation.store.list",
+    )
+)
+def transfers_extras():
+    return flask.render_template("extra/transfers.html.tpl", link="extras")
+
+
+@app.route("/extras/transfers", methods=("POST",))
+@quorum.ensure(
+    (
+        "inventory.transfer.create",
+        "inventory.transactional_merchandise.list",
+        "foundation.store.list",
+    )
+)
 def do_transfers_extras():
     # retrieves the reference to the API object that is going
     # to be used for the updating of prices operation
@@ -948,12 +962,10 @@ def do_transfers_extras():
 
     # tries to retrieve the origin value from the provided set
     # of fields and in case it's not defined re-renders the template
-    origin = quorum.get_field("origin", None, cast = int)
+    origin = quorum.get_field("origin", None, cast=int)
     if not origin:
         return flask.render_template(
-            "extra/transfers.html.tpl",
-            link = "extras",
-            error = "No origin defined"
+            "extra/transfers.html.tpl", link="extras", error="No origin defined"
         )
 
     # tries to retrieve the transfers file from the current
@@ -962,9 +974,7 @@ def do_transfers_extras():
     transfers_file = quorum.get_field("transfers_file", None)
     if transfers_file == None or not transfers_file.filename:
         return flask.render_template(
-            "extra/transfers.html.tpl",
-            link = "extras",
-            error = "No file defined"
+            "extra/transfers.html.tpl", link="extras", error="No file defined"
         )
 
     # creates a temporary file path for the storage of the file
@@ -975,8 +985,10 @@ def do_transfers_extras():
     # creates the file object that is going to be used in the
     # reading of the CSV file (underlying object)
     file = open(file_path, "rb")
-    try: data = file.read()
-    finally: file.close()
+    try:
+        data = file.read()
+    finally:
+        file.close()
 
     # constructs the bytes based buffer object from the data that
     # has just been loaded from the file
@@ -994,19 +1006,13 @@ def do_transfers_extras():
     def get_transfer():
         return state.get("transfer", None)
 
-    def new_transfer(target_id, workflow_state = 6):
+    def new_transfer(target_id, workflow_state=6):
         flush_transfer()
         transfer = dict(
-            origin = dict(
-                object_id = origin
-            ),
-            destination = dict(
-                object_id = target_id
-            ),
-            transfer_lines = [],
-            _parameters = dict(
-                target_workflow_state = workflow_state
-            )
+            origin=dict(object_id=origin),
+            destination=dict(object_id=target_id),
+            transfer_lines=[],
+            _parameters=dict(target_workflow_state=workflow_state),
         )
         state["transfer"] = transfer
         return transfer
@@ -1014,44 +1020,39 @@ def do_transfers_extras():
     def flush_transfer():
         transfer = get_transfer()
         state["transfer"] = None
-        if not transfer: return
-        payload = dict(transfer = transfer)
+        if not transfer:
+            return
+        payload = dict(transfer=transfer)
         transfer = api.create_transfer(payload)
         transfer_id = transfer["object_id"]
-        quorum.debug(
-            "Created stock transfer '%d'" % transfer_id
-        )
+        quorum.debug("Created stock transfer '%d'" % transfer_id)
         return transfer
 
-    def add_transfer_line(merchandise_id, quantity = 1):
+    def add_transfer_line(merchandise_id, quantity=1):
         transfer = get_transfer()
-        if not transfer: raise quorum.OperationalError(
-            "No transfer in context"
-        )
+        if not transfer:
+            raise quorum.OperationalError("No transfer in context")
         lines = transfer["transfer_lines"]
-        line = dict(
-            quantity = quantity,
-            merchandise = dict(
-                object_id = merchandise_id
-            )
-        )
+        line = dict(quantity=quantity, merchandise=dict(object_id=merchandise_id))
         lines.append(line)
 
     def get_store_id(store_code):
         object_id = stores_map.get(store_code, None)
-        if object_id: return object_id
+        if object_id:
+            return object_id
 
         kwargs = {
-            "start_record" : 0,
-            "number_records" : 1,
-            "filters[]" : [
-                "store_code:equals:%s" % store_code
-            ]
+            "start_record": 0,
+            "number_records": 1,
+            "filters[]": ["store_code:equals:%s" % store_code],
         }
 
-        try: stores = api.list_stores(**kwargs)
-        except Exception: stores = []
-        if stores: object_id = stores[0]["object_id"]
+        try:
+            stores = api.list_stores(**kwargs)
+        except Exception:
+            stores = []
+        if stores:
+            object_id = stores[0]["object_id"]
 
         stores_map[store_code] = object_id
         return object_id
@@ -1060,24 +1061,26 @@ def do_transfers_extras():
         # tries to retrieve the object id of the merchandise from the
         # cache and in case it succeeds returns it immediately
         object_id = merchandise_map.get(company_product_code, None)
-        if object_id: return object_id
+        if object_id:
+            return object_id
 
         # creates the map containing the (filter) keyword arguments that
         # are going to be send to the list merchandise operation
         kwargs = {
-            "start_record" : 0,
-            "number_records" : 1,
-            "filters[]" : [
-                "company_product_code:equals:%s" % company_product_code
-            ]
+            "start_record": 0,
+            "number_records": 1,
+            "filters[]": ["company_product_code:equals:%s" % company_product_code],
         }
 
         # runs the list merchandise operation in order to try to find a
         # merchandise entity for the requested (unique) product code in
         # case there's at least one merchandise its object id is used
-        try: merchandise = api.list_merchandise(**kwargs)
-        except Exception: merchandise = []
-        if merchandise: object_id = merchandise[0]["object_id"]
+        try:
+            merchandise = api.list_merchandise(**kwargs)
+        except Exception:
+            merchandise = []
+        if merchandise:
+            object_id = merchandise[0]["object_id"]
 
         # updates the (cache) map for the merchandise with the reference
         # new object id to company product code reference and then returns
@@ -1085,7 +1088,7 @@ def do_transfers_extras():
         merchandise_map[company_product_code] = object_id
         return object_id
 
-    def callback(line, header = None):
+    def callback(line, header=None):
         code, quantity, _date, _time = line[:4]
 
         code = code.strip()
@@ -1093,24 +1096,27 @@ def do_transfers_extras():
         quantity = int(quantity)
 
         is_store = len(code) < 4
-        if is_store: store_id = get_store_id(code)
-        else: merchandise_id = get_merchandise_id(code)
+        if is_store:
+            store_id = get_store_id(code)
+        else:
+            merchandise_id = get_merchandise_id(code)
 
         if is_store:
-            if store_id: new_transfer(store_id)
-            else: flush_transfer()
+            if store_id:
+                new_transfer(store_id)
+            else:
+                flush_transfer()
         elif merchandise_id:
-            try: add_transfer_line(
-                merchandise_id,
-                quantity = quantity
-            )
-            except Exception: pass
+            try:
+                add_transfer_line(merchandise_id, quantity=quantity)
+            except Exception:
+                pass
 
     try:
         # start the CSV import operation that is going to import the
         # various lines of the CSV in the buffer and for each of them
         # call the function passed as callback
-        util.csv_import(buffer, callback, delimiter = ";")
+        util.csv_import(buffer, callback, delimiter=";")
         flush_transfer()
     finally:
         # closes the temporary file descriptor and removes the temporary
@@ -1122,53 +1128,46 @@ def do_transfers_extras():
     # message indicating that everything went ok
     return flask.redirect(
         flask.url_for(
-            "transfers_extras",
-            message = "Transfers file processed with success"
+            "transfers_extras", message="Transfers file processed with success"
         )
     )
 
-@app.route("/extras/ctt", methods = ("GET",))
+
+@app.route("/extras/ctt", methods=("GET",))
 @quorum.ensure("sales.sale_order.list")
 def ctt_extras():
-    return flask.render_template(
-        "extra/ctt.html.tpl",
-        link = "extras"
-    )
+    return flask.render_template("extra/ctt.html.tpl", link="extras")
 
-@app.route("/extras/ctt", methods = ("POST",))
+
+@app.route("/extras/ctt", methods=("POST",))
 @quorum.ensure("sales.sale_order.list")
 def do_ctt_extras():
     api = util.get_api()
-    sale_orders = api.list_sale_orders(**{
-        "start_record" : 0,
-        "number_records" : -1,
-        "eager[]" : [
-            "customer",
-            "customer.primary_contact_information",
-            "shipping_address"
-        ],
-        "filters[]" : [
-            "workflow_state:equals:5",
-            "shipping_type:equals:2"
-        ]
-    })
-
-    out_data = util.encode_ctt(sale_orders, encoding = "Cp1252")
-
-    return flask.Response(
-        out_data,
-        mimetype = "binary/octet-stream"
+    sale_orders = api.list_sale_orders(
+        **{
+            "start_record": 0,
+            "number_records": -1,
+            "eager[]": [
+                "customer",
+                "customer.primary_contact_information",
+                "shipping_address",
+            ],
+            "filters[]": ["workflow_state:equals:5", "shipping_type:equals:2"],
+        }
     )
 
-@app.route("/extras/template", methods = ("GET",))
+    out_data = util.encode_ctt(sale_orders, encoding="Cp1252")
+
+    return flask.Response(out_data, mimetype="binary/octet-stream")
+
+
+@app.route("/extras/template", methods=("GET",))
 @quorum.ensure("base.user")
 def template_extras():
-    return flask.render_template(
-        "extra/template.html.tpl",
-        link = "extras"
-    )
+    return flask.render_template("extra/template.html.tpl", link="extras")
 
-@app.route("/extras/template", methods = ("POST",))
+
+@app.route("/extras/template", methods=("POST",))
 @quorum.ensure("foundation.system_company.show.self")
 def do_template_extras():
     object = quorum.get_object()
@@ -1182,19 +1181,20 @@ def do_template_extras():
     mask_name = mask_name.replace(" ", "_")
 
     api = util.get_api()
-    try: mask_data = api.public_media_system_company(label = mask_name)
-    except Exception: mask_data = None
-    if not mask_data: raise quorum.OperationalError("No mask defined")
+    try:
+        mask_data = api.public_media_system_company(label=mask_name)
+    except Exception:
+        mask_data = None
+    if not mask_data:
+        raise quorum.OperationalError("No mask defined")
 
-    out_data = util.mask_image(base_data, mask_data, format = format)
+    out_data = util.mask_image(base_data, mask_data, format=format)
     mimetype = mimetypes.guess_type("_." + format)[0]
 
-    return flask.Response(
-        out_data,
-        mimetype = mimetype or "application/octet-stream"
-    )
+    return flask.Response(out_data, mimetype=mimetype or "application/octet-stream")
 
-@app.route("/extras/mask", methods = ("POST",))
+
+@app.route("/extras/mask", methods=("POST",))
 @quorum.ensure("foundation.root_entity.set_media")
 def do_mask_extras():
     object = quorum.get_object()
@@ -1213,102 +1213,97 @@ def do_mask_extras():
     api.set_media_entity(
         system_company["object_id"],
         mask_name,
-        data = data,
-        mime_type = mime_type,
-        visibility = 2
+        data=data,
+        mime_type=mime_type,
+        visibility=2,
     )
 
     return flask.redirect(
-        flask.url_for(
-            "template_extras",
-            message = "Mask file uploaded with success"
-        )
+        flask.url_for("template_extras", message="Mask file uploaded with success")
     )
 
-@app.route("/extras/browser", methods = ("GET",))
+
+@app.route("/extras/browser", methods=("GET",))
 @quorum.ensure("foundation.root_entity.show_media")
 def browser_extras():
-    object_id = quorum.get_field("id", None, cast = int)
+    object_id = quorum.get_field("id", None, cast=int)
     return flask.render_template(
-        "extra/browser.html.tpl",
-        link = "extras",
-        object_id = object_id
+        "extra/browser.html.tpl", link="extras", object_id=object_id
     )
 
-@app.route("/extras/browser", methods = ("POST",), json = True)
+
+@app.route("/extras/browser", methods=("POST",), json=True)
 @quorum.ensure("foundation.root_entity.show_media")
 def do_browser():
-    object_id = quorum.get_field("object_id", None, cast = int)
+    object_id = quorum.get_field("object_id", None, cast=int)
     api = util.get_api()
     entity = api.get_entity(object_id)
     media = api.info_media_entity(object_id)
     media_info = []
     for item in media:
         mitem = dict(
-            object_id = item["object_id"],
-            label = item["label"],
-            position = item["position"],
-            dimensions = item["dimensions"],
-            image_url = api.get_media_url(item["secret"])
+            object_id=item["object_id"],
+            label=item["label"],
+            position=item["position"],
+            dimensions=item["dimensions"],
+            image_url=api.get_media_url(item["secret"]),
         )
         media_info.append(mitem)
-    media_info.sort(key = _media_sorter)
+    media_info.sort(key=_media_sorter)
     entity["media"] = media_info
     return entity
 
-@app.route("/extras/browser/new_media/<int:id>", methods = ("GET",))
+
+@app.route("/extras/browser/new_media/<int:id>", methods=("GET",))
 @quorum.ensure("foundation.root_entity.set_media")
 def new_media_browser(id):
     return flask.render_template(
         "extra/browser/new_media.html.tpl",
-        link = "extras",
-        object_id = id,
-        media = dict(),
-        errors = dict()
+        link="extras",
+        object_id=id,
+        media=dict(),
+        errors=dict(),
     )
 
-@app.route("/extras/browser/new_media/<int:id>", methods = ("POST",))
+
+@app.route("/extras/browser/new_media/<int:id>", methods=("POST",))
 @quorum.ensure("foundation.root_entity.set_media")
 def create_media_browser(id):
     api = util.get_api()
     engine = quorum.get_field("engine", None) or None
-    position = quorum.get_field("position", None, cast = int)
+    position = quorum.get_field("position", None, cast=int)
     label = quorum.get_field("label", None) or None
-    visibility = quorum.get_field("visibility", None, cast = int)
+    visibility = quorum.get_field("visibility", None, cast=int)
     description = quorum.get_field("description", None) or None
-    thumbnails = quorum.get_field("thumbnails", False, cast = bool)
+    thumbnails = quorum.get_field("thumbnails", False, cast=bool)
     media_file = quorum.get_field("media_file", None)
     image_type = mimetypes.guess_type(media_file.filename)[0]
     mime_type = image_type if image_type else "image/unknown"
-    try: data = media_file.stream.read()
-    finally: media_file.close()
+    try:
+        data = media_file.stream.read()
+    finally:
+        media_file.close()
     api.set_media_entity(
         id,
         data,
-        engine = engine,
-        position = position,
-        label = label,
-        mime_type = mime_type,
-        visibility = visibility,
-        description = description,
-        thumbnails = thumbnails
+        engine=engine,
+        position=position,
+        label=label,
+        mime_type=mime_type,
+        visibility=visibility,
+        description=description,
+        thumbnails=thumbnails,
     )
-    return flask.redirect(
-        flask.url_for("browser_extras", id = id)
-    )
+    return flask.redirect(flask.url_for("browser_extras", id=id))
 
-@app.route("/extras/browser/clear_media/<int:id>", methods = ("GET",))
+
+@app.route("/extras/browser/clear_media/<int:id>", methods=("GET",))
 @quorum.ensure("foundation.root_entity.clear_media")
 def clear_media_browser(id):
     api = util.get_api()
     api.clear_media_entity(id)
-    return flask.redirect(
-        flask.url_for("browser_extras", id = id)
-    )
+    return flask.redirect(flask.url_for("browser_extras", id=id))
+
 
 def _media_sorter(item):
-    return (
-        item["label"] or "",
-        item["position"] or 0,
-        item["dimensions"] or ""
-    )
+    return (item["label"] or "", item["position"] or 0, item["dimensions"] or "")

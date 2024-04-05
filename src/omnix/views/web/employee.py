@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -43,136 +37,142 @@ from omnix.main import app
 from omnix.main import flask
 from omnix.main import quorum
 
-@app.route("/employees", methods = ("GET",))
+
+@app.route("/employees", methods=("GET",))
 @quorum.ensure("foundation.employee.list")
 def list_employees():
-    return flask.render_template(
-        "employee/list.html.tpl",
-        link = "employees"
-    )
+    return flask.render_template("employee/list.html.tpl", link="employees")
 
-@app.route("/employees.json", methods = ("GET",), json = True)
+
+@app.route("/employees.json", methods=("GET",), json=True)
 @quorum.ensure("foundation.employee.list")
 def list_employees_json():
     api = util.get_api()
     object = quorum.get_object()
     return api.list_employees(**object)
 
-@app.route("/employees/self", methods = ("GET",))
+
+@app.route("/employees/self", methods=("GET",))
 @quorum.ensure("foundation.employee.show.self")
 def show_employee():
     api = util.get_api()
     employee = api.self_employee()
     return flask.render_template(
         "employee/show.html.tpl",
-        link = "employees",
-        sub_link = "info",
-        is_self = True,
-        employee = employee
+        link="employees",
+        sub_link="info",
+        is_self=True,
+        employee=employee,
     )
 
-@app.route("/employees/self/sales", methods = ("GET",))
+
+@app.route("/employees/self/sales", methods=("GET",))
 @quorum.ensure(("sales.sale_transaction.list.self", "sales.customer_return.list.self"))
 def sales_employee():
-    year = quorum.get_field("year", None, cast = int)
-    month = quorum.get_field("month", None, cast = int)
+    year = quorum.get_field("year", None, cast=int)
+    month = quorum.get_field("month", None, cast=int)
 
     api = util.get_api()
     employee = api.self_employee()
 
-    operations,\
-    target,\
-    sales_total,\
-    sales,\
-    returns,\
-    previous_month,\
-    previous_year,\
-    next_month,\
-    next_year,\
-    has_next = util.get_sales(year = year, month = month)
+    (
+        operations,
+        target,
+        sales_total,
+        sales,
+        returns,
+        previous_month,
+        previous_year,
+        next_month,
+        next_year,
+        has_next,
+    ) = util.get_sales(year=year, month=month)
 
     return flask.render_template(
         "employee/sales.html.tpl",
-        link = "employees",
-        sub_link = "sales",
-        is_self = True,
-        employee = employee,
-        operations = operations,
-        commission_rate = util.COMMISSION_RATE,
-        title = target,
-        sales_total = sales_total,
-        sales_count = len(sales),
-        returns_count = len(returns),
-        previous = (previous_month, previous_year),
-        next = (next_month, next_year),
-        has_next = has_next
+        link="employees",
+        sub_link="sales",
+        is_self=True,
+        employee=employee,
+        operations=operations,
+        commission_rate=util.COMMISSION_RATE,
+        title=target,
+        sales_total=sales_total,
+        sales_count=len(sales),
+        returns_count=len(returns),
+        previous=(previous_month, previous_year),
+        next=(next_month, next_year),
+        has_next=has_next,
     )
 
-@app.route("/employees/self/mail", methods = ("GET",))
+
+@app.route("/employees/self/mail", methods=("GET",))
 @quorum.ensure("foundation.employee.show.self")
 def mail_employee():
-    year = quorum.get_field("year", None, cast = int)
-    month = quorum.get_field("month", None, cast = int)
+    year = quorum.get_field("year", None, cast=int)
+    month = quorum.get_field("month", None, cast=int)
 
-    util.mail_activity(year = year, month = month)
+    util.mail_activity(year=year, month=month)
 
     return show_employee()
 
-@app.route("/employees/<int:id>", methods = ("GET",))
+
+@app.route("/employees/<int:id>", methods=("GET",))
 @quorum.ensure("foundation.employee.show")
 def show_employees(id):
     api = util.get_api()
     employee = api.get_employee(id)
     return flask.render_template(
-        "employee/show.html.tpl",
-        link = "employees",
-        sub_link = "info",
-        employee = employee
+        "employee/show.html.tpl", link="employees", sub_link="info", employee=employee
     )
 
-@app.route("/employees/<int:id>/sales", methods = ("GET",))
+
+@app.route("/employees/<int:id>/sales", methods=("GET",))
 @quorum.ensure(("sales.sale_transaction.list", "sales.customer_return.list"))
 def sales_employees(id):
-    year = quorum.get_field("year", None, cast = int)
-    month = quorum.get_field("month", None, cast = int)
+    year = quorum.get_field("year", None, cast=int)
+    month = quorum.get_field("month", None, cast=int)
 
     api = util.get_api()
     employee = api.get_employee(id)
 
-    operations,\
-    target_s,\
-    sales_total,\
-    sales_s,\
-    returns_s,\
-    previous_month,\
-    previous_year,\
-    next_month,\
-    next_year,\
-    has_next = util.get_sales(id = id, year = year, month = month)
+    (
+        operations,
+        target_s,
+        sales_total,
+        sales_s,
+        returns_s,
+        previous_month,
+        previous_year,
+        next_month,
+        next_year,
+        has_next,
+    ) = util.get_sales(id=id, year=year, month=month)
 
     return flask.render_template(
         "employee/sales.html.tpl",
-        link = "employees",
-        sub_link = "sales",
-        is_self = False,
-        employee = employee,
-        operations = operations,
-        commission_rate = util.COMMISSION_RATE,
-        title = target_s,
-        sales_total = sales_total,
-        sales_count = len(sales_s),
-        returns_count = len(returns_s),
-        previous = (previous_month, previous_year),
-        next = (next_month, next_year),
-        has_next = has_next
+        link="employees",
+        sub_link="sales",
+        is_self=False,
+        employee=employee,
+        operations=operations,
+        commission_rate=util.COMMISSION_RATE,
+        title=target_s,
+        sales_total=sales_total,
+        sales_count=len(sales_s),
+        returns_count=len(returns_s),
+        previous=(previous_month, previous_year),
+        next=(next_month, next_year),
+        has_next=has_next,
     )
 
-@app.route("/employees/<int:id>/mail", methods = ("GET",))
+
+@app.route("/employees/<int:id>/mail", methods=("GET",))
 @quorum.ensure("foundation.employee.show")
 def mail_employees(id):
-    year = quorum.get_field("year", None, cast = int)
-    month = quorum.get_field("month", None, cast = int)
+    year = quorum.get_field("year", None, cast=int)
+    month = quorum.get_field("month", None, cast=int)
 
-    util.mail_activity(id = id, year = year, month = month)
+    util.mail_activity(id=id, year=year, month=month)
 
     return show_employees(id)

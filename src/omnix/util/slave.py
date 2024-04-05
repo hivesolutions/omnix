@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -63,6 +57,7 @@ RETRY_TIMEOUT = 30
 """ The timeout to be used in between the retries
 of the operations, as expected """
 
+
 class Slave(threading.Thread):
 
     session_id = None
@@ -77,34 +72,35 @@ class Slave(threading.Thread):
         pass
 
     def auth(self):
-        if not config.REMOTE: return
+        if not config.REMOTE:
+            return
 
         username = config.USERNAME
         password = config.PASSWORD
         if username == None or password == None:
             raise RuntimeError("Missing authentication information")
 
-        self.api = logic.get_api(mode = omni.API.DIRECT_MODE)
+        self.api = logic.get_api(mode=omni.API.DIRECT_MODE)
 
-    def connect(self, queue = "default"):
-        if not config.REMOTE: return
+    def connect(self, queue="default"):
+        if not config.REMOTE:
+            return
 
         while True:
             try:
                 quorum.debug("Starting loop cycle in slave ...")
-                self.connection = quorum.get_amqp(force = True)
+                self.connection = quorum.get_amqp(force=True)
                 self.channel = self.connection.channel()
-                self.channel.queue_declare(queue = queue, durable = True)
-                self.channel.basic_qos(prefetch_count = 1)
+                self.channel.queue_declare(queue=queue, durable=True)
+                self.channel.basic_qos(prefetch_count=1)
                 self.channel.basic_consume(
-                    queue = queue,
-                    on_message_callback = self.callback
+                    queue=queue, on_message_callback=self.callback
                 )
                 self.channel.start_consuming()
             except Exception as exception:
                 quorum.error(
                     "Exception while executing - %s" % quorum.legacy.UNICODE(exception),
-                    log_trace = True
+                    log_trace=True,
                 )
 
             quorum.info("Sleeping %d seconds before consume retry" % RETRY_TIMEOUT)
@@ -112,7 +108,8 @@ class Slave(threading.Thread):
             time.sleep(RETRY_TIMEOUT)
 
     def disconnect(self):
-        if not config.REMOTE: return
+        if not config.REMOTE:
+            return
 
     def callback(self, channel, method, properties, body):
         # prints a debug message about the callback call for the message, this
@@ -134,28 +131,20 @@ class Slave(threading.Thread):
 
         # verifies if the document is considered to be outdated (timeout passed)
         # in case it's returns immediately printing a message
-        outdated = not properties.timestamp or\
-            properties.timestamp < time.time() - MESSAGE_TIMEOUT
+        outdated = (
+            not properties.timestamp
+            or properties.timestamp < time.time() - MESSAGE_TIMEOUT
+        )
         if outdated:
-            channel.basic_ack(delivery_tag = method.delivery_tag)
+            channel.basic_ack(delivery_tag=method.delivery_tag)
             quorum.info(
-                "Canceling/Dropping %s - %s (%s)" % (
-                    type,
-                    representation,
-                    issue_date_s
-                )
+                "Canceling/Dropping %s - %s (%s)" % (type, representation, issue_date_s)
             )
             return
 
         # retrieves the current time and uses it to print debug information
         # about the current document submission to at
-        quorum.info(
-            "Submitting %s - %s (%s)" % (
-                type,
-                representation,
-                issue_date_s
-            )
-        )
+        quorum.info("Submitting %s - %s (%s)" % (type, representation, issue_date_s))
 
         # resolves the method for the currently retrieved data type (class)
         # this should raise an exception in case the type is invalid
@@ -167,30 +156,36 @@ class Slave(threading.Thread):
             # in the request an exception should be raised and handled properly
             api_method(object_id)
         except Exception as exception:
-            quorum.error("Exception while submitting document - %s" % quorum.legacy.UNICODE(exception))
+            quorum.error(
+                "Exception while submitting document - %s"
+                % quorum.legacy.UNICODE(exception)
+            )
             retries = properties.priority or 0
             retries -= 1
             properties.priority = retries
             if retries >= 0:
                 self.channel.basic_publish(
-                    exchange = "",
-                    routing_key = config.QUEUE,
-                    body = body,
-                    properties = properties
+                    exchange="",
+                    routing_key=config.QUEUE,
+                    body=body,
+                    properties=properties,
                 )
-                quorum.error("Re-queueing for latter consumption (%d retries pending)" % retries)
-            else: quorum.error("No more retries left, the document will be discarded")
+                quorum.error(
+                    "Re-queueing for latter consumption (%d retries pending)" % retries
+                )
+            else:
+                quorum.error("No more retries left, the document will be discarded")
         else:
             quorum.info("Document submitted with success")
 
         # marks the message as acknowledged in the message queue server
         # and then prints a debug message about the action
-        channel.basic_ack(delivery_tag = method.delivery_tag)
+        channel.basic_ack(delivery_tag=method.delivery_tag)
         quorum.debug("Marked as acknowledged in message queue")
 
     def run(self):
         self.auth()
-        self.connect(queue = config.QUEUE)
+        self.connect(queue=config.QUEUE)
         self.disconnect()
 
     def _resolve_method(self, type):
@@ -201,7 +196,8 @@ class Slave(threading.Thread):
         else:
             raise RuntimeError("Invalid document type")
 
-def run(count = 1):
+
+def run(count=1):
     for _index in range(count):
         slave = Slave()
         slave.start()

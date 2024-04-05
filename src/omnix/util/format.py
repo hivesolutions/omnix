@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -41,13 +35,9 @@ import csv
 
 import quorum
 
+
 def csv_file(
-    file,
-    callback,
-    header = False,
-    delimiter = ",",
-    strict = False,
-    encoding = "utf-8"
+    file, callback, header=False, delimiter=",", strict=False, encoding="utf-8"
 ):
     _file_name, mime_type, data = file
     is_csv = mime_type in ("text/csv", "application/vnd.ms-excel")
@@ -55,20 +45,11 @@ def csv_file(
         raise quorum.OperationalError("Invalid MIME type '%s'" % mime_type)
     data = data.decode(encoding)
     buffer = quorum.legacy.StringIO(data)
-    return csv_import(
-        buffer,
-        callback,
-        header = header,
-        delimiter = delimiter
-    )
+    return csv_import(buffer, callback, header=header, delimiter=delimiter)
+
 
 def csv_import(
-    buffer,
-    callback,
-    header = False,
-    delimiter = ",",
-    quoting = False,
-    encoding = "utf-8"
+    buffer, callback, header=False, delimiter=",", quoting=False, encoding="utf-8"
 ):
     is_unicode = quorum.legacy.PYTHON_3
     if is_unicode:
@@ -77,14 +58,18 @@ def csv_import(
         buffer = quorum.legacy.StringIO(data)
     csv_reader = csv.reader(
         buffer,
-        delimiter = delimiter,
-        quoting = csv.QUOTE_MINIMAL if quoting else csv.QUOTE_NONE
+        delimiter=delimiter,
+        quoting=csv.QUOTE_MINIMAL if quoting else csv.QUOTE_NONE,
     )
-    if header: _header = next(csv_reader)
-    else: _header = []
+    if header:
+        _header = next(csv_reader)
+    else:
+        _header = []
     for line in csv_reader:
-        if not is_unicode: line = [value.decode(encoding) for value in line]
-        callback(line, header = _header)
+        if not is_unicode:
+            line = [value.decode(encoding) for value in line]
+        callback(line, header=_header)
+
 
 def csv_value(name, line, header):
     values = zip(line, header)

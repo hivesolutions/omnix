@@ -22,12 +22,6 @@
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -45,19 +39,64 @@ from . import settings
 from . import store
 from . import supplier
 
-from .base import index, signin, login, do_login, logout, about, reset, flush_slack_sales,\
-    flush_slack_previous, flush_slack_week, flush_birthday, flush_activity, flush_at,\
-    oauth, top, handler_404, handler_413, handler_exception
+from .base import (
+    index,
+    signin,
+    login,
+    do_login,
+    logout,
+    about,
+    reset,
+    flush_slack_sales,
+    flush_slack_previous,
+    flush_slack_week,
+    flush_birthday,
+    flush_activity,
+    flush_at,
+    oauth,
+    top,
+    handler_404,
+    handler_413,
+    handler_exception,
+)
 from .customer import list_customers, list_customers_json, show_customers
-from .employee import list_employees, list_employees_json, show_employee, sales_employee,\
-    mail_employee, show_employees, sales_employees, mail_employees
+from .employee import (
+    list_employees,
+    list_employees_json,
+    show_employee,
+    sales_employee,
+    mail_employee,
+    show_employees,
+    sales_employees,
+    mail_employees,
+)
 from .entity import list_entities, list_entities_json, show_entities, edit_entities
-from .extra import list_extras, media_extras, do_media_extras, images_extras, do_images_extras,\
-    prices_extras, do_prices_extras, inventory_extras, do_inventory_extras, template_extras,\
-    do_template_extras, do_mask_extras, browser_extras, do_browser, new_media_browser,\
-    create_media_browser
-from .media import list_media, list_media_json, show_media, edit_media, update_media,\
-    delete_media
+from .extra import (
+    list_extras,
+    media_extras,
+    do_media_extras,
+    images_extras,
+    do_images_extras,
+    prices_extras,
+    do_prices_extras,
+    inventory_extras,
+    do_inventory_extras,
+    template_extras,
+    do_template_extras,
+    do_mask_extras,
+    browser_extras,
+    do_browser,
+    new_media_browser,
+    create_media_browser,
+)
+from .media import (
+    list_media,
+    list_media_json,
+    show_media,
+    edit_media,
+    update_media,
+    delete_media,
+)
 from .report import list_reports, sales_reports
 from .settings import oauth_slack
 from .store import list_stores, list_stores_json, show_stores, sales_stores

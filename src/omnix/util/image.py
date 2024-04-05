@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -41,7 +35,8 @@ import quorum
 
 from . import config
 
-def mask_image(base_data, mask_data, format = "png"):
+
+def mask_image(base_data, mask_data, format="png"):
     import PIL.Image
 
     base_file = quorum.legacy.BytesIO(base_data)
@@ -69,8 +64,7 @@ def mask_image(base_data, mask_data, format = "png"):
         resize_height = int(base_height * ratio)
 
         base_image = base_image.resize(
-            (resize_width, resize_height),
-            PIL.Image.ANTIALIAS
+            (resize_width, resize_height), PIL.Image.ANTIALIAS
         )
     elif config.IMAGE_RESIZE == "crop":
         ratio_width = float(mask_width) / float(base_width)
@@ -81,8 +75,7 @@ def mask_image(base_data, mask_data, format = "png"):
         resize_height = int(base_height * ratio)
 
         base_image = base_image.resize(
-            (resize_width, resize_height),
-            PIL.Image.ANTIALIAS
+            (resize_width, resize_height), PIL.Image.ANTIALIAS
         )
 
         center_width = (resize_width - mask_width) / 2.0
@@ -94,7 +87,7 @@ def mask_image(base_data, mask_data, format = "png"):
             center_width,
             center_height,
             mask_width + center_width,
-            mask_height + center_height
+            mask_height + center_height,
         )
         base_image = base_image.crop(crop_box)
 

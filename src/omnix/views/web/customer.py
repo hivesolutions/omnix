@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -43,28 +37,26 @@ from omnix.main import app
 from omnix.main import flask
 from omnix.main import quorum
 
-@app.route("/customers", methods = ("GET",))
+
+@app.route("/customers", methods=("GET",))
 @quorum.ensure("customers.customer_person.list")
 def list_customers():
-    return flask.render_template(
-        "customer/list.html.tpl",
-        link = "customers"
-    )
+    return flask.render_template("customer/list.html.tpl", link="customers")
 
-@app.route("/customers.json", methods = ("GET",), json = True)
+
+@app.route("/customers.json", methods=("GET",), json=True)
 @quorum.ensure("customers.customer_person.list")
 def list_customers_json():
     api = util.get_api()
     object = quorum.get_object()
     return api.list_persons(**object)
 
-@app.route("/customers/<int:id>", methods = ("GET",))
+
+@app.route("/customers/<int:id>", methods=("GET",))
 @quorum.ensure("customers.customer_person.show")
 def show_customers(id):
     api = util.get_api()
     customer = api.get_person(id)
     return flask.render_template(
-        "customer/show.html.tpl",
-        link = "customers",
-        customer = customer
+        "customer/show.html.tpl", link="customers", customer=customer
     )

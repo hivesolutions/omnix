@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -40,14 +34,13 @@ __license__ = "Apache License, Version 2.0"
 from omnix.main import app
 from omnix.main import quorum
 
-@app.route("/api/log.json", methods = ("GET",), json = True)
-@quorum.ensure("base.admin", json = True)
+
+@app.route("/api/log.json", methods=("GET",), json=True)
+@quorum.ensure("base.admin", json=True)
 def log_api():
     memory_handler = quorum.get_handler("memory")
 
-    count = quorum.get_field("count", None, cast = int)
+    count = quorum.get_field("count", None, cast=int)
     level = quorum.get_field("level", None)
 
-    return dict(
-        messages = memory_handler.get_latest(count = count, level = level)
-    )
+    return dict(messages=memory_handler.get_latest(count=count, level=level))

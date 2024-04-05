@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -43,28 +37,26 @@ from omnix.main import app
 from omnix.main import flask
 from omnix.main import quorum
 
-@app.route("/suppliers", methods = ("GET",))
+
+@app.route("/suppliers", methods=("GET",))
 @quorum.ensure("foundation.supplier_company.list")
 def list_suppliers():
-    return flask.render_template(
-        "supplier/list.html.tpl",
-        link = "suppliers"
-    )
+    return flask.render_template("supplier/list.html.tpl", link="suppliers")
 
-@app.route("/suppliers.json", methods = ("GET",), json = True)
+
+@app.route("/suppliers.json", methods=("GET",), json=True)
 @quorum.ensure("foundation.supplier_company.list")
 def list_suppliers_json():
     api = util.get_api()
     object = quorum.get_object()
     return api.list_companies(**object)
 
-@app.route("/suppliers/<int:id>", methods = ("GET",))
+
+@app.route("/suppliers/<int:id>", methods=("GET",))
 @quorum.ensure("foundation.supplier_company.show")
 def show_suppliers(id):
     api = util.get_api()
     supplier = api.get_company(id)
     return flask.render_template(
-        "supplier/show.html.tpl",
-        link = "suppliers",
-        supplier = supplier
+        "supplier/show.html.tpl", link="suppliers", supplier=supplier
     )

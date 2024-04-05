@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -110,24 +104,16 @@ SCOPE = (
     "inventory.stock_adjustment.create",
     "inventory.transfer.create",
     "inventory.transactional_merchandise.list",
-    "inventory.transactional_merchandise.update"
+    "inventory.transactional_merchandise.update",
 )
 """ The list of permissions to be used to create the
 scope string for the OAuth value """
 
-AT_SALE_TYPES = (
-    "MoneySaleSlip",
-    "Invoice",
-    "CreditNote",
-    "DebitNote"
-)
+AT_SALE_TYPES = ("MoneySaleSlip", "Invoice", "CreditNote", "DebitNote")
 """ The list containing the complete set of types that
 are considered to be of type sake """
 
-AT_TRANSPORT_TYPES = (
-    "TransportationSlip",
-    "ExpeditionSlip"
-)
+AT_TRANSPORT_TYPES = ("TransportationSlip", "ExpeditionSlip")
 """ The list containing the complete set of types that
 are considered to be of type transport """
 
@@ -135,8 +121,8 @@ AT_SUBMIT_TYPES = AT_SALE_TYPES + AT_TRANSPORT_TYPES
 """ The set of valid types for submission to AT, note
 that this range of values should be changed with care """
 
-REMOTE = quorum.conf("REMOTE", False, cast = bool)
-REMOTE = quorum.conf("OMNIX_REMOTE", REMOTE, cast = bool)
+REMOTE = quorum.conf("REMOTE", False, cast=bool)
+REMOTE = quorum.conf("OMNIX_REMOTE", REMOTE, cast=bool)
 BASE_URL = quorum.conf("BASE_URL", "http://localhost:8181")
 REDIRECT_URL = quorum.conf("REDIRECT_URL", REDIRECT_URL)
 CLIENT_ID = quorum.conf("OMNIX_CLIENT_ID", CLIENT_ID)
@@ -144,16 +130,15 @@ CLIENT_SECRET = quorum.conf("OMNIX_CLIENT_SECRET", CLIENT_SECRET)
 SENDER_EMAIL = quorum.conf("SENDER_EMAIL", "Omnix <no-reply@omnix.com>")
 USERNAME = quorum.conf("OMNIX_USERNAME", None)
 PASSWORD = quorum.conf("OMNIX_PASSWORD", None)
-SCHEDULE = quorum.conf("OMNIX_SCHEDULE", True, cast = bool)
-COMMISSION_RATE = quorum.conf("OMNIX_COMMISSION_RATE", 0.01, cast = float)
-COMMISSION_DAY = quorum.conf("OMNIX_COMMISSION_DAY", 26, cast = int)
+SCHEDULE = quorum.conf("OMNIX_SCHEDULE", True, cast=bool)
+COMMISSION_RATE = quorum.conf("OMNIX_COMMISSION_RATE", 0.01, cast=float)
+COMMISSION_DAY = quorum.conf("OMNIX_COMMISSION_DAY", 26, cast=int)
 IMAGE_RESIZE = quorum.conf("OMNIX_IMAGE_RESIZE", "crop")
 LOCALE = quorum.conf("OMNIX_LOCALE", "en_us")
 QUEUE = quorum.conf("OMNIX_QUEUE", "omnix")
-RECORD_CHUNK = quorum.conf("OMNIX_RECORD_CHUNK", 256, cast = int)
+RECORD_CHUNK = quorum.conf("OMNIX_RECORD_CHUNK", 256, cast=int)
 BIRTHDAY_TEMPLATE = quorum.conf(
-    "OMNIX_BIRTHDAY_TEMPLATE",
-    "email/birthday.%s.html.tpl" % LOCALE
+    "OMNIX_BIRTHDAY_TEMPLATE", "email/birthday.%s.html.tpl" % LOCALE
 )
 
 OMNI_URL = REMOTE_URL if REMOTE else LOCAL_URL

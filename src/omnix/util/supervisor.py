@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -158,6 +152,10 @@ class Supervisor(threading.Thread):
         # the number of messages that have been successfully queued to
         # the remote queueing mechanism (for debugging)
         count = 0
+
+        # prints a debug message about the number of valid documents that
+        # have been found for submission to the queue
+        quorum.debug("Found %d valid documents for submission, from a total of %d documents" % (len(valid_documents), len(documents))
 
         # iterates over all the valid documents that have been found
         # as not submitted and creates a task for their submission

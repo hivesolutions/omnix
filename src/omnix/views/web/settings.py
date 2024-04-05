@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -44,16 +38,16 @@ from omnix.main import app
 from omnix.main import flask
 from omnix.main import quorum
 
-@app.route("/settings/slack/ensure", methods = ("GET",))
+
+@app.route("/settings/slack/ensure", methods=("GET",))
 @quorum.ensure("base.admin")
 def ensure_slack():
     next = quorum.get_field("next")
     api = _get_slack_api()
-    return flask.redirect(
-        api.oauth_authorize(state = next)
-    )
+    return flask.redirect(api.oauth_authorize(state=next))
 
-@app.route("/settings/slack/oauth", methods = ("GET",))
+
+@app.route("/settings/slack/oauth", methods=("GET",))
 @quorum.ensure("base.admin")
 def oauth_slack():
     code = quorum.get_field("code")
@@ -65,20 +59,21 @@ def oauth_slack():
     settings.slack_token = access_token
     settings.slack_channel = api.channel
     settings.save()
-    return flask.redirect(
-       next or flask.url_for("index")
-    )
+    return flask.redirect(next or flask.url_for("index"))
 
-def _get_slack_api(scope = None):
+
+def _get_slack_api(scope=None):
     import slack
+
     kwargs = dict()
     redirect_url = util.BASE_URL + flask.url_for("oauth_slack")
     access_token = flask.session and flask.session.get("slack.access_token", None)
-    if scope: kwargs["scope"] = scope
+    if scope:
+        kwargs["scope"] = scope
     return slack.API(
-        client_id = quorum.conf("SLACK_ID"),
-        client_secret = quorum.conf("SLACK_SECRET"),
-        redirect_url = redirect_url,
-        access_token = access_token,
+        client_id=quorum.conf("SLACK_ID"),
+        client_secret=quorum.conf("SLACK_SECRET"),
+        redirect_url=redirect_url,
+        access_token=access_token,
         **kwargs
     )

@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -46,176 +40,146 @@ from omnix.main import app
 from omnix.main import flask
 from omnix.main import quorum
 
-@app.route("/", methods = ("GET",))
-@app.route("/index", methods = ("GET",))
+
+@app.route("/", methods=("GET",))
+@app.route("/index", methods=("GET",))
 @quorum.ensure("base")
 def index():
-    return flask.render_template(
-        "index.html.tpl",
-        link = "home"
-    )
+    return flask.render_template("index.html.tpl", link="home")
 
-@app.route("/signin", methods = ("GET",))
+
+@app.route("/signin", methods=("GET",))
 def signin():
     next = quorum.get_field("next", None)
-    return flask.render_template(
-        "signin.html.tpl",
-        next = next
-    )
+    return flask.render_template("signin.html.tpl", next=next)
 
-@app.route("/signin", methods = ("POST",))
+
+@app.route("/signin", methods=("POST",))
 def login():
     next = quorum.get_field("next", None)
-    url = util.ensure_api(state = next)
-    if url: return flask.redirect(url)
-    return flask.redirect(
-        next or flask.url_for("index")
-    )
+    url = util.ensure_api(state=next)
+    if url:
+        return flask.redirect(url)
+    return flask.redirect(next or flask.url_for("index"))
 
-@app.route("/signin_do", methods = ("GET",))
+
+@app.route("/signin_do", methods=("GET",))
 def do_login():
     next = quorum.get_field("next", None)
-    url = util.ensure_api(state = next)
-    if url: return flask.redirect(url)
-    return flask.redirect(
-        next or flask.url_for("index")
-    )
+    url = util.ensure_api(state=next)
+    if url:
+        return flask.redirect(url)
+    return flask.redirect(next or flask.url_for("index"))
 
-@app.route("/logout", methods = ("GET",))
+
+@app.route("/logout", methods=("GET",))
 def logout():
     next = quorum.get_field("next", None)
     util.reset_session()
-    return flask.redirect(
-        next or flask.url_for("index")
-    )
+    return flask.redirect(next or flask.url_for("index"))
 
-@app.route("/about", methods = ("GET",))
+
+@app.route("/about", methods=("GET",))
 @quorum.ensure("base")
 def about():
     access_token = flask.session.get("omnix.access_token", None)
     session_id = flask.session.get("omnix.session_id", None)
 
     return flask.render_template(
-        "about.html.tpl",
-        link = "about",
-        access_token = access_token,
-        session_id = session_id
+        "about.html.tpl", link="about", access_token=access_token, session_id=session_id
     )
 
-@app.route("/reset", methods = ("GET",))
+
+@app.route("/reset", methods=("GET",))
 def reset():
     util.reset_session()
 
-    return flask.redirect(
-        flask.url_for("index")
-    )
+    return flask.redirect(flask.url_for("index"))
 
-@app.route("/flush_slack", methods = ("GET",))
-@app.route("/flush_slack_sales", methods = ("GET",))
+
+@app.route("/flush_slack", methods=("GET",))
+@app.route("/flush_slack_sales", methods=("GET",))
 @quorum.ensure("base.admin")
 def flush_slack_sales():
     channel = quorum.get_field("channel", None)
-    offset = quorum.get_field("offset", 0, cast = int)
+    offset = quorum.get_field("offset", 0, cast=int)
 
-    util.slack_sales(channel = channel, offset = offset)
+    util.slack_sales(channel=channel, offset=offset)
 
-    return flask.redirect(
-        flask.url_for(
-            "index",
-             message = "Slack events have been sent"
-        )
-    )
+    return flask.redirect(flask.url_for("index", message="Slack events have been sent"))
 
-@app.route("/flush_slack_previous", methods = ("GET",))
+
+@app.route("/flush_slack_previous", methods=("GET",))
 @quorum.ensure("base.admin")
 def flush_slack_previous():
     channel = quorum.get_field("channel", None)
-    offset = quorum.get_field("offset", 0, cast = int)
+    offset = quorum.get_field("offset", 0, cast=int)
 
-    util.slack_previous(channel = channel, offset = offset)
+    util.slack_previous(channel=channel, offset=offset)
 
-    return flask.redirect(
-        flask.url_for(
-            "index",
-             message = "Slack events have been sent"
-        )
-    )
+    return flask.redirect(flask.url_for("index", message="Slack events have been sent"))
 
 
-@app.route("/flush_slack_week", methods = ("GET",))
+@app.route("/flush_slack_week", methods=("GET",))
 @quorum.ensure("base.admin")
 def flush_slack_week():
     channel = quorum.get_field("channel", None)
-    offset = quorum.get_field("offset", 0, cast = int)
-    span = quorum.get_field("span", 7, cast = int)
+    offset = quorum.get_field("offset", 0, cast=int)
+    span = quorum.get_field("span", 7, cast=int)
 
-    util.slack_week(channel = channel, offset = offset, span = span)
+    util.slack_week(channel=channel, offset=offset, span=span)
 
-    return flask.redirect(
-        flask.url_for(
-            "index",
-             message = "Slack events have been sent"
-        )
-    )
+    return flask.redirect(flask.url_for("index", message="Slack events have been sent"))
 
-@app.route("/flush_birthday", methods = ("GET",))
+
+@app.route("/flush_birthday", methods=("GET",))
 @quorum.ensure("base.admin")
 def flush_birthday():
-    month = quorum.get_field("month", None, cast = int)
-    day = quorum.get_field("day", None, cast = int)
+    month = quorum.get_field("month", None, cast=int)
+    day = quorum.get_field("day", None, cast=int)
 
-    util.mail_birthday_all(
-        month = month,
-        day = day,
-        links = False
-    )
+    util.mail_birthday_all(month=month, day=day, links=False)
 
     return flask.redirect(
-        flask.url_for(
-            "index",
-            message = "Birthday emails have been sent"
-        )
+        flask.url_for("index", message="Birthday emails have been sent")
     )
 
-@app.route("/flush_activity", methods = ("GET",))
+
+@app.route("/flush_activity", methods=("GET",))
 @quorum.ensure("base.admin")
 def flush_activity():
-    util.mail_activity_all(
-        validate = True,
-        links = False
-    )
+    util.mail_activity_all(validate=True, links=False)
 
     return flask.redirect(
-        flask.url_for(
-            "index",
-            message = "Activity emails have been sent"
-        )
+        flask.url_for("index", message="Activity emails have been sent")
     )
 
-@app.route("/flush_at", methods = ("GET",))
+
+@app.route("/flush_at", methods=("GET",))
 @quorum.ensure("base.admin")
 def flush_at():
     # creates a values map structure to retrieve the complete
     # set of inbound documents that have not yet been submitted
     # to at for the flush operation
     kwargs = {
-        "filter_string" : "",
-        "start_record" : 0,
-        "number_records" : 1000,
-        "sort" : "issue_date:ascending",
-        "filters[]" : [
+        "filter_string": "",
+        "start_record": 0,
+        "number_records": 1000,
+        "sort": "issue_date:ascending",
+        "filters[]": [
             "issue_date:greater:1356998400",
             "submitted_at:equals:2",
-            "document_type:equals:3"
-        ]
+            "document_type:equals:3",
+        ],
     }
     api = util.get_api()
     documents = api.list_signed_documents(**kwargs)
 
     # filters the result set retrieved so that only the valid at
     # "submittable" documents are present in the sequence
-    valid_documents = [value for value in documents\
-        if value["_class"] in util.AT_SUBMIT_TYPES]
+    valid_documents = [
+        value for value in documents if value["_class"] in util.AT_SUBMIT_TYPES
+    ]
 
     # "calculates" the total set of valid documents present in the
     # valid documents and starts the index counter
@@ -235,13 +199,8 @@ def flush_at():
         # retrieves the current time and uses it to print debug information
         # about the current document submission to at
         quorum.info(
-            "Submitting %s - %s (%s) [%d/%d]" % (
-                type,
-                representation,
-                issue_date_s,
-                index,
-                total
-            )
+            "Submitting %s - %s (%s) [%d/%d]"
+            % (type, representation, issue_date_s, index, total)
         )
 
         try:
@@ -250,7 +209,10 @@ def flush_at():
             # has been extracted from the (signed) document structure
             api.submit_invoice_at(object_id)
         except Exception as exception:
-            quorum.error("Exception while submitting document - %s" % quorum.legacy.UNICODE(exception))
+            quorum.error(
+                "Exception while submitting document - %s"
+                % quorum.legacy.UNICODE(exception)
+            )
         else:
             quorum.info("Document submitted with success")
 
@@ -259,13 +221,11 @@ def flush_at():
         index += 1
 
     return flask.redirect(
-        flask.url_for(
-            "index",
-            message = "Signed documents have been sent to AT"
-        )
+        flask.url_for("index", message="Signed documents have been sent to AT")
     )
 
-@app.route("/oauth", methods = ("GET",))
+
+@app.route("/oauth", methods=("GET",))
 def oauth():
     # retrieves the reference to the current API object, so that
     # it may be used for the retrieval of the access token from
@@ -282,7 +242,8 @@ def oauth():
     # an error indicating the OAuth based problem
     error = quorum.get_field("error", None)
     error_description = quorum.get_field("error_description", None)
-    if error: raise RuntimeError("%s - %s" % (error, error_description))
+    if error:
+        raise RuntimeError("%s - %s" % (error, error_description))
 
     # creates the access token URL for the API usage and sends the
     # appropriate attributes for the retrieval of the access token,
@@ -295,53 +256,51 @@ def oauth():
     # exists for the current user that is logging in
     api.oauth_session()
 
-    return flask.redirect(
-        state or flask.url_for("index")
-    )
+    return flask.redirect(state or flask.url_for("index"))
 
-@app.route("/top", methods = ("GET",))
+
+@app.route("/top", methods=("GET",))
 @quorum.ensure("base.admin")
 def top():
-    year = quorum.get_field("year", None, cast = int)
-    month = quorum.get_field("month", None, cast = int)
+    year = quorum.get_field("year", None, cast=int)
+    month = quorum.get_field("month", None, cast=int)
 
-    top_employees,\
-    target_s, \
-    previous_month,\
-    previous_year,\
-    next_month,\
-    next_year,\
-    has_next = util.get_top(year = year, month = month)
+    (
+        top_employees,
+        target_s,
+        previous_month,
+        previous_year,
+        next_month,
+        next_year,
+        has_next,
+    ) = util.get_top(year=year, month=month)
 
     return flask.render_template(
         "top.html.tpl",
-        link = "top",
-        title = target_s,
-        top_employees = top_employees,
-        previous = (previous_month, previous_year),
-        next = (next_month, next_year),
-        has_next = has_next
+        link="top",
+        title=target_s,
+        top_employees=top_employees,
+        previous=(previous_month, previous_year),
+        next=(next_month, next_year),
+        has_next=has_next,
     )
+
 
 @app.errorhandler(404)
 def handler_404(error):
     return flask.Response(
-        flask.render_template(
-            "error.html.tpl",
-            error = "404 - Page not found"
-        ),
-        status = 404
+        flask.render_template("error.html.tpl", error="404 - Page not found"),
+        status=404,
     )
+
 
 @app.errorhandler(413)
 def handler_413(error):
     return flask.Response(
-        flask.render_template(
-            "error.html.tpl",
-            error = "412 - Precondition failed"
-        ),
-        status = 413
+        flask.render_template("error.html.tpl", error="412 - Precondition failed"),
+        status=413,
     )
+
 
 @app.errorhandler(Exception)
 def handler_exception(error):
@@ -349,10 +308,6 @@ def handler_exception(error):
     lines = formatted.splitlines() if quorum.is_devel() else []
 
     return flask.Response(
-        flask.render_template(
-            "error.html.tpl",
-            error = str(error),
-            traceback = lines
-        ),
-        status = 500
+        flask.render_template("error.html.tpl", error=str(error), traceback=lines),
+        status=500,
     )

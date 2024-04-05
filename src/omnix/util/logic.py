@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -45,40 +39,47 @@ import quorum
 
 from . import config
 
+
 def get_models():
     return omni.models
 
-def get_api(mode = omni.API.OAUTH_MODE):
+
+def get_api(mode=omni.API.OAUTH_MODE):
     access_token = flask.session and flask.session.get("omnix.access_token", None)
     session_id = flask.session and flask.session.get("omnix.session_id", None)
     api = omni.API(
-        base_url = config.OMNI_URL,
-        open_url = config.OMNI_URL,
-        prefix = config.PREFIX,
-        client_id = config.CLIENT_ID,
-        client_secret = config.CLIENT_SECRET,
-        redirect_url = config.REDIRECT_URL,
-        scope = config.SCOPE,
-        access_token = access_token,
-        session_id = session_id,
-        username = config.USERNAME,
-        password = config.PASSWORD,
-        mode = mode
+        base_url=config.OMNI_URL,
+        open_url=config.OMNI_URL,
+        prefix=config.PREFIX,
+        client_id=config.CLIENT_ID,
+        client_secret=config.CLIENT_SECRET,
+        redirect_url=config.REDIRECT_URL,
+        scope=config.SCOPE,
+        access_token=access_token,
+        session_id=session_id,
+        username=config.USERNAME,
+        password=config.PASSWORD,
+        mode=mode,
     )
     api.bind("auth", on_auth)
     return api
 
-def ensure_api(state = None):
+
+def ensure_api(state=None):
     access_token = flask.session.get("omnix.access_token", None)
-    if access_token: return
+    if access_token:
+        return
     api = get_api()
-    return api.oauth_authorize(state = state)
+    return api.oauth_authorize(state=state)
+
 
 def on_auth(contents):
     start_session(contents)
 
+
 def start_session(contents):
-    if not flask.session: return
+    if not flask.session:
+        return
 
     username = contents.get("username", None)
     acl = contents.get("acl", None)
@@ -91,16 +92,25 @@ def start_session(contents):
     flask.session["omnix.session_id"] = session_id
     flask.session["tokens"] = tokens
 
-def reset_session():
-    if not flask.session: return
 
-    if "omnix.base_url" in flask.session: del flask.session["omnix.base_url"]
-    if "omnix.access_token" in flask.session: del flask.session["omnix.access_token"]
-    if "omnix.username" in flask.session: del flask.session["omnix.username"]
-    if "omnix.acl" in flask.session: del flask.session["omnix.acl"]
-    if "omnix.session_id" in flask.session: del flask.session["omnix.session_id"]
-    if "tokens" in flask.session: del flask.session["tokens"]
+def reset_session():
+    if not flask.session:
+        return
+
+    if "omnix.base_url" in flask.session:
+        del flask.session["omnix.base_url"]
+    if "omnix.access_token" in flask.session:
+        del flask.session["omnix.access_token"]
+    if "omnix.username" in flask.session:
+        del flask.session["omnix.username"]
+    if "omnix.acl" in flask.session:
+        del flask.session["omnix.acl"]
+    if "omnix.session_id" in flask.session:
+        del flask.session["omnix.session_id"]
+    if "tokens" in flask.session:
+        del flask.session["tokens"]
     flask.session.modified = True
+
 
 def get_tokens(acl):
     tokens = acl.keys()

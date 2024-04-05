@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -44,22 +38,19 @@ from omnix import util
 
 from . import base
 
+
 class Settings(base.Base):
 
     slack_token = quorum.field(
-        index = "hashed",
-        observations = """The OAuth token from Slack that is going
+        index="hashed",
+        observations="""The OAuth token from Slack that is going
         to be used for long term Slack interaction after the OAuth
-        authentication process is completed"""
+        authentication process is completed""",
     )
 
-    slack_channel = quorum.field(
-        index = "hashed"
-    )
+    slack_channel = quorum.field(index="hashed")
 
-    extra = quorum.field(
-        type = dict
-    )
+    extra = quorum.field(type=dict)
 
     @classmethod
     def get_settings(cls, *args, **kwargs):
@@ -69,7 +60,8 @@ class Settings(base.Base):
     def linked_apis(cls):
         linked = dict()
         settings = cls.get_settings()
-        if settings.slack_token: linked["slack"] = settings.slack_token
+        if settings.slack_token:
+            linked["slack"] = settings.slack_token
         return linked
 
     @classmethod
@@ -77,14 +69,17 @@ class Settings(base.Base):
         return "Settings"
 
     def get_slack_api(self):
-        try: import slack
-        except ImportError: return None
-        if not self.slack_token: return None
+        try:
+            import slack
+        except ImportError:
+            return None
+        if not self.slack_token:
+            return None
         redirect_url = util.BASE_URL + flask.url_for("oauth_slack")
         access_token = self.slack_token
         return slack.API(
-            client_id = quorum.conf("SLACK_ID"),
-            client_secret = quorum.conf("SLACK_SECRET"),
-            redirect_url = redirect_url,
-            access_token = access_token
+            client_id=quorum.conf("SLACK_ID"),
+            client_secret=quorum.conf("SLACK_SECRET"),
+            redirect_url=redirect_url,
+            access_token=access_token,
         )

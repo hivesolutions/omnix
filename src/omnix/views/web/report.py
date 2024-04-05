@@ -25,12 +25,6 @@ __author__ = "João Magalhães <joamag@hive.pt>"
 __version__ = "1.0.0"
 """ The version of the module """
 
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
 __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 """ The copyright for the module """
 
@@ -41,18 +35,14 @@ from omnix.main import app
 from omnix.main import flask
 from omnix.main import quorum
 
-@app.route("/reports", methods = ("GET",))
+
+@app.route("/reports", methods=("GET",))
 @quorum.ensure("base.admin")
 def list_reports():
-    return flask.render_template(
-        "report/list.html.tpl",
-        link = "reports"
-    )
+    return flask.render_template("report/list.html.tpl", link="reports")
 
-@app.route("/reports/sales", methods = ("GET",))
+
+@app.route("/reports/sales", methods=("GET",))
 @quorum.ensure("base.admin")
 def sales_reports():
-    return flask.render_template(
-        "report/sales.html.tpl",
-        link = "reports"
-    )
+    return flask.render_template("report/sales.html.tpl", link="reports")

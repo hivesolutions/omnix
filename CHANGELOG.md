@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-*
+* Code syntax issue
+* Add more black syntax structure
 
 ## [0.3.2] - 2024-04-05
 

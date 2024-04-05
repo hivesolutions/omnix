@@ -13,11 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-* Code structure making it `black` compliant
+*
 
 ### Fixed
 
 *
+
+## [0.3.2] - 2024-04-05
+
+### Changed
+
+* Code structure making it `black` compliant
 
 ## [0.3.1] - 2022-06-28
 

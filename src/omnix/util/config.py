@@ -106,9 +106,21 @@ SCOPE = (
 """ The list of permissions to be used to create the
 scope string for the OAuth value """
 
+DOCUMENT_INBOUND = 2
+""" The inbound document type value, for documents that represent
+actions coming from external entities into the system company """
+
+DOCUMENT_OUTBOUND = 3
+""" The outbound document type value, for documents that represent
+actions going from the system company to external entities """
+
+AT_DOCUMENT_TYPES = (DOCUMENT_INBOUND, DOCUMENT_OUTBOUND)
+""" The multiple document types that are considered to be valid
+for AT submission """
+
 AT_SALE_TYPES = ("MoneySaleSlip", "Invoice", "CreditNote", "DebitNote")
 """ The list containing the complete set of types that
-are considered to be of type sake """
+are considered to be of type sale """
 
 AT_TRANSPORT_TYPES = ("TransportationSlip", "ExpeditionSlip")
 """ The list containing the complete set of types that
@@ -116,6 +128,18 @@ are considered to be of type transport """
 
 AT_SUBMIT_TYPES = AT_SALE_TYPES + AT_TRANSPORT_TYPES
 """ The set of valid types for submission to AT, note
+that this range of values should be changed with care """
+
+AT_SALE_DIGEST_TYPES = ("FS", "FT", "NC", "ND")
+""" The list containing the complete set of digest types that
+are considered to be of type sale """
+
+AT_TRANSPORT_DIGEST_TYPES = ("GT", "GR")
+""" The list containing the complete set of digest types that
+are considered to be of type transport """
+
+AT_SUBMIT_DIGEST_TYPES = AT_SALE_DIGEST_TYPES + AT_TRANSPORT_DIGEST_TYPES
+""" The set of valid digest types for submission to AT, note
 that this range of values should be changed with care """
 
 REMOTE = quorum.conf("REMOTE", False, cast=bool)

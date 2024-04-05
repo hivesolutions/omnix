@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-*
+* Better criteria in selection of documents, based on `digest_document_type`
 
 ### Fixed
 

@@ -147,7 +147,9 @@ class Supervisor(threading.Thread):
             "filters[]": [
                 "issue_date:greater:1356998400",
                 "submitted_at:equals:2",
-                "document_type:in:1;3",
+                "document_type:in:%s"
+                % ";".join(str(v) for v in config.AT_DOCUMENT_TYPES),
+                "digest_document_type:in:%s" % ";".join(config.AT_SUBMIT_DIGEST_TYPES),
             ],
         }
         documents = self.api.list_signed_documents(**kwargs)

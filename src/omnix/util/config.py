@@ -110,11 +110,15 @@ DOCUMENT_INTERNAL = 1
 """ The internal document type value, for documents that represent
 internal actions of the system company """
 
+DOCUMENT_INBOUND = 2
+""" The outbound document type value, for documents that represent
+actions coming from external entities to the system company """
+
 DOCUMENT_OUTBOUND = 3
 """ The outbound document type value, for documents that represent
 actions going from the system company to external entities """
 
-AT_DOCUMENT_TYPES = (DOCUMENT_INTERNAL, DOCUMENT_OUTBOUND)
+AT_SUBMIT_DOCUMENTS = (DOCUMENT_INTERNAL, DOCUMENT_OUTBOUND)
 """ The multiple document types that are considered to be valid
 for AT submission """
 

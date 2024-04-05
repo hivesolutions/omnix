@@ -148,7 +148,7 @@ class Supervisor(threading.Thread):
                 "issue_date:greater:1356998400",
                 "submitted_at:equals:2",
                 "document_type:in:%s"
-                % ";".join(str(v) for v in config.AT_DOCUMENT_TYPES),
+                % ";".join(str(v) for v in config.AT_SUBMIT_DOCUMENTS),
                 "digest_document_type:in:%s" % ";".join(config.AT_SUBMIT_DIGEST_TYPES),
             ],
         }

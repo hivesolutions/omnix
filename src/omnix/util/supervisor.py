@@ -163,7 +163,7 @@ class Supervisor(threading.Thread):
         # prints a debug message about the number of valid documents that
         # have been found for submission to the queue
         quorum.debug(
-            "Found %d valid documents for submission, from a total of %d documents"
+            "Found %d (out of %d) valid documents for submission"
             % (len(valid_documents), len(documents))
         )
 

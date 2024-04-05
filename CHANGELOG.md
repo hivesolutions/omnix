@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+*
+
+## [0.3.5] - 2024-04-05
+
+### Fixed
+
 * Issue with document type selection for submission
 
 ## [0.3.4] - 2024-04-05

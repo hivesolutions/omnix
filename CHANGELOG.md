@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Issue with `__init__.py` import
 
+## [0.3.6] - 2024-04-05
+
+### Fixed
+
+* Issue with `__init__.py` import
+
 ## [0.3.5] - 2024-04-05
 
 ### Fixed

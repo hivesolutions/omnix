@@ -13,11 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-* Base year to 2025
+*
 
 ### Fixed
 
-* Issue with `__init__.py` import
+*
+
+## [0.3.7] - 2025-05-25
+
+### Changed
+
+* Base year to 2025
 
 ## [0.3.6] - 2024-04-05
 

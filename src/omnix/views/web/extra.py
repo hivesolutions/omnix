@@ -29,7 +29,6 @@ __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
 import os
-import imghdr
 import shutil
 import zipfile
 import tempfile
@@ -40,6 +39,11 @@ from omnix import util
 from omnix.main import app
 from omnix.main import flask
 from omnix.main import quorum
+
+try:
+    import imghdr
+except ImportError:
+    imghdr = None
 
 
 @app.route("/extras", methods=("GET",))

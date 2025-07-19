@@ -38,6 +38,15 @@ Use the following URL:
 GET https://omnix.hive.pt/flush_slack_sales
 ```
 
+### How can I flush the Slack previous message?
+
+Use the following URL:
+
+```bash
+GET https://omnix.hive.pt/flush_slack_previous
+```
+
+
 ## License
 
 Omnix is currently licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/).

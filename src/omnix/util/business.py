@@ -56,6 +56,7 @@ def slack_sales(api=None, channel=None, all=False, offset=0):
     settings = models.Settings.get_settings()
     slack_api = settings.get_slack_api()
     if not slack_api:
+        quorum.warning("No Slack API configured")
         return
 
     # retrieves the current time and updates it with the delta

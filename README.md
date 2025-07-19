@@ -28,6 +28,16 @@ part of the omni extension (supervisor).
 Additionally one must also configure the MongoDB and RabbitMQ instances to be able to execute
 the proper master and slave supervisors. For that use the `MONGOHQ_URL` and `CLOUDAMQP_URL` variables.
 
+## FAQs
+
+### How can I flush the Slack sales message?
+
+Use the following URL:
+
+```bash
+GET https://omnix.hive.pt/flush_slack_sales
+```
+
 ## License
 
 Omnix is currently licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/).

@@ -35,15 +35,15 @@ the proper master and slave supervisors. For that use the `MONGOHQ_URL` and `CLO
 Use the following URL:
 
 ```bash
-GET https://omnix.hive.pt/flush_slack_sales
+GET https://omnix.hive.pt/flush_slack_sales?offset=1
 ```
 
-### How can I flush the Slack previous message?
+### How can I flush the Slack previous (day) message?
 
 Use the following URL:
 
 ```bash
-GET https://omnix.hive.pt/flush_slack_previous
+GET https://omnix.hive.pt/flush_slack_previous?offset=1
 ```
 
 

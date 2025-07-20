@@ -46,7 +46,6 @@ Use the following URL:
 GET https://omnix.hive.pt/flush_slack_previous?offset=1
 ```
 
-
 ## License
 
 Omnix is currently licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/).

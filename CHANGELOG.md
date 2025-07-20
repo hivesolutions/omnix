@@ -17,6 +17,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+*
+
+## [0.3.8] - 2025-07-20
+
+### Changed
+
+* Bumped packages
+
+### Fixed
+
 * Unit tests in CI
 
 ## [0.3.7] - 2025-05-25

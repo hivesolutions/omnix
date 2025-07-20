@@ -107,7 +107,7 @@ def slack_sales(api=None, channel=None, all=False, offset=0):
 
     # starts both the best (sales) value and the numeric value
     # for this same best value, these values should start with
-    # the lower possible values (to be overriden)
+    # the lower possible values (to be overridden)
     best_value, value = None, -1.0
 
     # iterates over the complete set of "stores" to try to find
@@ -317,7 +317,7 @@ def slack_previous(api=None, channel=None, all=False, offset=0):
 
     # starts both the best (sales) value and the numeric value
     # for this same best value, these values should start with
-    # the lower possible values (to be overriden)
+    # the lower possible values (to be overridden)
     best_value, value = None, -1.0
 
     # iterates over the complete set of "stores" to try to find

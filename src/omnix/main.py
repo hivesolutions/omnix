@@ -53,15 +53,20 @@ def onrun():
     omnix.util.load_scheduling()
 
 
-app = quorum.load(
-    name=__name__,
-    secret_key=SECRET_KEY,
-    mongo_database=MONGO_DATABASE,
-    logger="omnix.debug",
-    models=omnix.models,
-    PERMANENT_SESSION_LIFETIME=datetime.timedelta(31),
-    MAX_CONTENT_LENGTH=1024**3,
-)
+global app
+
+if quorum.conf("LOAD_APP", True, cast=bool):
+    app = quorum.load(
+        name=__name__,
+        secret_key=quorum.conf("SECRET_KEY", SECRET_KEY),
+        mongo_database=quorum.conf("MONGO_DATABASE", MONGO_DATABASE),
+        logger=quorum.conf("LOGGER", "omnix.debug"),
+        models=omnix.models,
+        PERMANENT_SESSION_LIFETIME=datetime.timedelta(31),
+        MAX_CONTENT_LENGTH=1024**3,
+    )
+else:
+    app = quorum.load(name=__name__)
 
 import omnix.views  # @UnusedImport
 

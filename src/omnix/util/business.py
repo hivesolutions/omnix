@@ -168,22 +168,22 @@ def slack_sales(api=None, channel=None, all=False, offset=0):
                         dict(title="Best Store", value=best_value, short=True),
                         dict(
                             title="Number Entries",
-                            value="%d x" % values["number_entries"],
+                            value="{:,d} x".format(values["number_entries"]),
                             short=True,
                         ),
                         dict(
                             title="Number Sales",
-                            value="%d x" % values["net_number_sales"],
+                            value="{:,d} x".format(values["net_number_sales"]),
                             short=True,
                         ),
                         dict(
                             title="Average Sale",
-                            value="%.2f EUR" % values["net_average_sale"],
+                            value="{:,.2f} EUR".format(values["net_average_sale"]),
                             short=True,
                         ),
                         dict(
                             title="Total Sales",
-                            value="*%.2f EUR*" % values["net_price_vat"],
+                            value="*{:,.2f} EUR*".format(values["net_price_vat"]),
                             short=True,
                             mrkdwn=True,
                         ),
@@ -230,8 +230,7 @@ def slack_sales(api=None, channel=None, all=False, offset=0):
                             ),
                             dict(
                                 title="Number Entries",
-                                value="%d x / %+d x (%+.2f %%)"
-                                % (
+                                value="{:,d} x / {:+,d} x ({:+,.2f} %)".format(
                                     comparison[object_id]["number_entries"]["current"],
                                     comparison[object_id]["number_entries"]["diff"],
                                     comparison[object_id]["number_entries"][
@@ -242,8 +241,7 @@ def slack_sales(api=None, channel=None, all=False, offset=0):
                             ),
                             dict(
                                 title="Number Sales",
-                                value="%d x / %+d x (%+.2f %%)"
-                                % (
+                                value="{:,d} x / {:+,d} x ({:+,.2f} %)".format(
                                     comparison[object_id]["net_number_sales"][
                                         "current"
                                     ],
@@ -256,8 +254,7 @@ def slack_sales(api=None, channel=None, all=False, offset=0):
                             ),
                             dict(
                                 title="Average Sale",
-                                value="%.2f EUR / %+.2f EUR (%+.2f %%)"
-                                % (
+                                value="{:,.2f} EUR / {:+,.2f} EUR ({:+,.2f} %)".format(
                                     comparison[object_id]["net_average_sale"][
                                         "current"
                                     ],
@@ -270,8 +267,7 @@ def slack_sales(api=None, channel=None, all=False, offset=0):
                             ),
                             dict(
                                 title="Total Sales",
-                                value="*%.2f EUR / %+.2f EUR (%+.2f %%)*"
-                                % (
+                                value="*{:,.2f} EUR / {:+,.2f} EUR ({:+,.2f} %)*".format(
                                     comparison[object_id]["net_price_vat"]["current"],
                                     comparison[object_id]["net_price_vat"]["diff"],
                                     comparison[object_id]["net_price_vat"][
@@ -375,22 +371,22 @@ def slack_previous(api=None, channel=None, all=False, offset=0):
                     dict(title="Best Store", value=best_value, short=True),
                     dict(
                         title="Number Entries",
-                        value="%d x" % values["number_entries"],
+                        value="{:,d} x".format(values["number_entries"]),
                         short=True,
                     ),
                     dict(
                         title="Number Sales",
-                        value="%d x" % values["net_number_sales"],
+                        value="{:,d} x".format(values["net_number_sales"]),
                         short=True,
                     ),
                     dict(
                         title="Average Sale",
-                        value="%.2f EUR" % values["net_average_sale"],
+                        value="{:,.2f} EUR".format(values["net_average_sale"]),
                         short=True,
                     ),
                     dict(
                         title="Total Sales",
-                        value="*%.2f EUR*" % values["net_price_vat"],
+                        value="*{:,.2f} EUR*".format(values["net_price_vat"]),
                         short=True,
                         mrkdwn=True,
                     ),
@@ -446,7 +442,7 @@ def slack_week(api=None, channel=None, all=False, offset=0, span=7):
             dict(
                 title="Sales for %s"
                 % (datetime.datetime.utcfromtimestamp(curent_t).strftime("%d of %B")),
-                value="%.2f EUR (%d x)" % (amount, number_sales),
+                value="{:,.2f} EUR ({:,d} x)".format(amount, number_sales),
                 short=False,
                 mrkdwn=True,
             )

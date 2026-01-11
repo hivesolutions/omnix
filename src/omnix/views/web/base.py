@@ -32,6 +32,7 @@ import datetime
 import traceback
 
 from omnix import util
+from omnix import models
 
 from omnix.main import app
 from omnix.main import flask
@@ -81,9 +82,17 @@ def logout():
 def about():
     access_token = flask.session.get("omnix.access_token", None)
     session_id = flask.session.get("omnix.session_id", None)
+    settings = models.Settings.get_settings()
+    slack_token = settings.slack_token
+    slack_channel = settings.slack_channel
 
     return flask.render_template(
-        "about.html.tpl", link="about", access_token=access_token, session_id=session_id
+        "about.html.tpl",
+        link="about",
+        access_token=access_token,
+        session_id=session_id,
+        slack_token=slack_token,
+        slack_channel=slack_channel,
     )
 
 

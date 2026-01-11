@@ -20,6 +20,16 @@
                 <td class="right label" width="50%">session id</td>
                 <td class="left value" width="50%">{{ session_id }}</td>
             </tr>
+            {% if acl("base.admin") %}
+                <tr>
+                    <td class="right label" width="50%">slack token</td>
+                    <td class="left value" width="50%">{{ slack_token }}</td>
+                </tr>
+                <tr>
+                    <td class="right label" width="50%">slack channel</td>
+                    <td class="left value" width="50%">{{ slack_channel }}</td>
+                </tr>
+            {% endif %}
         </tbody>
     </table>
 {% endblock %}

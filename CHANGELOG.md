@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+*
+
+### Changed
+
+*
+
+### Fixed
+
+*
+
+## [0.3.10] - 2026-01-11
+
+### Added
+
 * Display Slack token and channel on about page for admin users
 
 ## [0.3.9] - 2025-07-20

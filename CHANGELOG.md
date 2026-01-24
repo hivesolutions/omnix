@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+*
+
+## [0.3.11] - 2026-01-24
+
+### Fixed
+
 * Type coercion issue in `sum_results` by using dynamic default values based on inferred types
 
 ## [0.3.10] - 2026-01-11

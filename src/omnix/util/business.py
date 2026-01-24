@@ -841,14 +841,15 @@ def sum_results(first, second, calc=True):
             # iterates over the complete set of keys in the first
             # map to calculate the complete set of sums, notice that
             # the default value is dynamically calculated from the
-            # inferred type of the values, this avoid coercion of types
-            # which would cause issues downstream
+            # inferred type of the values and the resulting value
+            # is coerced to the appropriate type (if necessary),
+            # this avoids incorrect types in the results
             for _key in quorum.legacy.iterkeys(first_m):
                 first_v, second_v = first_m.get(_key, 0.0), second_m.get(_key, 0.0)
-                is_float = isinstance(first_v, float) and isinstance(second_v, float)
-                default_v = 0.0 if is_float else 0
+                is_int = isinstance(first_v, int) or isinstance(second_v, int)
+                default_v = 0 if is_int else 0.0
                 result_v = first_m.get(_key, default_v) + second_m.get(_key, default_v)
-                if not is_float:
+                if is_int:
                     result_v = int(result_v)
                 result_m[_key] = result_v
 

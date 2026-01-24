@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-*
+* Issue with overlapping variable in `sum_result`
 
 ## [0.3.11] - 2026-01-24
 

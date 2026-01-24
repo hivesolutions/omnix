@@ -316,3 +316,91 @@ class BusinessTest(unittest.TestCase):
         self.assertEqual(previous_v["span"], 2)
         self.assertEqual(previous_v["unit"], "month")
         self.assertEqual(previous_v["has_global"], True)
+
+    def test_sum_results_basic(self):
+        first = dict(
+            store_1=dict(
+                number_entries=dict(current=10, previous=5),
+                net_price_vat=dict(current=100.0, previous=50.0),
+            )
+        )
+        second = dict(
+            store_1=dict(
+                number_entries=dict(current=20, previous=10),
+                net_price_vat=dict(current=200.0, previous=100.0),
+            )
+        )
+
+        result = omnix.sum_results(first, second, calc=False)
+
+        self.assertEqual(result["store_1"]["number_entries"]["current"], 30)
+        self.assertEqual(result["store_1"]["number_entries"]["previous"], 15)
+        self.assertEqual(result["store_1"]["net_price_vat"]["current"], 300.0)
+        self.assertEqual(result["store_1"]["net_price_vat"]["previous"], 150.0)
+
+    def test_sum_results_type_preservation(self):
+        first = dict(
+            store_1=dict(
+                number_entries=dict(current=10, previous=5),
+                net_price_vat=dict(current=100.0, previous=50.0),
+            )
+        )
+        second = dict(
+            store_1=dict(
+                number_entries=dict(current=20, previous=10),
+                net_price_vat=dict(current=200.0, previous=100.0),
+            )
+        )
+
+        result = omnix.sum_results(first, second, calc=False)
+
+        self.assertIsInstance(result["store_1"]["number_entries"]["current"], int)
+        self.assertIsInstance(result["store_1"]["number_entries"]["previous"], int)
+        self.assertIsInstance(result["store_1"]["net_price_vat"]["current"], float)
+        self.assertIsInstance(result["store_1"]["net_price_vat"]["previous"], float)
+
+    def test_sum_results_missing_second(self):
+        first = dict(
+            store_1=dict(
+                number_entries=dict(current=10, previous=5),
+                net_price_vat=dict(current=100.0, previous=50.0),
+            )
+        )
+        second = dict()
+
+        result = omnix.sum_results(first, second, calc=False)
+
+        self.assertEqual(result["store_1"]["number_entries"]["current"], 10)
+        self.assertEqual(result["store_1"]["number_entries"]["previous"], 5)
+        self.assertEqual(result["store_1"]["net_price_vat"]["current"], 100.0)
+        self.assertEqual(result["store_1"]["net_price_vat"]["previous"], 50.0)
+
+        self.assertIsInstance(result["store_1"]["number_entries"]["current"], int)
+        self.assertIsInstance(result["store_1"]["number_entries"]["previous"], int)
+        self.assertIsInstance(result["store_1"]["net_price_vat"]["current"], float)
+        self.assertIsInstance(result["store_1"]["net_price_vat"]["previous"], float)
+
+    def test_sum_results_multiple_stores(self):
+        first = dict(
+            store_1=dict(
+                number_entries=dict(current=10, previous=5),
+            ),
+            store_2=dict(
+                number_entries=dict(current=30, previous=15),
+            ),
+        )
+        second = dict(
+            store_1=dict(
+                number_entries=dict(current=20, previous=10),
+            ),
+            store_2=dict(
+                number_entries=dict(current=40, previous=20),
+            ),
+        )
+
+        result = omnix.sum_results(first, second, calc=False)
+
+        self.assertEqual(result["store_1"]["number_entries"]["current"], 30)
+        self.assertEqual(result["store_1"]["number_entries"]["previous"], 15)
+        self.assertEqual(result["store_2"]["number_entries"]["current"], 70)
+        self.assertEqual(result["store_2"]["number_entries"]["previous"], 35)

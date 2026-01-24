@@ -844,15 +844,13 @@ def sum_results(first, second, calc=True):
             # inferred type of the values, this avoid coercion of types
             # which would cause issues downstream
             for _key in quorum.legacy.iterkeys(first_m):
-                first_v, second_v = first_m.get(_key, None), second_m.get(_key, None)
-                default_v = (
-                    0.0
-                    if isinstance(first_v, float) or isinstance(second_v, float)
-                    else 0
-                )
-                result_m[_key] = first_m.get(_key, default_v) + second_m.get(
-                    _key, default_v
-                )
+                first_v, second_v = first_m.get(_key, 0.0), second_m.get(_key, 0.0)
+                is_float = isinstance(first_v, float) and isinstance(second_v, float)
+                default_v = 0.0 if is_float else 0
+                result_v = first_m.get(_key, default_v) + second_m.get(_key, default_v)
+                if not is_float:
+                    result_v = int(result_v)
+                result_m[_key] = result_v
 
     if calc:
         calc_extra(result)
@@ -894,7 +892,8 @@ def empty_results(input, calc=True):
             result_r[key] = result_m
 
             for _key in quorum.legacy.iterkeys(input_m):
-                result_m[_key] = 0.0
+                input_v = input_m.get(_key, None)
+                result_m[_key] = 0.0 if isinstance(input_v, float) else 0
 
     if calc:
         calc_extra(result)

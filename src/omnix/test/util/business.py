@@ -404,3 +404,138 @@ class BusinessTest(unittest.TestCase):
         self.assertEqual(result["store_1"]["number_entries"]["previous"], 15)
         self.assertEqual(result["store_2"]["number_entries"]["current"], 70)
         self.assertEqual(result["store_2"]["number_entries"]["previous"], 35)
+
+    def test_sum_results_with_calc(self):
+        first = dict(
+            store_1=dict(
+                number_entries=dict(current=10, previous=5),
+                net_price_vat=dict(current=100.0, previous=50.0),
+                net_number_sales=dict(current=5, previous=3),
+            ),
+        )
+        second = dict(
+            store_1=dict(
+                number_entries=dict(current=20, previous=10),
+                net_price_vat=dict(current=200.0, previous=100.0),
+                net_number_sales=dict(current=10, previous=5),
+            ),
+        )
+
+        result = omnix.sum_results(first, second, calc=True)
+
+        self.assertEqual(result["store_1"]["number_entries"]["current"], 30)
+        self.assertEqual(result["store_1"]["number_entries"]["previous"], 15)
+        self.assertEqual(result["store_1"]["number_entries"]["diff"], 15)
+
+        self.assertIsInstance(result["store_1"]["number_entries"]["current"], int)
+        self.assertIsInstance(result["store_1"]["number_entries"]["previous"], int)
+        self.assertIsInstance(result["store_1"]["number_entries"]["diff"], int)
+
+    def test_calc_results_type_preservation(self):
+        results = dict(
+            store_1=dict(
+                number_entries=dict(current=10, previous=5),
+                net_price_vat=dict(current=100.0, previous=50.0),
+                net_number_sales=dict(current=5, previous=3),
+            ),
+        )
+
+        omnix.calc_extra(results)
+        omnix.calc_results(results)
+
+        self.assertIsInstance(results["store_1"]["number_entries"]["current"], int)
+        self.assertIsInstance(results["store_1"]["number_entries"]["previous"], int)
+        self.assertIsInstance(results["store_1"]["number_entries"]["diff"], int)
+
+        self.assertIsInstance(results["store_1"]["net_number_sales"]["current"], int)
+        self.assertIsInstance(results["store_1"]["net_number_sales"]["previous"], int)
+        self.assertIsInstance(results["store_1"]["net_number_sales"]["diff"], int)
+
+        self.assertIsInstance(results["store_1"]["net_price_vat"]["current"], float)
+        self.assertIsInstance(results["store_1"]["net_price_vat"]["previous"], float)
+        self.assertIsInstance(results["store_1"]["net_price_vat"]["diff"], float)
+
+    def test_calc_results_with_float_counts(self):
+        # simulates the case where API returns floats for count fields
+        # which can happen with JSON deserialization or database returns
+        results = dict(
+            store_1=dict(
+                number_entries=dict(current=10.0, previous=5.0),
+                net_price_vat=dict(current=100.0, previous=50.0),
+                net_number_sales=dict(current=5.0, previous=3.0),
+            ),
+        )
+
+        omnix.calc_extra(results)
+        omnix.calc_results(results)
+
+        # the diff should be usable with {:,d} format code
+        # this will fail if diff is a float
+        number_entries = results["store_1"]["number_entries"]
+        net_number_sales = results["store_1"]["net_number_sales"]
+
+        # this is what slack_sales does - it will raise ValueError
+        # if current or diff are floats
+        "{:,d} x / {:+,d} x ({:+,.2f} %)".format(
+            int(number_entries["current"]),
+            int(number_entries["diff"]),
+            number_entries["percentage"],
+        )
+        "{:,d} x / {:+,d} x ({:+,.2f} %)".format(
+            int(net_number_sales["current"]),
+            int(net_number_sales["diff"]),
+            net_number_sales["percentage"],
+        )
+
+    def test_empty_results_type_preservation(self):
+        input_data = dict(
+            store_1=dict(
+                number_entries=dict(current=10, previous=5),
+                net_price_vat=dict(current=100.0, previous=50.0),
+                net_number_sales=dict(current=5, previous=3),
+            ),
+        )
+
+        from omnix.util.business import empty_results
+
+        result = empty_results(input_data, calc=False)
+
+        self.assertEqual(result["store_1"]["number_entries"]["current"], 0)
+        self.assertEqual(result["store_1"]["number_entries"]["previous"], 0)
+        self.assertEqual(result["store_1"]["net_price_vat"]["current"], 0.0)
+        self.assertEqual(result["store_1"]["net_price_vat"]["previous"], 0.0)
+        self.assertEqual(result["store_1"]["net_number_sales"]["current"], 0)
+        self.assertEqual(result["store_1"]["net_number_sales"]["previous"], 0)
+
+        self.assertIsInstance(result["store_1"]["number_entries"]["current"], int)
+        self.assertIsInstance(result["store_1"]["number_entries"]["previous"], int)
+        self.assertIsInstance(result["store_1"]["net_price_vat"]["current"], float)
+        self.assertIsInstance(result["store_1"]["net_price_vat"]["previous"], float)
+        self.assertIsInstance(result["store_1"]["net_number_sales"]["current"], int)
+        self.assertIsInstance(result["store_1"]["net_number_sales"]["previous"], int)
+
+    def test_empty_results_then_sum_type_preservation(self):
+        first = dict(
+            store_1=dict(
+                number_entries=dict(current=10, previous=5),
+                net_price_vat=dict(current=100.0, previous=50.0),
+                net_number_sales=dict(current=5, previous=3),
+            ),
+        )
+
+        from omnix.util.business import empty_results
+
+        empty = empty_results(first, calc=False)
+        result = omnix.sum_results(empty, first, calc=True)
+
+        self.assertIsInstance(result["store_1"]["number_entries"]["current"], int)
+        self.assertIsInstance(result["store_1"]["number_entries"]["previous"], int)
+        self.assertIsInstance(result["store_1"]["number_entries"]["diff"], int)
+
+        self.assertIsInstance(result["store_1"]["net_number_sales"]["current"], int)
+        self.assertIsInstance(result["store_1"]["net_number_sales"]["previous"], int)
+        self.assertIsInstance(result["store_1"]["net_number_sales"]["diff"], int)
+
+        self.assertIsInstance(result["store_1"]["net_price_vat"]["current"], float)
+        self.assertIsInstance(result["store_1"]["net_price_vat"]["previous"], float)
+        self.assertIsInstance(result["store_1"]["net_price_vat"]["diff"], float)

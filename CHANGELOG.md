@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+*
+
+## [0.3.13] - 2026-01-24
+
+### Fixed
+
 * Type preservation in `sum_results` and `empty_results` to ensure integer fields remain integers
 * Added comprehensive tests for type preservation in results aggregation functions
 

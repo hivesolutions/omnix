@@ -83,28 +83,28 @@ def load_mail():
 
 
 def sales_slack(offset=1):
-    _api = get_api()
+    _api = _get_api()
     business.slack_sales(api=_api, offset=offset)
 
 
 def previous_slack(offset=0):
-    _api = get_api()
+    _api = _get_api()
     business.slack_previous(api=_api, offset=offset)
 
 
 def week_slack(offset=0, span=7):
-    _api = get_api()
+    _api = _get_api()
     business.slack_week(api=_api, offset=offset, span=span)
 
 
 def birthday_mail(month=None, day=None):
-    _api = get_api()
+    _api = _get_api()
     business.mail_birthday_all(api=_api, month=month, day=day, links=False)
     quorum.debug("Finished sending birthday emails")
 
 
 def activity_mail(year=None, month=None):
-    _api = get_api()
+    _api = _get_api()
     business.mail_activity_all(
         api=_api, year=year, month=month, validate=True, links=False
     )
@@ -119,7 +119,7 @@ def activity_previous():
     activity_mail(year=pre_year, month=pre_month)
 
 
-def get_api():
+def _get_api():
     global API
     if API:
         return API

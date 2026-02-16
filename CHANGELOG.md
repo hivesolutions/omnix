@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-*
+* Remove stale `session_id` from Supervisor and Slave, rely on the API's own session management instead
 
 ## [0.3.14] - 2026-02-16
 

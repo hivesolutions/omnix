@@ -57,7 +57,6 @@ of the operations, as expected """
 
 class Slave(threading.Thread):
 
-    session_id = None
     connection = None
     channel = None
 

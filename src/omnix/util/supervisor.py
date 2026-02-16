@@ -63,7 +63,6 @@ the performance, mostly under heavy load situations """
 
 class Supervisor(threading.Thread):
 
-    session_id = None
     connection = None
     channel = None
     queue = None
@@ -139,7 +138,6 @@ class Supervisor(threading.Thread):
         # set of inbound documents that have not yet been submitted
         # to at for the flush operation
         kwargs = {
-            "session_id": self.session_id,
             "filter_string": "",
             "start_record": 0,
             "number_records": NUMBER_RECORDS,

@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-*
+* Scheduler creating new sessions with the remote Omni API on every tick by reusing a single API instance across scheduling tasks
 
 ## [0.3.13] - 2026-01-24
 

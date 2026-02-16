@@ -37,6 +37,10 @@ from . import logic
 from . import config
 from . import business
 
+API = None
+""" The global API instance to be reused across
+scheduling ticks to avoid creating new sessions """
+
 
 def load():
     if not config.SCHEDULE:
@@ -79,30 +83,30 @@ def load_mail():
 
 
 def sales_slack(offset=1):
-    api = logic.get_api(mode=omni.API.DIRECT_MODE)
-    business.slack_sales(api=api, offset=offset)
+    _api = get_api()
+    business.slack_sales(api=_api, offset=offset)
 
 
 def previous_slack(offset=0):
-    api = logic.get_api(mode=omni.API.DIRECT_MODE)
-    business.slack_previous(api=api, offset=offset)
+    _api = get_api()
+    business.slack_previous(api=_api, offset=offset)
 
 
 def week_slack(offset=0, span=7):
-    api = logic.get_api(mode=omni.API.DIRECT_MODE)
-    business.slack_week(api=api, offset=offset, span=span)
+    _api = get_api()
+    business.slack_week(api=_api, offset=offset, span=span)
 
 
 def birthday_mail(month=None, day=None):
-    api = logic.get_api(mode=omni.API.DIRECT_MODE)
-    business.mail_birthday_all(api=api, month=month, day=day, links=False)
+    _api = get_api()
+    business.mail_birthday_all(api=_api, month=month, day=day, links=False)
     quorum.debug("Finished sending birthday emails")
 
 
 def activity_mail(year=None, month=None):
-    api = logic.get_api(mode=omni.API.DIRECT_MODE)
+    _api = get_api()
     business.mail_activity_all(
-        api=api, year=year, month=month, validate=True, links=False
+        api=_api, year=year, month=month, validate=True, links=False
     )
     quorum.debug("Finished sending activity emails")
 
@@ -113,3 +117,11 @@ def activity_previous():
         (now.year - 1, 12) if now.month == 1 else (now.year, now.month - 1)
     )
     activity_mail(year=pre_year, month=pre_month)
+
+
+def get_api():
+    global API
+    if API:
+        return API
+    API = logic.get_api(mode=omni.API.DIRECT_MODE)
+    return API

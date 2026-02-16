@@ -6,3 +6,7 @@
 /.vscode/settings.json
 
 /.venv
+
+/dist
+/build
+/src/omnix.egg-info

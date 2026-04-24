@@ -143,21 +143,38 @@ def flush_slack_week():
 def flush_birthday():
     month = quorum.get_field("month", None, cast=int)
     day = quorum.get_field("day", None, cast=int)
+    dry_run = quorum.get_field("dry_run", False, cast=bool)
 
-    util.mail_birthday_all(month=month, day=day, links=False)
+    util.mail_birthday_all(month=month, day=day, links=False, dry_run=dry_run)
 
     return flask.redirect(
-        flask.url_for("index", message="Birthday emails have been sent")
+        flask.url_for(
+            "index",
+            message=(
+                "Birthday emails dry run complete (see logs)"
+                if dry_run
+                else "Birthday emails have been sent"
+            ),
+        )
     )
 
 
 @app.route("/flush_activity", methods=("GET",))
 @quorum.ensure("base.admin")
 def flush_activity():
-    util.mail_activity_all(validate=True, links=False)
+    dry_run = quorum.get_field("dry_run", False, cast=bool)
+
+    util.mail_activity_all(validate=True, links=False, dry_run=dry_run)
 
     return flask.redirect(
-        flask.url_for("index", message="Activity emails have been sent")
+        flask.url_for(
+            "index",
+            message=(
+                "Activity emails dry run complete (see logs)"
+                if dry_run
+                else "Activity emails have been sent"
+            ),
+        )
     )
 
 

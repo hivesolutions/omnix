@@ -466,7 +466,9 @@ def slack_week(api=None, channel=None, all=False, offset=0, span=7):
 
 
 @quorum.ensure_context
-def mail_birthday_all(api=None, month=None, day=None, validate=False, links=True):
+def mail_birthday_all(
+    api=None, month=None, day=None, validate=False, links=True, dry_run=False
+):
     api = api or logic.get_api()
     has_date = month and day
     if not has_date:
@@ -478,13 +480,25 @@ def mail_birthday_all(api=None, month=None, day=None, validate=False, links=True
     )
     for employee in employees:
         try:
-            mail_birthday(api=api, id=employee["object_id"], links=links)
-        except quorum.OperationalError:
-            pass
+            mail_birthday(
+                api=api, id=employee["object_id"], links=links, dry_run=dry_run
+            )
+        except quorum.OperationalError as error:
+            quorum.warning(
+                "Skipped birthday email to %s <%s> (id=%s): %s"
+                % (
+                    employee.get("full_name", None),
+                    employee.get("primary_contact_information", {}).get("email", None),
+                    employee.get("object_id", None),
+                    error,
+                )
+            )
 
 
 @quorum.ensure_context
-def mail_activity_all(api=None, year=None, month=None, validate=False, links=True):
+def mail_activity_all(
+    api=None, year=None, month=None, validate=False, links=True, dry_run=False
+):
     api = api or logic.get_api()
     employees = api.list_employees(object=dict(limit=-1))
     for employee in employees:
@@ -496,13 +510,22 @@ def mail_activity_all(api=None, year=None, month=None, validate=False, links=Tru
                 month=month,
                 validate=validate,
                 links=links,
+                dry_run=dry_run,
             )
-        except quorum.OperationalError:
-            pass
+        except quorum.OperationalError as error:
+            quorum.warning(
+                "Skipped activity email to %s <%s> (id=%s): %s"
+                % (
+                    employee.get("full_name", None),
+                    employee.get("primary_contact_information", {}).get("email", None),
+                    employee.get("object_id", None),
+                    error,
+                )
+            )
 
 
 @quorum.ensure_context
-def mail_birthday(api=None, id=None, links=True):
+def mail_birthday(api=None, id=None, links=True, dry_run=False):
     api = api or logic.get_api()
     employee = api.get_employee(id) if id else api.self_employee()
 
@@ -517,6 +540,12 @@ def mail_birthday(api=None, id=None, links=True):
         raise quorum.OperationalError("No email defined")
     if not working == 1:
         raise quorum.OperationalError("No longer working")
+
+    if dry_run:
+        quorum.info(
+            "Dry run, would send birthday email to %s <%s> (id=%s)" % (name, email, id)
+        )
+        return
 
     quorum.debug("Sending birthday email to %s <%s>" % (name, email))
     quorum.send_mail(
@@ -534,7 +563,15 @@ def mail_birthday(api=None, id=None, links=True):
 
 
 @quorum.ensure_context
-def mail_activity(api=None, id=None, year=None, month=None, validate=False, links=True):
+def mail_activity(
+    api=None,
+    id=None,
+    year=None,
+    month=None,
+    validate=False,
+    links=True,
+    dry_run=False,
+):
     api = api or logic.get_api()
     employee = api.get_employee(id) if id else api.self_employee()
 
@@ -567,6 +604,18 @@ def mail_activity(api=None, id=None, year=None, month=None, validate=False, link
     ) = get_sales(api=api, id=id, year=year, month=month)
 
     if validate and not operations:
+        quorum.info(
+            "Skipped activity email to %s <%s> (id=%s): no operations in %s"
+            % (name, email, id, target_s)
+        )
+        return
+
+    if dry_run:
+        quorum.info(
+            "Dry run, would send activity email to %s <%s> (id=%s) for %s"
+            " (%d sale(s), %d return(s))"
+            % (name, email, id, target_s, len(sales_s), len(returns_s))
+        )
         return
 
     quorum.debug("Sending activity email to %s <%s>" % (name, email))

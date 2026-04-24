@@ -9,11 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-*
+* `dry_run` flag to `mail_birthday`, `mail_activity`, `mail_birthday_all` and `mail_activity_all`, as well as to the `/flush_birthday` and `/flush_activity` admin endpoints, to preview the recipients without actually sending the emails
 
 ### Changed
 
-*
+* Bulk birthday and activity mailers now log a warning with employee name, email and id when an `OperationalError` is raised for a given employee, instead of silently swallowing the exception
+* `mail_activity` now logs an info message when `validate` skips an employee without operations for the target month
 
 ### Fixed
 

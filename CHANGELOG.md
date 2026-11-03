@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-*
+* Support for the secondary EAN in the metadata import - [#352](https://github.com/hivesolutions/omni/issues/352)
 
 ### Changed
 

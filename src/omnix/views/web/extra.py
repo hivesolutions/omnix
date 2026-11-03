@@ -408,6 +408,7 @@ def do_metadata_extras():
             description = update.pop("description", None)
             upc = update.pop("upc", None)
             ean = update.pop("ean", None)
+            ean_secondary = update.pop("ean_secondary", None)
 
         # otherwise this is a "normal" update and the "typical" metadata
         # fields are the one to be updated
@@ -443,6 +444,13 @@ def do_metadata_extras():
             else:
                 initials, initials_min, initials_max = "", "", ""
 
+            # verifies if the secondary EAN part of the CSV line exists and
+            # if that's the case processes it properly
+            if len(line) >= 23:
+                ean_secondary = line[22]
+            else:
+                ean_secondary = ""
+
             # normalizes the various values that have been extracted from the line
             # so they are properly represented for importing
             name = name or None
@@ -466,6 +474,7 @@ def do_metadata_extras():
             sku_field = sku_field or None
             upc = upc or None
             ean = ean or None
+            ean_secondary = ean_secondary or None
             initials = initials or None
             initials_min = initials_min or None
             initials_max = initials_max or None
@@ -498,6 +507,8 @@ def do_metadata_extras():
                 upc = upc.strip()
             if ean:
                 ean = ean.strip()
+            if ean_secondary:
+                ean_secondary = ean_secondary.strip()
             if initials:
                 initials = initials == "1"
             if initials_min:
@@ -590,6 +601,8 @@ def do_metadata_extras():
             model["upc"] = upc
         if ean:
             model["ean"] = ean
+        if ean_secondary:
+            model["ean_secondary"] = ean_secondary
         api.update_entity(object_id, payload=dict(root_entity=model))
 
     try:

@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-*
+* Docker images are built and deployed by GitHub Actions instead of Docker Hub
 
 ### Fixed
 

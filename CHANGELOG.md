@@ -9,15 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+*
+
+### Changed
+
+*
+
+### Fixed
+
+*
+
+## [0.3.18] - 2026-11-15
+
+### Added
+
 * Support for the secondary EAN in the metadata import - [#352](https://github.com/hivesolutions/omni/issues/352)
 
 ### Changed
 
 * Docker images are built and deployed by GitHub Actions instead of Docker Hub
-
-### Fixed
-
-*
 
 ## [0.3.17] - 2026-04-24
 
